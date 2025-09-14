@@ -19,6 +19,7 @@ from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from src.api.v1 import companies, filings, intelligence, metrics, reports
+from src.auth.routes import router as auth_router
 from src.core.config import get_settings
 from src.core.exceptions import CorporateIntelException
 
@@ -137,6 +138,9 @@ def create_application() -> FastAPI:
     # Mount Prometheus metrics
     metrics_app = make_asgi_app()
     app.mount("/metrics", metrics_app)
+    
+    # Include authentication router (no prefix - uses /auth)
+    app.include_router(auth_router)
     
     # Include API routers
     app.include_router(
