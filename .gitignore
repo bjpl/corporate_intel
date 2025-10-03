@@ -4,6 +4,9 @@ __pycache__/
 *$py.class
 *.so
 .Python
+*.pyc
+*.pyo
+*.pyd
 build/
 develop-eggs/
 dist/
@@ -20,20 +23,32 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.manifest
+*.spec
 
 # Virtual Environment
 venv/
 ENV/
 env/
-.venv
+.venv/
+env.bak/
+venv.bak/
 
-# IDE
+# IDE & Editor Files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 .DS_Store
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+Thumbs.db
+Desktop.ini
+ehthumbs.db
 
 # Environment Variables - CRITICAL: Never commit credentials!
 .env
@@ -54,14 +69,23 @@ env/
 
 # Logs
 logs/
+log/
 *.log
+pip-log.txt
+pip-delete-this-directory.txt
 
 # Testing
 .coverage
+.coverage.*
 .pytest_cache/
 htmlcov/
 .tox/
+.nox/
 .hypothesis/
+coverage.xml
+*.cover
+.cache/
+nosetests.xml
 
 # Jupyter
 .ipynb_checkpoints/
@@ -75,8 +99,11 @@ data/
 !package.json
 !tsconfig.json
 
-# MinIO
+# Docker & Deployment
 minio_data/
+minio-data/
+docker-compose.override.yml
+.docker/
 
 # Ray
 ray_logs/
@@ -98,10 +125,40 @@ superset_cache/
 # Documentation
 site/
 
-# Temporary
+# Python Type Checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Rope
+.ropeproject
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath
+*.sage.py
+
+# Spyder
+.spyderproject
+.spyproject
+
+# FastAPI specific
+.cache/
+__pypackages__/
+
+# Temporary & User Data
 tmp/
 temp/
 *.tmp
+user_data/
+uploads/
 
 # Secrets - CRITICAL: Never commit credentials!
 secrets/
