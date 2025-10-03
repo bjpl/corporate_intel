@@ -1,0 +1,250 @@
+# Testing Docker Compose Configuration
+# Usage: docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+
+version: '3.8'
+
+services:
+  # Test Database - Isolated PostgreSQL
+  postgres_test:
+    image: timescale/timescaledb:latest-pg15
+    container_name: corporate-intel-postgres-test
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: corporate_intel_test
+      POSTGRES_INITDB_ARGS: "-A md5"
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d corporate_intel_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - test-network
+
+  # Test Redis
+  redis_test:
+    image: redis:7-alpine
+    container_name: corporate-intel-redis-test
+    command: redis-server --appendonly no
+    ports:
+      - "6381:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - test-network
+
+  # Test MinIO
+  minio_test:
+    image: minio/minio:latest
+    container_name: corporate-intel-minio-test
+    environment:
+      MINIO_ROOT_USER: test_minio
+      MINIO_ROOT_PASSWORD: test_minio_password
+    command: server /data
+    ports:
+      - "9003:9000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - test-network
+
+  # Test Runner - Run tests and exit
+  test_runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: corporate-intel-test-runner
+    depends_on:
+      postgres_test:
+        condition: service_healthy
+      redis_test:
+        condition: service_healthy
+      minio_test:
+        condition: service_healthy
+    environment:
+      # Test Database
+      POSTGRES_HOST: postgres_test
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: corporate_intel_test
+
+      # Test Redis
+      REDIS_HOST: redis_test
+      REDIS_PORT: 6379
+
+      # Test MinIO
+      MINIO_ENDPOINT: minio_test:9000
+      MINIO_ACCESS_KEY: test_minio
+      MINIO_SECRET_KEY: test_minio_password
+      MINIO_USE_SSL: "false"
+
+      # Test Environment
+      ENVIRONMENT: testing
+      DEBUG: "false"
+      SECRET_KEY: test-secret-key
+      LOG_LEVEL: WARNING
+
+      # Pytest Configuration
+      PYTEST_ADDOPTS: >-
+        --verbose
+        --color=yes
+        --tb=short
+        --cov=src
+        --cov-report=term-missing
+        --cov-report=html:coverage_html
+        --cov-report=xml:coverage.xml
+        --junitxml=test-results.xml
+
+      # Disable external services in tests
+      ALPHA_VANTAGE_API_KEY: ""
+      NEWSAPI_KEY: ""
+      SENTRY_DSN: ""
+      OTEL_EXPORTER_OTLP_ENDPOINT: ""
+
+    volumes:
+      # Mount source code
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - ./alembic:/app/alembic:ro
+      - ./pyproject.toml:/app/pyproject.toml:ro
+
+      # Output directories
+      - ./test-results:/app/test-results
+      - ./coverage_html:/app/coverage_html
+      - ./coverage.xml:/app/coverage.xml
+      - ./.coverage:/app/.coverage
+
+    # Run all tests
+    command: >
+      bash -c "
+        echo '=== Waiting for services to be ready ===' &&
+        sleep 5 &&
+        echo '=== Running database migrations ===' &&
+        alembic upgrade head &&
+        echo '=== Running pytest ===' &&
+        pytest tests/ -v --color=yes --tb=short \
+          --cov=src \
+          --cov-report=term-missing \
+          --cov-report=html:coverage_html \
+          --cov-report=xml:coverage.xml \
+          --junitxml=test-results.xml \
+          --maxfail=5 \
+          -n auto
+      "
+    networks:
+      - test-network
+
+  # Integration Test Runner - API Tests
+  integration_test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: corporate-intel-integration-test
+    depends_on:
+      postgres_test:
+        condition: service_healthy
+      redis_test:
+        condition: service_healthy
+      minio_test:
+        condition: service_healthy
+    environment:
+      # Test Database
+      POSTGRES_HOST: postgres_test
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: corporate_intel_test
+
+      # Test Redis
+      REDIS_HOST: redis_test
+      REDIS_PORT: 6379
+
+      # Test MinIO
+      MINIO_ENDPOINT: minio_test:9000
+      MINIO_ACCESS_KEY: test_minio
+      MINIO_SECRET_KEY: test_minio_password
+      MINIO_USE_SSL: "false"
+
+      # Test Environment
+      ENVIRONMENT: testing
+      DEBUG: "false"
+      LOG_LEVEL: ERROR
+
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - ./test-results:/app/test-results
+
+    command: >
+      bash -c "
+        echo '=== Running Integration Tests ===' &&
+        pytest tests/integration/ -v --color=yes \
+          --tb=short \
+          --maxfail=3 \
+          --junitxml=test-results/integration-tests.xml
+      "
+    networks:
+      - test-network
+    profiles:
+      - integration
+
+  # E2E Test Runner
+  e2e_test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: corporate-intel-e2e-test
+    depends_on:
+      postgres_test:
+        condition: service_healthy
+      redis_test:
+        condition: service_healthy
+      minio_test:
+        condition: service_healthy
+    environment:
+      # Full stack configuration
+      POSTGRES_HOST: postgres_test
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: corporate_intel_test
+      REDIS_HOST: redis_test
+      REDIS_PORT: 6379
+      MINIO_ENDPOINT: minio_test:9000
+      MINIO_ACCESS_KEY: test_minio
+      MINIO_SECRET_KEY: test_minio_password
+      ENVIRONMENT: testing
+
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - ./test-results:/app/test-results
+
+    command: >
+      bash -c "
+        echo '=== Running E2E Tests ===' &&
+        pytest tests/e2e/ -v --color=yes \
+          --tb=short \
+          --maxfail=1 \
+          --junitxml=test-results/e2e-tests.xml
+      "
+    networks:
+      - test-network
+    profiles:
+      - e2e
+
+networks:
+  test-network:
+    driver: bridge
+    name: corporate-intel-test-network

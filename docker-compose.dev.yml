@@ -1,0 +1,192 @@
+# Development Docker Compose Override
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  # PostgreSQL with development settings
+  postgres:
+    environment:
+      POSTGRES_USER: intel_dev
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: corporate_intel_dev
+    ports:
+      - "5433:5432"  # Different port to avoid conflicts
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+      # Development: Mount init scripts for easy updates
+      - ./scripts:/docker-entrypoint-initdb.d/scripts:ro
+    command:
+      - "postgres"
+      - "-c"
+      - "log_statement=all"  # Log all SQL statements
+      - "-c"
+      - "log_duration=on"
+      - "-c"
+      - "log_min_duration_statement=0"
+
+  # Redis with development settings
+  redis:
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --loglevel debug
+    ports:
+      - "6380:6379"  # Different port
+    volumes:
+      - redis_dev_data:/data
+
+  # MinIO for development
+  minio:
+    environment:
+      MINIO_ROOT_USER: dev_minio
+      MINIO_ROOT_PASSWORD: dev_minio_password
+    ports:
+      - "9001:9000"   # API
+      - "9002:9001"   # Console
+    volumes:
+      - minio_dev_data:/data
+
+  # Corporate Intelligence API - Development Mode
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    image: corporate-intel-api:dev
+    container_name: corporate-intel-api-dev
+    environment:
+      # Database
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: intel_dev
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: corporate_intel_dev
+
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      # MinIO
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: dev_minio
+      MINIO_SECRET_KEY: dev_minio_password
+      MINIO_USE_SSL: "false"
+
+      # Development Settings
+      ENVIRONMENT: development
+      DEBUG: "true"
+      SECRET_KEY: dev-secret-key-not-for-production
+      LOG_LEVEL: DEBUG
+
+      # Enable hot reload
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+
+      # External APIs (optional for dev)
+      ALPHA_VANTAGE_API_KEY: ${ALPHA_VANTAGE_API_KEY:-}
+      NEWSAPI_KEY: ${NEWSAPI_KEY:-}
+      SEC_USER_AGENT: "Corporate Intel Dev/1.0 (dev@localhost)"
+
+      # Observability (optional)
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      OTEL_SERVICE_NAME: corporate-intel-dev
+      SENTRY_DSN: ""
+
+    ports:
+      - "8000:8000"   # API
+      - "5678:5678"   # Debug port for remote debugging
+
+    volumes:
+      # Mount source code for hot reload - READ/WRITE for dev
+      - ./src:/app/src
+      - ./alembic:/app/alembic
+      - ./alembic.ini:/app/alembic.ini
+      - ./pyproject.toml:/app/pyproject.toml
+
+      # Data directories
+      - ./logs:/app/logs
+      - ./cache:/app/cache
+      - ./data:/app/data
+
+      # Development tools
+      - ./tests:/app/tests
+      - ./.pytest_cache:/app/.pytest_cache
+
+    # Override command for development with auto-reload
+    command: >
+      uvicorn src.api.main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+      --reload-dir /app/src
+      --log-level debug
+      --access-log
+
+  # Jaeger - always enabled in dev
+  jaeger:
+    profiles: []  # Override profile to always run in dev
+
+  # Prometheus - always enabled in dev
+  prometheus:
+    profiles: []  # Override profile to always run in dev
+    volumes:
+      - ./monitoring/prometheus.dev.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_dev_data:/prometheus
+
+  # Grafana - always enabled in dev
+  grafana:
+    profiles: []  # Override profile to always run in dev
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: dev_password
+      GF_INSTALL_PLUGINS: grafana-clock-panel
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    volumes:
+      - grafana_dev_data:/var/lib/grafana
+
+  # pgAdmin for database management (dev only)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: corporate-intel-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@localhost.com
+      PGADMIN_DEFAULT_PASSWORD: dev_password
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_dev_data:/var/lib/pgadmin
+    networks:
+      - corporate-intel-network
+
+  # Mailhog for email testing (dev only)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: corporate-intel-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - corporate-intel-network
+
+volumes:
+  postgres_dev_data:
+    name: corporate-intel-postgres-dev-data
+  redis_dev_data:
+    name: corporate-intel-redis-dev-data
+  minio_dev_data:
+    name: corporate-intel-minio-dev-data
+  prometheus_dev_data:
+    name: corporate-intel-prometheus-dev-data
+  grafana_dev_data:
+    name: corporate-intel-grafana-dev-data
+  pgadmin_dev_data:
+    name: corporate-intel-pgadmin-dev-data

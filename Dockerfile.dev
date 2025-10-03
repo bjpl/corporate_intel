@@ -1,0 +1,131 @@
+# Development Dockerfile for Corporate Intelligence Platform
+# Optimized for hot reload, debugging, and development workflow
+
+FROM python:3.11-slim
+
+# Metadata
+LABEL maintainer="brandon.lambert87@gmail.com" \
+      version="1.0.0-dev" \
+      description="Corporate Intelligence Platform - Development Image" \
+      environment="development"
+
+# Install system dependencies including dev tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    make \
+    cmake \
+    curl \
+    git \
+    postgresql-client \
+    libpq-dev \
+    libssl-dev \
+    libffi-dev \
+    vim \
+    nano \
+    htop \
+    net-tools \
+    procps \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Set development environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app \
+    PATH="/usr/local/bin:$PATH" \
+    ENVIRONMENT=development \
+    DEBUG=true \
+    # Enable Python development mode
+    PYTHONDEVMODE=1 \
+    # Better error messages
+    PYTHONFAULTHANDLER=1
+
+# Create app directory
+WORKDIR /app
+
+# Install Python dependencies
+# Copy requirements first for layer caching
+COPY pyproject.toml ./
+
+# Install dependencies including dev/test packages
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install \
+    # Core Framework
+    fastapi>=0.104.0 \
+    uvicorn[standard]>=0.24.0 \
+    gunicorn>=21.2.0 \
+    pydantic>=2.5.0 \
+    pydantic-settings>=2.1.0 \
+    # Database
+    sqlalchemy>=2.0.0 \
+    asyncpg>=0.29.0 \
+    psycopg2-binary>=2.9.0 \
+    alembic>=1.12.0 \
+    pgvector>=0.2.4 \
+    # Data Processing
+    pandas>=2.1.0 \
+    numpy>=1.24.0 \
+    # Caching & Storage
+    redis>=5.0.0 \
+    aiocache[redis]>=0.12.0 \
+    minio>=7.2.0 \
+    # Observability
+    opentelemetry-api>=1.21.0 \
+    opentelemetry-sdk>=1.21.0 \
+    opentelemetry-instrumentation-fastapi>=0.42b0 \
+    prometheus-client>=0.19.0 \
+    loguru>=0.7.0 \
+    sentry-sdk[fastapi]>=1.39.0 \
+    # Document Processing
+    pypdf>=3.17.0 \
+    pdfplumber>=0.10.0 \
+    python-docx>=1.1.0 \
+    beautifulsoup4>=4.12.0 \
+    # Financial Data
+    yfinance>=0.2.33 \
+    plotly>=5.18.0 \
+    dash>=2.14.0 \
+    # HTTP Client
+    httpx>=0.25.0 \
+    # Development & Testing
+    pytest>=7.4.0 \
+    pytest-asyncio>=0.21.0 \
+    pytest-cov>=4.1.0 \
+    pytest-mock>=3.12.0 \
+    pytest-env>=1.1.1 \
+    pytest-xdist>=3.5.0 \
+    # Code Quality
+    black>=23.12.0 \
+    isort>=5.13.0 \
+    flake8>=7.0.0 \
+    mypy>=1.7.0 \
+    pylint>=3.0.0 \
+    bandit>=1.7.0 \
+    # Debug Tools
+    ipython>=8.18.0 \
+    ipdb>=0.13.0 \
+    watchdog>=3.0.0 \
+    python-dotenv>=1.0.0
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/data /app/cache /app/tmp && \
+    chmod -R 777 /app
+
+# Note: Source code is mounted as volume in docker-compose.dev.yml
+# This allows hot reload without rebuilding
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Expose application and debug ports
+EXPOSE 8000 5678
+
+# Development server with auto-reload
+CMD ["uvicorn", "src.api.main:app", \
+     "--host", "0.0.0.0", \
+     "--port", "8000", \
+     "--reload", \
+     "--reload-dir", "/app/src", \
+     "--log-level", "debug"]
