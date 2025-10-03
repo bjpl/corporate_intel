@@ -1,0 +1,183 @@
+global:
+  resolve_timeout: 5m
+  slack_api_url: '{{ SLACK_WEBHOOK_URL }}'
+  pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'alerts@corporate-intel.com'
+  smtp_auth_username: '{{ SMTP_USERNAME }}'
+  smtp_auth_password: '{{ SMTP_PASSWORD }}'
+
+# Templates for notifications
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# Route tree
+route:
+  receiver: 'default'
+  group_by: ['alertname', 'cluster', 'service', 'severity']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+
+  routes:
+    # Critical alerts - immediate escalation
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      group_wait: 0s
+      group_interval: 5m
+      repeat_interval: 1h
+      continue: true
+
+    # API-specific alerts
+    - match_re:
+        component: api
+      receiver: 'api-team'
+      group_by: ['alertname', 'instance']
+      routes:
+        - match:
+            severity: critical
+          receiver: 'api-critical'
+          continue: true
+
+    # Database alerts
+    - match_re:
+        component: database
+      receiver: 'database-team'
+      routes:
+        - match:
+            severity: critical
+          receiver: 'database-critical'
+          continue: true
+
+    # Infrastructure alerts
+    - match_re:
+        component: infrastructure
+      receiver: 'devops-team'
+
+    # Business KPI alerts
+    - match_re:
+        component: business
+      receiver: 'business-team'
+
+# Inhibition rules - prevent alert storms
+inhibit_rules:
+  # Inhibit warning when critical is firing
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
+
+  # Inhibit all alerts if API is down
+  - source_match:
+      alertname: 'APIDown'
+    target_match_re:
+      component: 'api'
+    equal: ['instance']
+
+  # Inhibit database alerts if database is down
+  - source_match:
+      alertname: 'DatabaseDown'
+    target_match_re:
+      component: 'database'
+    equal: ['instance']
+
+# Receivers configuration
+receivers:
+  - name: 'default'
+    slack_configs:
+      - channel: '#alerts'
+        title: '{{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  - name: 'critical-alerts'
+    pagerduty_configs:
+      - service_key: '{{ PAGERDUTY_SERVICE_KEY }}'
+        description: '{{ .GroupLabels.alertname }}: {{ .CommonAnnotations.summary }}'
+        severity: 'critical'
+    slack_configs:
+      - channel: '#critical-alerts'
+        title: ':fire: CRITICAL: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        color: danger
+        send_resolved: true
+    email_configs:
+      - to: 'oncall@corporate-intel.com'
+        headers:
+          Subject: '[CRITICAL] {{ .GroupLabels.alertname }}'
+        html: '{{ template "email.critical.html" . }}'
+
+  - name: 'api-team'
+    slack_configs:
+      - channel: '#api-alerts'
+        title: 'API Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  - name: 'api-critical'
+    pagerduty_configs:
+      - service_key: '{{ PAGERDUTY_API_KEY }}'
+        description: 'API Critical: {{ .CommonAnnotations.summary }}'
+    slack_configs:
+      - channel: '#api-critical'
+        title: ':rotating_light: API CRITICAL: {{ .GroupLabels.alertname }}'
+        color: danger
+        send_resolved: true
+
+  - name: 'database-team'
+    slack_configs:
+      - channel: '#database-alerts'
+        title: 'Database Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  - name: 'database-critical'
+    pagerduty_configs:
+      - service_key: '{{ PAGERDUTY_DB_KEY }}'
+        description: 'Database Critical: {{ .CommonAnnotations.summary }}'
+    slack_configs:
+      - channel: '#database-critical'
+        title: ':warning: DATABASE CRITICAL: {{ .GroupLabels.alertname }}'
+        color: danger
+        send_resolved: true
+    email_configs:
+      - to: 'dba@corporate-intel.com'
+        headers:
+          Subject: '[DB CRITICAL] {{ .GroupLabels.alertname }}'
+
+  - name: 'devops-team'
+    slack_configs:
+      - channel: '#devops-alerts'
+        title: 'Infrastructure Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  - name: 'business-team'
+    slack_configs:
+      - channel: '#business-kpi'
+        title: 'Business KPI Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+    email_configs:
+      - to: 'analytics@corporate-intel.com'
+        headers:
+          Subject: '[KPI Alert] {{ .GroupLabels.alertname }}'
+
+# Time-based muting
+time_intervals:
+  - name: business-hours
+    time_intervals:
+      - times:
+          - start_time: '09:00'
+            end_time: '17:00'
+        weekdays: ['monday:friday']
+
+  - name: off-hours
+    time_intervals:
+      - times:
+          - start_time: '17:00'
+            end_time: '09:00'
+        weekdays: ['monday:friday']
+      - weekdays: ['saturday', 'sunday']

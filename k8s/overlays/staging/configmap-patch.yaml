@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: corporate-intel-config
+data:
+  APP_ENV: "staging"
+  DEBUG: "true"
+  LOG_LEVEL: "DEBUG"
+  WORKERS: "2"
+  DB_POOL_SIZE: "10"
+  DB_MAX_OVERFLOW: "5"
+  REDIS_MAX_CONNECTIONS: "25"
+  RATE_LIMIT_PER_MINUTE: "100"
+  RATE_LIMIT_PER_HOUR: "2000"

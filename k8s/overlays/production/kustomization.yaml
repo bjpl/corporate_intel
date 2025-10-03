@@ -1,0 +1,61 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: production
+
+bases:
+- ../../base
+
+namePrefix: prod-
+
+commonLabels:
+  environment: production
+  tier: production
+  criticality: high
+
+images:
+- name: corporate-intel
+  newName: corporate-intel
+  newTag: v1.0.0
+
+replicas:
+- name: corporate-intel-api
+  count: 5
+
+patchesStrategicMerge:
+- deployment-patch.yaml
+- configmap-patch.yaml
+- ingress-patch.yaml
+
+patchesJson6902:
+- target:
+    group: autoscaling
+    version: v2
+    kind: HorizontalPodAutoscaler
+    name: corporate-intel-api-hpa
+  patch: |-
+    - op: replace
+      path: /spec/minReplicas
+      value: 5
+    - op: replace
+      path: /spec/maxReplicas
+      value: 50
+
+- target:
+    group: policy
+    version: v1
+    kind: PodDisruptionBudget
+    name: corporate-intel-api-pdb
+  patch: |-
+    - op: replace
+      path: /spec/minAvailable
+      value: 3
+
+configMapGenerator:
+- name: corporate-intel-config
+  behavior: merge
+  literals:
+  - APP_ENV=production
+  - DEBUG=false
+  - LOG_LEVEL=INFO
+  - WORKERS=4

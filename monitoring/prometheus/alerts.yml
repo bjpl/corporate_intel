@@ -1,0 +1,299 @@
+groups:
+  - name: corporate_intel_api_alerts
+    interval: 30s
+    rules:
+      # High Error Rate
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{job="corporate-intel-api",status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total{job="corporate-intel-api"}[5m]))
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.instance }}"
+
+      # High Latency
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(http_request_duration_seconds_bucket{job="corporate-intel-api"}[5m]))
+            by (le, method, path)
+          ) > 1.0
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High API latency detected"
+          description: "95th percentile latency is {{ $value }}s for {{ $labels.method }} {{ $labels.path }}"
+
+      # API Down
+      - alert: APIDown
+        expr: up{job="corporate-intel-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "Corporate Intel API is down"
+          description: "API instance {{ $labels.instance }} has been down for more than 1 minute"
+
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            container_memory_working_set_bytes{pod=~"corporate-intel-api.*"}
+            /
+            container_spec_memory_limit_bytes{pod=~"corporate-intel-api.*"}
+          ) > 0.90
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }} for {{ $labels.pod }}"
+
+      # High CPU Usage
+      - alert: HighCPUUsage
+        expr: |
+          (
+            rate(container_cpu_usage_seconds_total{pod=~"corporate-intel-api.*"}[5m])
+            /
+            container_spec_cpu_quota{pod=~"corporate-intel-api.*"}
+          ) > 0.90
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value | humanizePercentage }} for {{ $labels.pod }}"
+
+      # Pod Restart Loop
+      - alert: PodRestartLoop
+        expr: |
+          rate(kube_pod_container_status_restarts_total{pod=~"corporate-intel-api.*"}[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "Pod is in restart loop"
+          description: "Pod {{ $labels.pod }} has restarted {{ $value }} times in the last 15 minutes"
+
+  - name: database_alerts
+    interval: 30s
+    rules:
+      # Database Connection Pool Saturation
+      - alert: DatabaseConnectionPoolSaturated
+        expr: |
+          (
+            pg_stat_database_numbackends
+            /
+            pg_settings_max_connections
+          ) > 0.80
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Database connection pool is saturated"
+          description: "Connection pool is {{ $value | humanizePercentage }} full"
+
+      # Database Down
+      - alert: DatabaseDown
+        expr: up{job="postgresql"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "PostgreSQL database is down"
+          description: "PostgreSQL has been down for more than 1 minute"
+
+      # High Database Load
+      - alert: HighDatabaseLoad
+        expr: |
+          rate(pg_stat_database_xact_commit[5m]) + rate(pg_stat_database_xact_rollback[5m]) > 1000
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "High database transaction load"
+          description: "Database is processing {{ $value }} transactions per second"
+
+      # Replication Lag
+      - alert: ReplicationLag
+        expr: |
+          (pg_replication_lag_seconds > 30) and (pg_replication_lag_seconds < 10000)
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Database replication lag detected"
+          description: "Replication lag is {{ $value }}s on {{ $labels.instance }}"
+
+  - name: redis_alerts
+    interval: 30s
+    rules:
+      # Redis Down
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: cache
+        annotations:
+          summary: "Redis is down"
+          description: "Redis has been down for more than 1 minute"
+
+      # High Redis Memory Usage
+      - alert: HighRedisMemoryUsage
+        expr: |
+          (
+            redis_memory_used_bytes
+            /
+            redis_memory_max_bytes
+          ) > 0.90
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is {{ $value | humanizePercentage }}"
+
+      # Redis Evictions
+      - alert: RedisEvictions
+        expr: rate(redis_evicted_keys_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "Redis is evicting keys"
+          description: "Redis is evicting {{ $value }} keys per second"
+
+  - name: rabbitmq_alerts
+    interval: 30s
+    rules:
+      # RabbitMQ Down
+      - alert: RabbitMQDown
+        expr: up{job="rabbitmq"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: queue
+        annotations:
+          summary: "RabbitMQ is down"
+          description: "RabbitMQ has been down for more than 1 minute"
+
+      # High Queue Length
+      - alert: HighQueueLength
+        expr: rabbitmq_queue_messages > 10000
+        for: 5m
+        labels:
+          severity: warning
+          component: queue
+        annotations:
+          summary: "High RabbitMQ queue length"
+          description: "Queue {{ $labels.queue }} has {{ $value }} messages"
+
+      # Consumer Lag
+      - alert: ConsumerLag
+        expr: |
+          (
+            rabbitmq_queue_messages_ready
+            /
+            rabbitmq_queue_consumers
+          ) > 100
+        for: 10m
+        labels:
+          severity: warning
+          component: queue
+        annotations:
+          summary: "RabbitMQ consumer lag detected"
+          description: "Queue {{ $labels.queue }} has {{ $value }} messages per consumer"
+
+  - name: business_kpi_alerts
+    interval: 60s
+    rules:
+      # Low User Activity
+      - alert: LowUserActivity
+        expr: |
+          sum(rate(http_requests_total{job="corporate-intel-api",path=~"/api/v1/auth/.*"}[1h])) < 10
+        for: 30m
+        labels:
+          severity: info
+          component: business
+        annotations:
+          summary: "Low user authentication activity"
+          description: "Only {{ $value }} authentications per second in the last hour"
+
+      # High Data Processing Failures
+      - alert: HighDataProcessingFailures
+        expr: |
+          (
+            sum(rate(celery_task_failed_total[5m]))
+            /
+            sum(rate(celery_task_total[5m]))
+          ) > 0.10
+        for: 10m
+        labels:
+          severity: warning
+          component: business
+        annotations:
+          summary: "High data processing failure rate"
+          description: "Task failure rate is {{ $value | humanizePercentage }}"
+
+  - name: infrastructure_alerts
+    interval: 30s
+    rules:
+      # Disk Space Low
+      - alert: DiskSpaceLow
+        expr: |
+          (
+            node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs"}
+            /
+            node_filesystem_size_bytes{fstype!~"tmpfs|fuse.lxcfs"}
+          ) < 0.15
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "Low disk space"
+          description: "Disk {{ $labels.device }} on {{ $labels.instance }} has {{ $value | humanizePercentage }} space remaining"
+
+      # High Node CPU
+      - alert: HighNodeCPU
+        expr: |
+          (1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) by (instance)) > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High node CPU usage"
+          description: "Node {{ $labels.instance }} CPU usage is {{ $value | humanizePercentage }}"
+
+      # SSL Certificate Expiry
+      - alert: SSLCertificateExpiringSoon
+        expr: |
+          (probe_ssl_earliest_cert_expiry - time()) / 86400 < 30
+        for: 1h
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in {{ $value }} days"

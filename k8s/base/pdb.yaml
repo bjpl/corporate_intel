@@ -1,0 +1,67 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: corporate-intel-api-pdb
+  labels:
+    app: corporate-intel
+    component: api
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: corporate-intel
+      component: api
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: corporate-intel-worker-pdb
+  labels:
+    app: corporate-intel
+    component: worker
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: corporate-intel
+      component: worker
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgres-pdb
+  labels:
+    app: postgres
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: postgres
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+  labels:
+    app: redis
+spec:
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: redis
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: rabbitmq-pdb
+  labels:
+    app: rabbitmq
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: rabbitmq

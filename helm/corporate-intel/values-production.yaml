@@ -1,0 +1,279 @@
+# Production Environment Values Override
+environment: production
+
+replicaCount: 5
+
+image:
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 5
+  maxReplicas: 50
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 75
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 4
+          periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Percent
+          value: 50
+          periodSeconds: 120
+        - type: Pods
+          value: 2
+          periodSeconds: 120
+
+config:
+  appEnv: production
+  debug: false
+  logLevel: INFO
+  workers: 4
+  dbPoolSize: 40
+  dbMaxOverflow: 20
+  redisMaxConnections: 100
+  rateLimitPerMinute: 200
+  rateLimitPerHour: 5000
+  sentryEnabled: true
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/limit-rps: "200"
+    nginx.ingress.kubernetes.io/limit-connections: "100"
+    nginx.ingress.kubernetes.io/enable-modsecurity: "true"
+    nginx.ingress.kubernetes.io/enable-owasp-core-rules: "true"
+  hosts:
+    - host: api.corporate-intel.com
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: corporate-intel.com
+      paths:
+        - path: /api
+          pathType: Prefix
+    - host: www.corporate-intel.com
+      paths:
+        - path: /api
+          pathType: Prefix
+  tls:
+    - secretName: prod-corporate-intel-tls
+      hosts:
+        - api.corporate-intel.com
+        - corporate-intel.com
+        - www.corporate-intel.com
+
+# Database configuration - Production grade
+postgresql:
+  enabled: true
+  auth:
+    database: corporate_intel_production
+  primary:
+    persistence:
+      enabled: true
+      size: 100Gi
+      storageClass: gp3
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 1000m
+      limits:
+        memory: 4Gi
+        cpu: 2000m
+  readReplicas:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 100Gi
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 1000m
+      limits:
+        memory: 4Gi
+        cpu: 2000m
+
+redis:
+  enabled: true
+  architecture: replication
+  sentinel:
+    enabled: true
+  master:
+    persistence:
+      enabled: true
+      size: 10Gi
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
+  replica:
+    replicaCount: 3
+    persistence:
+      enabled: true
+      size: 10Gi
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
+
+rabbitmq:
+  enabled: true
+  clustering:
+    enabled: true
+  replicaCount: 3
+  persistence:
+    enabled: true
+    size: 20Gi
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+    limits:
+      memory: 2Gi
+      cpu: 1000m
+
+minio:
+  enabled: true
+  mode: distributed
+  replicas: 4
+  persistence:
+    enabled: true
+    size: 500Gi
+    storageClass: gp3
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+    limits:
+      memory: 4Gi
+      cpu: 2000m
+
+# Monitoring - Production
+prometheus:
+  enabled: true
+  server:
+    retention: "30d"
+    persistentVolume:
+      enabled: true
+      size: 100Gi
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 1000m
+      limits:
+        memory: 4Gi
+        cpu: 2000m
+
+grafana:
+  enabled: true
+  adminPassword: "CHANGE_ME_IN_SEALED_SECRET"
+  persistence:
+    enabled: true
+    size: 10Gi
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+    limits:
+      memory: 1Gi
+      cpu: 500m
+
+# High Availability
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 3
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - corporate-intel
+        topologyKey: kubernetes.io/hostname
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - corporate-intel
+          topologyKey: topology.kubernetes.io/zone
+
+# Security - Production
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+    - ALL
+
+# Vault Integration
+vault:
+  enabled: true
+  injector:
+    enabled: true
+  role: corporate-intel-prod
+  secrets:
+    - path: secret/data/corporate-intel/production/db
+    - path: secret/data/corporate-intel/production/redis
+    - path: secret/data/corporate-intel/production/jwt
+    - path: secret/data/corporate-intel/production/apis
+
+# Persistence
+persistence:
+  enabled: true
+  storageClass: gp3
+  size: 50Gi
+
+# Service configuration
+service:
+  type: LoadBalancer
+  port: 443
+  targetPort: 8000
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+
+# Network Policies
+networkPolicy:
+  enabled: true
+  policyTypes:
+    - Ingress
+    - Egress

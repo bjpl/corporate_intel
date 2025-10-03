@@ -10,22 +10,46 @@ sources:
 maintainers:
   - name: Brandon Lambert
     email: brandon.lambert87@gmail.com
+
 dependencies:
   - name: postgresql
     version: "12.1.9"
     repository: "https://charts.bitnami.com/bitnami"
     condition: postgresql.enabled
+
   - name: redis
     version: "17.4.3"
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
+
+  - name: rabbitmq
+    version: "12.x.x"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: rabbitmq.enabled
+
   - name: minio
     version: "12.0.1"
     repository: "https://charts.bitnami.com/bitnami"
     condition: minio.enabled
+
+  - name: prometheus
+    version: "23.x.x"
+    repository: "https://prometheus-community.github.io/helm-charts"
+    condition: prometheus.enabled
+
+  - name: grafana
+    version: "6.x.x"
+    repository: "https://grafana.github.io/helm-charts"
+    condition: grafana.enabled
+
 keywords:
   - edtech
   - analytics
   - business-intelligence
   - financial-analysis
   - market-intelligence
+  - corporate-intelligence
+
+annotations:
+  category: DataPlatform
+  licenses: Apache-2.0

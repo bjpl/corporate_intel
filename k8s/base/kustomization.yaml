@@ -1,0 +1,39 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+commonLabels:
+  app.kubernetes.io/name: corporate-intel
+  app.kubernetes.io/managed-by: kustomize
+
+resources:
+- deployment.yaml
+- service.yaml
+- configmap.yaml
+- secret.yaml
+- ingress.yaml
+- hpa.yaml
+- pdb.yaml
+- networkpolicy.yaml
+
+images:
+- name: corporate-intel
+  newName: corporate-intel
+  newTag: latest
+
+configMapGenerator:
+- name: corporate-intel-config
+  behavior: merge
+  literals:
+  - APP_VERSION=1.0.0
+
+secretGenerator:
+- name: corporate-intel-secrets
+  behavior: merge
+  options:
+    disableNameSuffixHash: true
+
+replicas:
+- name: corporate-intel-api
+  count: 3

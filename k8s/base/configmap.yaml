@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: corporate-intel-config
+  labels:
+    app: corporate-intel
+data:
+  # Application Settings
+  APP_NAME: "Corporate Intelligence Platform"
+  APP_ENV: "production"
+  LOG_LEVEL: "INFO"
+  DEBUG: "false"
+
+  # API Configuration
+  API_V1_PREFIX: "/api/v1"
+  API_HOST: "0.0.0.0"
+  API_PORT: "8000"
+  WORKERS: "4"
+  WORKER_CLASS: "uvicorn.workers.UvicornWorker"
+  TIMEOUT: "120"
+  KEEPALIVE: "5"
+
+  # CORS Settings
+  CORS_ORIGINS: '["https://corporate-intel.example.com", "https://app.example.com"]'
+  CORS_ALLOW_CREDENTIALS: "true"
+  CORS_ALLOW_METHODS: '["GET", "POST", "PUT", "DELETE", "PATCH"]'
+  CORS_ALLOW_HEADERS: '["*"]'
+
+  # Database Configuration
+  DB_HOST: "postgres-service.default.svc.cluster.local"
+  DB_PORT: "5432"
+  DB_NAME: "corporate_intel"
+  DB_POOL_SIZE: "20"
+  DB_MAX_OVERFLOW: "10"
+  DB_POOL_TIMEOUT: "30"
+  DB_POOL_RECYCLE: "3600"
+  DB_ECHO: "false"
+
+  # Redis Configuration
+  REDIS_HOST: "redis-service.default.svc.cluster.local"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  REDIS_MAX_CONNECTIONS: "50"
+  REDIS_SOCKET_KEEPALIVE: "true"
+  REDIS_SOCKET_TIMEOUT: "5"
+
+  # RabbitMQ Configuration
+  RABBITMQ_HOST: "rabbitmq-service.default.svc.cluster.local"
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_MANAGEMENT_PORT: "15672"
+  RABBITMQ_VHOST: "/corporate-intel"
+
+  # MinIO/S3 Configuration
+  MINIO_ENDPOINT: "minio-service.default.svc.cluster.local:9000"
+  MINIO_REGION: "us-east-1"
+  MINIO_USE_SSL: "false"
+  MINIO_BUCKET_DATA: "corporate-intel-data"
+  MINIO_BUCKET_REPORTS: "corporate-intel-reports"
+
+  # Celery Configuration
+  CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq-service:5672/corporate-intel"
+  CELERY_RESULT_BACKEND: "redis://redis-service:6379/1"
+  CELERY_TASK_SERIALIZER: "json"
+  CELERY_RESULT_SERIALIZER: "json"
+  CELERY_ACCEPT_CONTENT: '["json"]'
+  CELERY_TIMEZONE: "UTC"
+  CELERY_ENABLE_UTC: "true"
+  CELERY_TASK_TRACK_STARTED: "true"
+  CELERY_TASK_TIME_LIMIT: "3600"
+  CELERY_TASK_SOFT_TIME_LIMIT: "3000"
+
+  # Rate Limiting
+  RATE_LIMIT_ENABLED: "true"
+  RATE_LIMIT_PER_MINUTE: "60"
+  RATE_LIMIT_PER_HOUR: "1000"
+
+  # Authentication
+  AUTH_TOKEN_EXPIRE_MINUTES: "60"
+  AUTH_REFRESH_TOKEN_EXPIRE_DAYS: "7"
+  AUTH_ALGORITHM: "HS256"
+
+  # Monitoring & Observability
+  PROMETHEUS_ENABLED: "true"
+  PROMETHEUS_PORT: "9090"
+  JAEGER_ENABLED: "true"
+  JAEGER_AGENT_HOST: "jaeger-agent.monitoring.svc.cluster.local"
+  JAEGER_AGENT_PORT: "6831"
+  SENTRY_ENABLED: "false"
+  METRICS_ENABLED: "true"
+
+  # Feature Flags
+  FEATURE_ADVANCED_ANALYTICS: "true"
+  FEATURE_ML_PREDICTIONS: "true"
+  FEATURE_REAL_TIME_ALERTS: "true"
+  FEATURE_EXPORT_REPORTS: "true"
+
+  # Data Processing
+  BATCH_SIZE: "1000"
+  MAX_WORKERS: "10"
+  CHUNK_SIZE: "10000"
+  PROCESSING_TIMEOUT: "600"
+
+  # Cache Settings
+  CACHE_TTL: "3600"
+  CACHE_MAX_SIZE: "1000"
+  CACHE_ENABLED: "true"
+
+  # File Upload
+  MAX_UPLOAD_SIZE: "104857600"  # 100MB
+  ALLOWED_EXTENSIONS: '["csv", "xlsx", "json", "parquet"]'
+
+  # Health Check
+  HEALTH_CHECK_INTERVAL: "30"
+  HEALTH_CHECK_TIMEOUT: "5"

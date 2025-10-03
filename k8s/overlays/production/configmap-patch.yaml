@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: corporate-intel-config
+data:
+  APP_ENV: "production"
+  DEBUG: "false"
+  LOG_LEVEL: "INFO"
+  WORKERS: "4"
+  DB_POOL_SIZE: "40"
+  DB_MAX_OVERFLOW: "20"
+  REDIS_MAX_CONNECTIONS: "100"
+  RATE_LIMIT_PER_MINUTE: "200"
+  RATE_LIMIT_PER_HOUR: "5000"
+  CELERY_TASK_TIME_LIMIT: "7200"
+  CELERY_TASK_SOFT_TIME_LIMIT: "6000"
+  SENTRY_ENABLED: "true"
+  SENTRY_TRACES_SAMPLE_RATE: "0.1"
+  SENTRY_ENVIRONMENT: "production"

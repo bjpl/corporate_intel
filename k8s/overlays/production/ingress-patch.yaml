@@ -1,0 +1,54 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: corporate-intel-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/limit-rps: "200"
+    nginx.ingress.kubernetes.io/limit-connections: "100"
+    nginx.ingress.kubernetes.io/enable-modsecurity: "true"
+    nginx.ingress.kubernetes.io/enable-owasp-core-rules: "true"
+    nginx.ingress.kubernetes.io/modsecurity-snippet: |
+      SecRuleEngine On
+      SecRule REQUEST_HEADERS:Content-Type "text/xml" "id:123,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=XML"
+spec:
+  tls:
+  - hosts:
+    - api.corporate-intel.com
+    - www.corporate-intel.com
+    - corporate-intel.com
+    secretName: prod-corporate-intel-tls
+
+  rules:
+  - host: api.corporate-intel.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prod-corporate-intel-api
+            port:
+              number: 80
+
+  - host: corporate-intel.com
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: prod-corporate-intel-api
+            port:
+              number: 80
+
+  - host: www.corporate-intel.com
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: prod-corporate-intel-api
+            port:
+              number: 80
