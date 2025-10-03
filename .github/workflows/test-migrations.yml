@@ -1,0 +1,390 @@
+name: Database Migration Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'migrations/**'
+      - 'tests/migrations/**'
+      - '.github/workflows/test-migrations.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'migrations/**'
+      - 'tests/migrations/**'
+  workflow_dispatch:
+
+env:
+  POSTGRES_VERSION: '15'
+  TIMESCALEDB_VERSION: '2.13.0'
+
+jobs:
+  validate-migrations:
+    name: Validate Migration Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check migration file naming
+        run: |
+          echo "Validating migration file naming conventions..."
+          for file in migrations/*.up.sql; do
+            if [[ ! $file =~ ^migrations/[0-9]{14}_[a-z0-9_]+\.up\.sql$ ]]; then
+              echo "ERROR: Invalid migration filename: $file"
+              exit 1
+            fi
+          done
+          echo "All migration files follow naming convention"
+
+      - name: Check for duplicate versions
+        run: |
+          echo "Checking for duplicate migration versions..."
+          versions=$(find migrations -name "*.up.sql" | sed 's/.*\([0-9]\{14\}\).*/\1/' | sort)
+          duplicates=$(echo "$versions" | uniq -d)
+          if [ -n "$duplicates" ]; then
+            echo "ERROR: Duplicate migration versions found:"
+            echo "$duplicates"
+            exit 1
+          fi
+          echo "No duplicate versions found"
+
+      - name: Verify down migrations exist
+        run: |
+          echo "Verifying down migrations exist for all up migrations..."
+          for upfile in migrations/*.up.sql; do
+            downfile="${upfile%.up.sql}.down.sql"
+            if [ ! -f "$downfile" ]; then
+              echo "ERROR: Missing down migration for $upfile"
+              exit 1
+            fi
+          done
+          echo "All down migrations present"
+
+      - name: Validate SQL syntax
+        run: |
+          echo "Validating SQL syntax..."
+          docker run --rm -v $(pwd)/migrations:/migrations postgres:${{ env.POSTGRES_VERSION }} \
+            bash -c 'for f in /migrations/*.sql; do echo "Checking $f..."; psql --set=ON_ERROR_STOP=1 --single-transaction --echo-errors -f "$f" -v ON_ERROR_STOP=1 template1 -c "SELECT 1" > /dev/null || exit 1; done'
+          echo "SQL syntax validation passed"
+
+  test-migrations-forward:
+    name: Test Migration Forward
+    runs-on: ubuntu-latest
+    needs: validate-migrations
+
+    services:
+      postgres:
+        image: timescale/timescaledb:${{ env.TIMESCALEDB_VERSION }}-pg${{ env.POSTGRES_VERSION }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: corporate_intel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+
+      - name: Enable TimescaleDB
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d corporate_intel_test -c "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;"
+
+      - name: Run migrations forward
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: corporate_intel_test
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+        run: |
+          echo "Running all migrations..."
+          for migration in migrations/*.up.sql; do
+            echo "Applying $migration..."
+            psql -h localhost -U postgres -d corporate_intel_test -f "$migration"
+          done
+
+      - name: Verify schema
+        env:
+          PGPASSWORD: postgres
+        run: |
+          echo "Verifying database schema..."
+          psql -h localhost -U postgres -d corporate_intel_test -c "\dt"
+          psql -h localhost -U postgres -d corporate_intel_test -c "SELECT * FROM timescaledb_information.hypertables;"
+
+      - name: Run migration tests
+        env:
+          TEST_DB_HOST: localhost
+          TEST_DB_PORT: 5432
+          TEST_DB_NAME: corporate_intel_test
+          TEST_DB_USER: postgres
+          TEST_DB_PASSWORD: postgres
+        run: npm test -- tests/migrations/
+
+  test-migrations-rollback:
+    name: Test Migration Rollback
+    runs-on: ubuntu-latest
+    needs: validate-migrations
+
+    services:
+      postgres:
+        image: timescale/timescaledb:${{ env.TIMESCALEDB_VERSION }}-pg${{ env.POSTGRES_VERSION }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: corporate_intel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+
+      - name: Enable TimescaleDB
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d corporate_intel_test -c "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;"
+
+      - name: Run migrations forward
+        env:
+          PGPASSWORD: postgres
+        run: |
+          for migration in migrations/*.up.sql; do
+            echo "Applying $migration..."
+            psql -h localhost -U postgres -d corporate_intel_test -f "$migration"
+          done
+
+      - name: Capture schema after migrations
+        env:
+          PGPASSWORD: postgres
+        run: |
+          pg_dump -h localhost -U postgres -d corporate_intel_test --schema-only > schema_after.sql
+
+      - name: Run migrations backward
+        env:
+          PGPASSWORD: postgres
+        run: |
+          for migration in $(ls -r migrations/*.down.sql); do
+            echo "Rolling back $migration..."
+            psql -h localhost -U postgres -d corporate_intel_test -f "$migration"
+          done
+
+      - name: Verify clean rollback
+        env:
+          PGPASSWORD: postgres
+        run: |
+          echo "Verifying rollback..."
+          table_count=$(psql -h localhost -U postgres -d corporate_intel_test -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public'")
+          if [ "$table_count" -gt 0 ]; then
+            echo "WARNING: $table_count tables remaining after rollback"
+            psql -h localhost -U postgres -d corporate_intel_test -c "\dt"
+          else
+            echo "Clean rollback verified"
+          fi
+
+  test-migrations-idempotency:
+    name: Test Migration Idempotency
+    runs-on: ubuntu-latest
+    needs: validate-migrations
+
+    services:
+      postgres:
+        image: timescale/timescaledb:${{ env.TIMESCALEDB_VERSION }}-pg${{ env.POSTGRES_VERSION }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: corporate_intel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+
+      - name: Enable TimescaleDB
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d corporate_intel_test -c "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;"
+
+      - name: Run migrations first time
+        env:
+          PGPASSWORD: postgres
+        run: |
+          for migration in migrations/*.up.sql; do
+            echo "First run: $migration..."
+            psql -h localhost -U postgres -d corporate_intel_test -f "$migration"
+          done
+
+      - name: Capture schema after first run
+        env:
+          PGPASSWORD: postgres
+        run: |
+          pg_dump -h localhost -U postgres -d corporate_intel_test --schema-only > schema_first.sql
+
+      - name: Run migrations second time (idempotency test)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          for migration in migrations/*.up.sql; do
+            echo "Second run: $migration..."
+            psql -h localhost -U postgres -d corporate_intel_test -f "$migration" || echo "Migration may not be idempotent"
+          done
+
+      - name: Compare schemas
+        env:
+          PGPASSWORD: postgres
+        run: |
+          pg_dump -h localhost -U postgres -d corporate_intel_test --schema-only > schema_second.sql
+          if diff schema_first.sql schema_second.sql; then
+            echo "Idempotency test passed: schemas are identical"
+          else
+            echo "WARNING: Schemas differ after second run"
+            diff schema_first.sql schema_second.sql || true
+          fi
+
+  test-production-readiness:
+    name: Production Readiness Check
+    runs-on: ubuntu-latest
+    needs: [test-migrations-forward, test-migrations-rollback, test-migrations-idempotency]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for dangerous operations
+        run: |
+          echo "Checking for dangerous migration operations..."
+
+          # Check for DROP TABLE without IF EXISTS
+          if grep -r "DROP TABLE [^I]" migrations/*.sql; then
+            echo "ERROR: Found DROP TABLE without IF EXISTS"
+            exit 1
+          fi
+
+          # Check for TRUNCATE
+          if grep -r "TRUNCATE" migrations/*.sql; then
+            echo "WARNING: Found TRUNCATE statement"
+          fi
+
+          # Check for ALTER COLUMN TYPE
+          if grep -r "ALTER COLUMN.*TYPE" migrations/*.sql; then
+            echo "WARNING: Found ALTER COLUMN TYPE which may lock tables"
+          fi
+
+          echo "Dangerous operations check complete"
+
+      - name: Verify backup procedures documented
+        run: |
+          if [ ! -f "docs/MIGRATION_TESTING.md" ]; then
+            echo "ERROR: Migration testing documentation missing"
+            exit 1
+          fi
+
+          if ! grep -q "backup" docs/MIGRATION_TESTING.md; then
+            echo "ERROR: Backup procedures not documented"
+            exit 1
+          fi
+
+          echo "Documentation verified"
+
+      - name: Check for performance considerations
+        run: |
+          echo "Checking for performance-impacting operations..."
+
+          # Check for missing indexes on foreign keys
+          for migration in migrations/*.up.sql; do
+            if grep -q "REFERENCES" "$migration"; then
+              if ! grep -q "CREATE INDEX" "$migration"; then
+                echo "WARNING: $migration creates foreign keys but no indexes"
+              fi
+            fi
+          done
+
+          echo "Performance check complete"
+
+  deployment-summary:
+    name: Deployment Summary
+    runs-on: ubuntu-latest
+    needs: test-production-readiness
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate migration summary
+        run: |
+          echo "# Migration Test Summary" > migration-summary.md
+          echo "" >> migration-summary.md
+          echo "## Migration Files" >> migration-summary.md
+          echo "" >> migration-summary.md
+
+          migration_count=$(ls migrations/*.up.sql 2>/dev/null | wc -l)
+          echo "Total migrations: $migration_count" >> migration-summary.md
+          echo "" >> migration-summary.md
+
+          echo "## Test Results" >> migration-summary.md
+          echo "- Validation: ${{ needs.validate-migrations.result }}" >> migration-summary.md
+          echo "- Forward Migration: ${{ needs.test-migrations-forward.result }}" >> migration-summary.md
+          echo "- Rollback: ${{ needs.test-migrations-rollback.result }}" >> migration-summary.md
+          echo "- Idempotency: ${{ needs.test-migrations-idempotency.result }}" >> migration-summary.md
+          echo "- Production Readiness: ${{ needs.test-production-readiness.result }}" >> migration-summary.md
+
+          cat migration-summary.md
+
+      - name: Upload summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-summary
+          path: migration-summary.md

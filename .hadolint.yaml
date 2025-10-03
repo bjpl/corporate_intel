@@ -1,0 +1,54 @@
+# =============================================================================
+# Hadolint Configuration for Dockerfile Linting
+# Best practices enforcement for Docker security and optimization
+# =============================================================================
+
+# Ignore rules that conflict with our requirements
+ignored:
+  # DL3008: Pin versions in apt-get install (we use --no-install-recommends)
+  # We handle this with our cleanup commands
+
+  # DL3009: Delete apt cache after installation (we do this)
+  # Our Dockerfile already includes this
+
+  # DL3059: Multiple consecutive RUN commands
+  # We optimize for layer caching in some cases
+
+# Trusted registries for base images
+trustedRegistries:
+  - docker.io
+  - gcr.io
+  - quay.io
+
+# Failure threshold (error, warning, info, style, ignore, none)
+failure-threshold: warning
+
+# Override rules with custom configurations
+override:
+  # Require explicit version pinning for packages
+  DL3008:
+    severity: error
+    message: "Always pin package versions in apt-get install"
+
+  # Require pip install with --no-cache-dir
+  DL3013:
+    severity: error
+    message: "Use pip install --no-cache-dir to reduce image size"
+
+  # Ensure WORKDIR uses absolute paths
+  DL3000:
+    severity: error
+    message: "Use absolute WORKDIR paths"
+
+  # Ensure COPY uses --chown flag when possible
+  DL3010:
+    severity: warning
+    message: "Use COPY with --chown instead of separate chown"
+
+# Label schema requirements
+label-schema:
+  author: maintainer
+  version: org.opencontainers.image.version
+
+# Strict mode - fail on any warnings
+strict: false

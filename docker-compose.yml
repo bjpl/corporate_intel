@@ -1,0 +1,220 @@
+version: '3.8'
+
+services:
+  # PostgreSQL with TimescaleDB extension
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: corporate-intel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-intel_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-intel_password}
+      POSTGRES_DB: ${POSTGRES_DB:-corporate_intel}
+      POSTGRES_INITDB_ARGS: "-A md5"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-intel_user} -d ${POSTGRES_DB:-corporate_intel}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - corporate-intel-network
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: corporate-intel-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - corporate-intel-network
+
+  # MinIO for object storage (documents, reports)
+  minio:
+    image: minio/minio:latest
+    container_name: corporate-intel-minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minio_admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minio_password}
+    command: server /data --console-address ":9001"
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - corporate-intel-network
+
+  # Corporate Intelligence Platform API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: python-builder
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    image: corporate-intel-api:latest
+    container_name: corporate-intel-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      # Database
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-intel_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-intel_password}
+      POSTGRES_DB: ${POSTGRES_DB:-corporate_intel}
+
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      # MinIO
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minio_admin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio_password}
+      MINIO_USE_SSL: "false"
+
+      # Application
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DEBUG: ${DEBUG:-false}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+
+      # External APIs (from .env)
+      ALPHA_VANTAGE_API_KEY: ${ALPHA_VANTAGE_API_KEY:-}
+      NEWSAPI_KEY: ${NEWSAPI_KEY:-}
+      SEC_USER_AGENT: ${SEC_USER_AGENT:-Corporate Intel Platform/1.0 (admin@example.com)}
+
+      # Observability
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
+      OTEL_SERVICE_NAME: corporate-intel-api
+      SENTRY_DSN: ${SENTRY_DSN:-}
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      # Mount source code for development (remove in production)
+      - ./src:/app/src:ro
+      - ./alembic:/app/alembic:ro
+
+      # Data directories
+      - api_logs:/app/logs
+      - api_cache:/app/cache
+      - api_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - corporate-intel-network
+
+  # Jaeger for distributed tracing (optional)
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: corporate-intel-jaeger
+    restart: unless-stopped
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "4317:4317"    # OTLP gRPC
+      - "4318:4318"    # OTLP HTTP
+    networks:
+      - corporate-intel-network
+    profiles:
+      - observability
+
+  # Prometheus for metrics (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: corporate-intel-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - corporate-intel-network
+    profiles:
+      - observability
+
+  # Grafana for visualization (optional)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: corporate-intel-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_INSTALL_PLUGINS: grafana-clock-panel
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - corporate-intel-network
+    profiles:
+      - observability
+
+networks:
+  corporate-intel-network:
+    driver: bridge
+    name: corporate-intel-network
+
+volumes:
+  postgres_data:
+    name: corporate-intel-postgres-data
+  redis_data:
+    name: corporate-intel-redis-data
+  minio_data:
+    name: corporate-intel-minio-data
+  api_logs:
+    name: corporate-intel-api-logs
+  api_cache:
+    name: corporate-intel-api-cache
+  api_data:
+    name: corporate-intel-api-data
+  prometheus_data:
+    name: corporate-intel-prometheus-data
+  grafana_data:
+    name: corporate-intel-grafana-data

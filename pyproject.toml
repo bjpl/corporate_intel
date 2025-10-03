@@ -1,0 +1,103 @@
+[project]
+name = "corporate-intel"
+version = "0.1.0"
+description = "Production-hardened corporate intelligence platform for EdTech analysis"
+authors = [{name = "Brandon Lambert", email = "brandon.lambert87@gmail.com"}]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+
+dependencies = [
+    # Core Framework
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+
+    # Database
+    "sqlalchemy>=2.0.0",
+    "asyncpg>=0.29.0",
+    "psycopg2-binary>=2.9.0",
+    "alembic>=1.12.0",
+    "pgvector>=0.2.4",
+
+    # Data Processing
+    "pandas>=2.1.0",
+    "numpy>=1.24.0",
+    "pandera>=0.17.0",
+    "great-expectations>=0.18.0",
+    "dbt-core>=1.7.0",
+    "dbt-postgres>=1.7.0",
+
+    # Orchestration
+    "prefect>=2.14.0",
+    "prefect-dask>=0.2.5",
+    "ray[default]>=2.8.0",
+
+    # Caching & Storage
+    "redis>=5.0.0",
+    "aiocache[redis]>=0.12.0",
+    "minio>=7.2.0",
+
+    # Observability
+    "opentelemetry-api>=1.21.0",
+    "opentelemetry-sdk>=1.21.0",
+    "opentelemetry-instrumentation-fastapi>=0.42b0",
+    "prometheus-client>=0.19.0",
+    "loguru>=0.7.0",
+    "sentry-sdk[fastapi]>=1.39.0",
+
+    # Document Processing
+    "pypdf>=3.17.0",
+    "pdfplumber>=0.10.0",
+    "python-docx>=1.1.0",
+    "beautifulsoup4>=4.12.0",
+
+    # Financial Data
+    "yfinance>=0.2.33",
+    "alpha-vantage>=2.3.1",
+    "sec-edgar-api>=1.0.0",
+
+    # Visualization
+    "plotly>=5.18.0",
+    "dash>=2.14.0",
+
+    # Testing
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "httpx>=0.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.12.0",
+    "ruff>=0.1.0",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+    "ipython>=8.18.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "I", "N", "UP", "S", "B", "A", "C4", "ISC", "PIE", "PT", "RET", "SIM", "TID"]
+ignore = ["E501", "S101"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

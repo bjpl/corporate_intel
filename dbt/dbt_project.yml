@@ -1,0 +1,70 @@
+name: 'corporate_intel'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'corporate_intel'
+
+# These configurations specify where dbt should look for different types of files.
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["data"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Model configurations
+models:
+  corporate_intel:
+    # Staging layer - raw data transformations
+    staging:
+      +materialized: view
+      +schema: staging
+      
+    # Intermediate layer - business logic
+    intermediate:
+      +materialized: table
+      +schema: intermediate
+      
+    # Marts layer - analytics-ready data
+    marts:
+      +materialized: table
+      +schema: marts
+      
+      finance:
+        +tags: ["finance", "edtech"]
+        
+      intelligence:
+        +tags: ["intelligence", "competitive"]
+        
+      operations:
+        +tags: ["operations", "metrics"]
+
+# Snapshot configurations
+snapshots:
+  corporate_intel:
+    +target_schema: snapshots
+    +strategy: timestamp
+    +updated_at: updated_at
+
+# Variable definitions
+vars:
+  # EdTech categories
+  edtech_categories: ['k12', 'higher_education', 'corporate_learning', 'direct_to_consumer', 'enabling_technology']
+  
+  # Key metrics to track
+  key_metrics: ['revenue', 'monthly_active_users', 'average_revenue_per_user', 'customer_acquisition_cost', 'net_revenue_retention']
+  
+  # Time windows for analysis
+  lookback_quarters: 8  # 2 years
+  
+  # Data quality thresholds
+  min_confidence_score: 0.7
+  
+  # TimescaleDB specific
+  use_timescaledb: true

@@ -1,0 +1,31 @@
+apiVersion: v2
+name: corporate-intel
+description: Production-grade EdTech intelligence platform with real-time analytics
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+home: https://github.com/bjpl/corporate_intel
+sources:
+  - https://github.com/bjpl/corporate_intel
+maintainers:
+  - name: Brandon Lambert
+    email: brandon.lambert87@gmail.com
+dependencies:
+  - name: postgresql
+    version: "12.1.9"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: redis
+    version: "17.4.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
+  - name: minio
+    version: "12.0.1"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: minio.enabled
+keywords:
+  - edtech
+  - analytics
+  - business-intelligence
+  - financial-analysis
+  - market-intelligence
