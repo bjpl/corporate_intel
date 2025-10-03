@@ -375,12 +375,139 @@ def validate_filing_data(filing_data: Dict[str, Any]) -> bool:
 
 
 @task
-async def store_filing(filing_data: Dict[str, Any], company_id: str) -> str:
-    """Store filing in database."""
-    # TODO: Implement database storage
-    # This would use SQLAlchemy async session
-    logger.info(f"Storing filing {filing_data['accessionNumber']} for company {company_id}")
-    return filing_data["accessionNumber"]
+async def store_filing(filing_data: Dict[str, Any], company_cik: str) -> str:
+    """Store filing in database with company lookup/creation and duplicate detection.
+
+    Args:
+        filing_data: Filing information including content and metadata
+        company_cik: Company CIK number for lookup/creation
+
+    Returns:
+        str: Filing ID if successfully stored
+
+    Raises:
+        ValueError: If required filing data is missing
+        Exception: If database operation fails
+    """
+    from sqlalchemy import select
+    from sqlalchemy.exc import IntegrityError
+
+    from src.db.session import get_session_factory
+
+    # Validate required fields
+    required_fields = ["accessionNumber", "form", "filingDate", "content"]
+    missing_fields = [field for field in required_fields if field not in filing_data]
+    if missing_fields:
+        error_msg = f"Missing required fields: {', '.join(missing_fields)}"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
+
+    session_factory = get_session_factory()
+
+    async with session_factory() as session:
+        try:
+            # 1. Check if company exists by CIK, create if not
+            result = await session.execute(
+                select(Company).where(Company.cik == company_cik)
+            )
+            company = result.scalar_one_or_none()
+
+            if company is None:
+                # Create new company record with basic info from filing
+                logger.info(f"Creating new company record for CIK {company_cik}")
+                company = Company(
+                    cik=company_cik,
+                    ticker=filing_data.get("ticker", company_cik),  # Use CIK if ticker not available
+                    name=filing_data.get("companyName", f"Company CIK {company_cik}"),
+                    category=filing_data.get("category", "enabling_technology"),
+                )
+                session.add(company)
+                await session.flush()  # Get company.id without committing
+                logger.info(f"Created company {company.id} for CIK {company_cik}")
+            else:
+                logger.info(f"Found existing company {company.id} for CIK {company_cik}")
+
+            # 2. Check for duplicate filing by accession number
+            accession_number = filing_data["accessionNumber"]
+            result = await session.execute(
+                select(SECFiling).where(SECFiling.accession_number == accession_number)
+            )
+            existing_filing = result.scalar_one_or_none()
+
+            if existing_filing is not None:
+                logger.warning(
+                    f"Filing {accession_number} already exists with ID {existing_filing.id}"
+                )
+                return str(existing_filing.id)
+
+            # 3. Parse filing date
+            filing_date_str = filing_data["filingDate"]
+            if isinstance(filing_date_str, str):
+                filing_date = datetime.strptime(filing_date_str, "%Y-%m-%d")
+            elif isinstance(filing_date_str, datetime):
+                filing_date = filing_date_str
+            else:
+                raise ValueError(f"Invalid filing date format: {filing_date_str}")
+
+            # 4. Create SECFiling record
+            filing = SECFiling(
+                company_id=company.id,
+                filing_type=filing_data["form"],
+                filing_date=filing_date,
+                accession_number=accession_number,
+                filing_url=filing_data.get("filing_url", ""),
+                raw_text=filing_data.get("content", ""),
+                processing_status="pending",
+            )
+
+            # Add optional fields if available
+            if "primaryDocument" in filing_data:
+                # Construct filing URL from primary document
+                cik_padded = company_cik.zfill(10)
+                accession_no_dashes = accession_number.replace("-", "")
+                filing.filing_url = (
+                    f"https://www.sec.gov/Archives/edgar/data/{cik_padded}/"
+                    f"{accession_no_dashes}/{filing_data['primaryDocument']}"
+                )
+
+            session.add(filing)
+
+            # 5. Commit transaction
+            await session.commit()
+
+            logger.info(
+                f"Successfully stored filing {accession_number} with ID {filing.id} "
+                f"for company {company.name} (CIK: {company_cik})"
+            )
+
+            return str(filing.id)
+
+        except IntegrityError as e:
+            await session.rollback()
+            logger.error(
+                f"Database integrity error storing filing {filing_data.get('accessionNumber')}: {str(e)}"
+            )
+            # Check if it's a duplicate constraint violation
+            if "uq_company_filing" in str(e).lower() or "accession_number" in str(e).lower():
+                logger.warning(f"Duplicate filing detected: {filing_data.get('accessionNumber')}")
+                # Return existing filing ID if possible
+                result = await session.execute(
+                    select(SECFiling).where(
+                        SECFiling.accession_number == filing_data.get("accessionNumber")
+                    )
+                )
+                existing = result.scalar_one_or_none()
+                if existing:
+                    return str(existing.id)
+            raise
+
+        except Exception as e:
+            await session.rollback()
+            logger.error(
+                f"Error storing filing {filing_data.get('accessionNumber', 'unknown')}: {str(e)}",
+                exc_info=True
+            )
+            raise
 
 
 def classify_edtech_company(company_info: Dict[str, Any]) -> str:
