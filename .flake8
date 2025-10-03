@@ -1,0 +1,39 @@
+# Corporate Intelligence Platform - Flake8 Configuration
+# Run: flake8 src/ tests/
+
+[flake8]
+max-line-length = 100
+extend-ignore =
+    E203,
+    W503,
+    E501,
+    E266,
+    E731
+
+exclude =
+    .git,
+    __pycache__,
+    docs,
+    build,
+    dist,
+    venv,
+    .venv,
+    env,
+    ENV,
+    alembic/versions,
+    .eggs,
+    *.egg,
+    .tox,
+    .pytest_cache,
+    .mypy_cache,
+    htmlcov
+
+max-complexity = 10
+
+docstring-convention = google
+per-file-ignores =
+    __init__.py:D104
+    tests/*:D100,D101,D102,D103,D104,D205,D400,D401
+    alembic/versions/*:D100,D103
+
+select = C,E,F,W,B,B9

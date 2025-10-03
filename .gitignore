@@ -4,9 +4,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-*.pyc
-*.pyo
-*.pyd
 build/
 develop-eggs/
 dist/
@@ -23,178 +20,79 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
-*.manifest
-*.spec
 
-# Virtual Environment
+# Virtual Environments
 venv/
-ENV/
-env/
 .venv/
+env/
+ENV/
 env.bak/
 venv.bak/
 
-# IDE & Editor Files
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 .DS_Store
-.project
-.classpath
-.settings/
-*.sublime-project
-*.sublime-workspace
-Thumbs.db
-Desktop.ini
-ehthumbs.db
 
-# Environment Variables - CRITICAL: Never commit credentials!
-.env
-.env.*
-!.env.example
-!.env.template
-.env.local
-.env.*.local
-.env.development
-.env.production
-.env.staging
-*.env
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+*.cover
+.cache
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# Type Checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# Pre-commit
+.pre-commit-cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+logs/
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
 
-# Logs
-logs/
-log/
-*.log
-pip-log.txt
-pip-delete-this-directory.txt
+# Environment
+.env
+.env.local
+.env.*.local
 
-# Testing
-.coverage
-.coverage.*
-.pytest_cache/
-htmlcov/
-.tox/
-.nox/
-.hypothesis/
-coverage.xml
-*.cover
-.cache/
-nosetests.xml
+# Docker
+.dockerignore
 
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
+# Documentation
+docs/_build/
+site/
+
+# Alembic
+alembic/versions/*.pyc
 
 # Data
 data/
 *.csv
 *.parquet
-*.json
-!package.json
-!tsconfig.json
+*.pkl
 
-# Docker & Deployment
-minio_data/
-minio-data/
-docker-compose.override.yml
-.docker/
-
-# Ray
-ray_logs/
-ray_results/
-
-# Prefect
-.prefect/
-
-# dbt
-target/
-dbt_packages/
-logs/
-
-# Superset
-superset_config.py
-superset.db
-superset_cache/
-
-# Documentation
-site/
-
-# Python Type Checkers
-.mypy_cache/
-.dmypy.json
-dmypy.json
-.pyre/
-.pytype/
-
-# Rope
-.ropeproject
-
-# pyenv
-.python-version
-
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath
-*.sage.py
-
-# Spyder
-.spyderproject
-.spyproject
-
-# FastAPI specific
-.cache/
-__pypackages__/
-
-# Temporary & User Data
-tmp/
-temp/
-*.tmp
-user_data/
-uploads/
-
-# Secrets - CRITICAL: Never commit credentials!
-secrets/
-*.pem
-*.key
-*.crt
-*.p12
-*.pfx
-credentials.json
-service-account.json
-*-credentials.json
-auth.json
-
-# Claude Flow generated files
-.claude/settings.local.json
-.mcp.json
-claude-flow.config.json
-.swarm/
-.hive-mind/
-.claude-flow/
-memory/
-coordination/
-memory/claude-flow-data.json
-memory/sessions/*
-!memory/sessions/README.md
-memory/agents/*
-!memory/agents/README.md
-coordination/memory_bank/*
-coordination/subtasks/*
-coordination/orchestration/*
-*.db
-*.db-journal
-*.db-wal
-*.sqlite
-*.sqlite-journal
-*.sqlite-wal
-claude-flow
-# Removed Windows wrapper files per user request
-hive-mind-prompt-*.txt
+# Reports
+*.html
+*-report/

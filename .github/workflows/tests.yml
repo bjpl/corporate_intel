@@ -1,0 +1,337 @@
+name: Test Suite & Code Quality
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - '.github/workflows/tests.yml'
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.11"
+  MIN_COVERAGE: 80
+
+jobs:
+  pre-commit:
+    name: Pre-commit Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install pre-commit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pre-commit
+
+      - name: Cache pre-commit hooks
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files --show-diff-on-failure
+
+  type-check:
+    name: Type Checking
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run mypy type checking
+        run: mypy src/ --config-file=pyproject.toml
+
+  tests:
+    name: Test Suite (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    needs: [pre-commit, type-check]
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: corporate_intel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better coverage diffs
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            .venv
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Set up test environment
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/corporate_intel_test
+          REDIS_URL: redis://localhost:6379/0
+          TESTING: "true"
+        run: |
+          # Create test database
+          psql -h localhost -U postgres -c "CREATE EXTENSION IF NOT EXISTS vector;" corporate_intel_test || true
+
+          # Run migrations
+          alembic upgrade head
+
+      - name: Run unit tests
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/corporate_intel_test
+          REDIS_URL: redis://localhost:6379/0
+          TESTING: "true"
+        run: |
+          pytest tests/unit \
+            --verbose \
+            --cov=src \
+            --cov-branch \
+            --cov-report=xml:coverage-unit.xml \
+            --cov-report=term-missing \
+            --junit-xml=junit-unit.xml
+
+      - name: Run integration tests
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/corporate_intel_test
+          REDIS_URL: redis://localhost:6379/0
+          TESTING: "true"
+        run: |
+          pytest tests/integration \
+            --verbose \
+            --cov=src \
+            --cov-branch \
+            --cov-report=xml:coverage-integration.xml \
+            --cov-report=term-missing \
+            --junit-xml=junit-integration.xml
+
+      - name: Run API tests
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/corporate_intel_test
+          REDIS_URL: redis://localhost:6379/0
+          TESTING: "true"
+        run: |
+          pytest tests/api \
+            --verbose \
+            --cov=src \
+            --cov-branch \
+            --cov-report=xml:coverage-api.xml \
+            --cov-report=term-missing \
+            --junit-xml=junit-api.xml
+
+      - name: Combine coverage reports
+        run: |
+          coverage combine
+          coverage xml -o coverage.xml
+          coverage html -d htmlcov
+          coverage report --precision=2
+
+      - name: Verify coverage threshold
+        run: |
+          COVERAGE=$(python -m coverage report --precision=2 | grep "TOTAL" | awk '{print $4}' | sed 's/%//')
+          echo "Coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE < ${{ env.MIN_COVERAGE }}" | bc -l) )); then
+            echo "::error::Coverage $COVERAGE% is below minimum threshold of ${{ env.MIN_COVERAGE }}%"
+            exit 1
+          fi
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Archive coverage results
+        uses: actions/upload-artifact@v4
+        if: matrix.python-version == '3.11'
+        with:
+          name: coverage-report-${{ matrix.python-version }}
+          path: htmlcov/
+          retention-days: 30
+
+      - name: Generate test summary
+        if: always()
+        run: |
+          echo "### Test Results Summary - Python ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          python -m coverage report --precision=2 >> $GITHUB_STEP_SUMMARY || echo "Coverage report unavailable" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload coverage reports as artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-reports
+          path: |
+            coverage.xml
+            coverage-*.xml
+            htmlcov/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: |
+            junit-*.xml
+          retention-days: 30
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
+          MINIMUM_GREEN: 90
+          MINIMUM_ORANGE: 80
+
+      - name: Check coverage threshold
+        run: |
+          ./scripts/coverage_check.sh ${{ env.MIN_COVERAGE }}
+
+  coverage-diff:
+    name: Coverage Diff
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-reports
+
+      - name: Coverage diff
+        run: |
+          pip install diff-cover
+          diff-cover coverage.xml \
+            --compare-branch=origin/${{ github.base_ref }} \
+            --fail-under=90 \
+            --html-report=diff-cover.html
+
+      - name: Upload diff coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: diff-coverage
+          path: diff-cover.html
+          retention-days: 30
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run Bandit security scan
+        run: bandit -r src/ -c pyproject.toml
+
+      - name: Run Safety vulnerability check
+        run: safety check --json || true
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs: [tests, coverage-diff, security-tests]
+    if: always()
+
+    steps:
+      - name: Check test results
+        run: |
+          if [ "${{ needs.tests.result }}" != "success" ]; then
+            echo "Tests failed!"
+            exit 1
+          fi
+
+      - name: Check coverage diff
+        if: github.event_name == 'pull_request'
+        run: |
+          if [ "${{ needs.coverage-diff.result }}" != "success" ]; then
+            echo "Coverage diff check failed!"
+            exit 1
+          fi
+
+      - name: Quality gate passed
+        run: |
+          echo "✅ All quality checks passed!"
