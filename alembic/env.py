@@ -13,8 +13,25 @@ sys.path.append(str(Path(__file__).parents[1]))
 
 # Import models first (Base comes from models.py, not base.py)
 from src.db.models import Base
-from src.db.models import *  # Import all models
-from src.auth.models import *  # Import auth models
+
+# Import all database models explicitly
+from src.db.models import (
+    AnalysisReport,
+    Company,
+    Document,
+    DocumentChunk,
+    FinancialMetric,
+    MarketIntelligence,
+    SECFiling,
+)
+
+# Import all authentication models explicitly
+from src.auth.models import (
+    APIKey,
+    Permission,
+    User,
+    UserSession,
+)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
