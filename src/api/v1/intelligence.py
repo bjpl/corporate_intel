@@ -7,11 +7,13 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from loguru import logger
 from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 
 from src.core.cache import cache_key_wrapper
 from src.core.dependencies import get_current_user
 from src.db.base import get_db
 from src.db.models import MarketIntelligence
+from src.auth.models import User
 
 router = APIRouter()
 
@@ -38,8 +40,8 @@ async def list_intelligence(
     category: Optional[str] = Query(None, description="Filter by category"),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
-    db=Depends(get_db),
-):
+    db: Session = Depends(get_db),
+) -> List[IntelligenceResponse]:
     """List market intelligence items with optional filtering."""
     query = db.query(MarketIntelligence)
 

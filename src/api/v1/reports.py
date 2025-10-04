@@ -7,11 +7,13 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from loguru import logger
 from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 
 from src.core.cache import cache_key_wrapper
 from src.core.dependencies import get_current_user
 from src.db.base import get_db
 from src.db.models import AnalysisReport
+from src.auth.models import User
 
 router = APIRouter()
 
@@ -38,8 +40,8 @@ async def list_reports(
     report_type: Optional[str] = Query(None, description="Filter by report type"),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
-    db=Depends(get_db),
-):
+    db: Session = Depends(get_db),
+) -> List[ReportResponse]:
     """List analysis reports with optional filtering."""
     query = db.query(AnalysisReport)
 
@@ -55,8 +57,8 @@ async def list_reports(
 @cache_key_wrapper(prefix="report", expire=1800)
 async def get_report(
     report_id: UUID,
-    db=Depends(get_db),
-):
+    db: Session = Depends(get_db),
+) -> ReportResponse:
     """Get a specific analysis report by ID."""
     report = db.query(AnalysisReport).filter(AnalysisReport.id == report_id).first()
 
