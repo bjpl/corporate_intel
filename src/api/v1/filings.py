@@ -1,17 +1,19 @@
 """SEC filings API endpoints."""
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from loguru import logger
 from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 
 from src.core.cache import cache_key_wrapper
 from src.core.dependencies import get_current_user
 from src.db.base import get_db
 from src.db.models import SECFiling, Company
+from src.auth.models import User
 
 router = APIRouter()
 
@@ -38,8 +40,8 @@ async def list_filings(
     filing_type: Optional[str] = Query(None, description="Filter by filing type"),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
-    db=Depends(get_db),
-):
+    db: Session = Depends(get_db),
+) -> List[FilingResponse]:
     """List SEC filings with optional filtering."""
     query = db.query(SECFiling)
 
@@ -57,8 +59,8 @@ async def list_filings(
 @cache_key_wrapper(prefix="filing", expire=3600)
 async def get_filing(
     filing_id: UUID,
-    db=Depends(get_db),
-):
+    db: Session = Depends(get_db),
+) -> FilingResponse:
     """Get a specific SEC filing by ID."""
     filing = db.query(SECFiling).filter(SECFiling.id == filing_id).first()
 

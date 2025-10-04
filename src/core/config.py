@@ -119,7 +119,52 @@ class Settings(BaseSettings):
         ]
     )
     
-    @field_validator("POSTGRES_PASSWORD", "REDIS_PASSWORD", "MINIO_ACCESS_KEY", "MINIO_SECRET_KEY", "SECRET_KEY")
+    @field_validator("SECRET_KEY")
+    @classmethod
+    def validate_secret_key(cls, v: SecretStr) -> SecretStr:
+        """Validate SECRET_KEY for security requirements.
+
+        Ensures:
+        - Minimum length of 32 characters
+        - Not a default/placeholder value
+        - Not a commonly insecure value
+        """
+        if not v:
+            raise ValueError(
+                "SECRET_KEY is required and must be set in your .env file. "
+                "Generate a secure key with: openssl rand -hex 32"
+            )
+
+        secret_value = v.get_secret_value()
+
+        # Check minimum length
+        if len(secret_value) < 32:
+            raise ValueError(
+                f"SECRET_KEY must be at least 32 characters long (got {len(secret_value)}). "
+                "Generate a secure key with: openssl rand -hex 32"
+            )
+
+        # Check for common insecure/default values
+        insecure_values = {
+            "your-secret-key-here",
+            "changeme",
+            "secret",
+            "change-me-in-production",
+            "development-secret-key",
+            "test-secret-key",
+            "default-secret-key",
+            "12345678901234567890123456789012",  # Simple repeating pattern
+        }
+
+        if secret_value.lower() in insecure_values:
+            raise ValueError(
+                "SECRET_KEY cannot be a default or commonly insecure value. "
+                "Generate a secure key with: openssl rand -hex 32"
+            )
+
+        return v
+
+    @field_validator("POSTGRES_PASSWORD", "REDIS_PASSWORD", "MINIO_ACCESS_KEY", "MINIO_SECRET_KEY")
     @classmethod
     def validate_secrets(cls, v: Optional[SecretStr]) -> SecretStr:
         """Ensure secrets are not default values in production."""

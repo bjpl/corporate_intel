@@ -1,16 +1,18 @@
 """Company management API endpoints."""
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from loguru import logger
 from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 
 from src.core.cache import cache_key_wrapper, get_cache
 from src.core.dependencies import get_current_user
 from src.db.base import get_db
 from src.db.models import Company
+from src.auth.models import User
 
 router = APIRouter()
 
@@ -74,8 +76,8 @@ async def list_companies(
     sector: Optional[str] = Query(None, description="Filter by sector"),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
-    db=Depends(get_db),
-):
+    db: Session = Depends(get_db),
+) -> List[CompanyResponse]:
     """List all companies with optional filtering."""
     logger.info(f"Listing companies: category={category}, sector={sector}, limit={limit}, offset={offset}")
     
@@ -96,9 +98,9 @@ async def list_companies(
 @router.get("/watchlist", response_model=List[CompanyResponse])
 @cache_key_wrapper(prefix="watchlist", expire=1800)
 async def get_watchlist(
-    db=Depends(get_db),
-    current_user=Depends(get_current_user),
-):
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> List[CompanyResponse]:
     """Get companies on the EdTech watchlist."""
     from src.core.config import get_settings
     
@@ -114,8 +116,8 @@ async def get_watchlist(
 @cache_key_wrapper(prefix="company", expire=3600)
 async def get_company(
     company_id: UUID,
-    db=Depends(get_db),
-):
+    db: Session = Depends(get_db),
+) -> CompanyResponse:
     """Get a specific company by ID."""
     company = db.query(Company).filter(Company.id == company_id).first()
     
@@ -132,8 +134,8 @@ async def get_company(
 @cache_key_wrapper(prefix="company_metrics", expire=900)
 async def get_company_metrics(
     company_id: UUID,
-    db=Depends(get_db),
-):
+    db: Session = Depends(get_db),
+) -> CompanyMetrics:
     """Get latest metrics for a company."""
     from datetime import datetime
     
@@ -186,9 +188,9 @@ async def get_company_metrics(
 @router.post("/", response_model=CompanyResponse, status_code=status.HTTP_201_CREATED)
 async def create_company(
     company: CompanyCreate,
-    db=Depends(get_db),
-    current_user=Depends(get_current_user),
-):
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> CompanyResponse:
     """Create a new company."""
     # Check if company already exists
     existing = db.query(Company).filter(
@@ -220,9 +222,9 @@ async def create_company(
 async def update_company(
     company_id: UUID,
     company_update: CompanyCreate,
-    db=Depends(get_db),
-    current_user=Depends(get_current_user),
-):
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> CompanyResponse:
     """Update company information."""
     company = db.query(Company).filter(Company.id == company_id).first()
     
@@ -252,9 +254,9 @@ async def update_company(
 @router.delete("/{company_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_company(
     company_id: UUID,
-    db=Depends(get_db),
-    current_user=Depends(get_current_user),
-):
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> None:
     """Delete a company."""
     company = db.query(Company).filter(Company.id == company_id).first()
     

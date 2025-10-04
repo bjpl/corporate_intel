@@ -167,7 +167,12 @@ class APIKey(Base):
     
     @classmethod
     def generate_key(cls) -> tuple[str, str]:
-        """Generate a new API key and its hash."""
+        """Generate a new API key and its hash.
+
+        Returns:
+            Tuple of (raw_key, key_hash) where raw_key is the full key with prefix
+            and key_hash is the SHA-256 hash for storage.
+        """
         # Generate 32-byte random key
         raw_key = secrets.token_urlsafe(32)
         key = f"ci_{raw_key}"  # Prefix for identification
@@ -248,7 +253,7 @@ class UserCreate(BaseModel):
     organization: Optional[str] = None
     
     @validator('password')
-    def validate_password(cls, v):
+    def validate_password(cls, v: str) -> str:
         """Ensure password meets complexity requirements."""
         if not any(c.isupper() for c in v):
             raise ValueError('Password must contain uppercase letter')

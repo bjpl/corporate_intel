@@ -1,7 +1,7 @@
 """SQLAlchemy models for corporate intelligence platform."""
 
 from datetime import datetime
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 from uuid import UUID, uuid4
 
 from pgvector.sqlalchemy import Vector
@@ -21,7 +21,10 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship, mapped_column
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm import RelationshipProperty
 
 Base = declarative_base()
 
@@ -58,9 +61,9 @@ class Company(Base, TimestampMixin):
     employee_count = Column(Integer)
     
     # Relationships
-    filings = relationship("SECFiling", back_populates="company", cascade="all, delete-orphan")
-    metrics = relationship("FinancialMetric", back_populates="company", cascade="all, delete-orphan")
-    documents = relationship("Document", back_populates="company", cascade="all, delete-orphan")
+    filings: Mapped[List["SECFiling"]] = relationship("SECFiling", back_populates="company", cascade="all, delete-orphan")
+    metrics: Mapped[List["FinancialMetric"]] = relationship("FinancialMetric", back_populates="company", cascade="all, delete-orphan")
+    documents: Mapped[List["Document"]] = relationship("Document", back_populates="company", cascade="all, delete-orphan")
     
     __table_args__ = (
         Index("idx_company_category", "category"),
@@ -92,7 +95,7 @@ class SECFiling(Base, TimestampMixin):
     error_message = Column(Text)
     
     # Relationships
-    company = relationship("Company", back_populates="filings")
+    company: Mapped["Company"] = relationship("Company", back_populates="filings")
     
     __table_args__ = (
         Index("idx_filing_date", "filing_date"),
@@ -134,7 +137,7 @@ class FinancialMetric(Base, TimestampMixin):
     confidence_score = Column(Float)  # 0-1 confidence in extracted value
     
     # Relationships
-    company = relationship("Company", back_populates="metrics")
+    company: Mapped["Company"] = relationship("Company", back_populates="metrics")
 
 
 class Document(Base, TimestampMixin):
@@ -169,8 +172,8 @@ class Document(Base, TimestampMixin):
     processed_at = Column(DateTime(timezone=True))
     
     # Relationships
-    company = relationship("Company", back_populates="documents")
-    chunks = relationship("DocumentChunk", back_populates="document", cascade="all, delete-orphan")
+    company: Mapped[Optional["Company"]] = relationship("Company", back_populates="documents")
+    chunks: Mapped[List["DocumentChunk"]] = relationship("DocumentChunk", back_populates="document", cascade="all, delete-orphan")
     
     __table_args__ = (
         Index("idx_document_type_date", "document_type", "document_date"),
@@ -199,7 +202,7 @@ class DocumentChunk(Base, TimestampMixin):
     section_name = Column(String(255))
     
     # Relationships
-    document = relationship("Document", back_populates="chunks")
+    document: Mapped["Document"] = relationship("Document", back_populates="chunks")
     
     __table_args__ = (
         Index("idx_chunk_embedding", "embedding", postgresql_using="ivfflat"),
