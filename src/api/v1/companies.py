@@ -5,7 +5,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from loguru import logger
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from sqlalchemy.orm import Session
 
 from src.core.cache import cache_key_wrapper, get_cache
@@ -50,9 +50,8 @@ class CompanyResponse(CompanyBase):
     headquarters: Optional[str] = None
     website: Optional[str] = None
     employee_count: Optional[int] = None
-    
-    class Config:
-        from_attributes = True
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CompanyMetrics(BaseModel):

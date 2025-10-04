@@ -5,7 +5,7 @@ from typing import Optional, List
 from enum import Enum
 import secrets
 import hashlib
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Table, Integer
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -252,7 +252,8 @@ class UserCreate(BaseModel):
     full_name: Optional[str] = None
     organization: Optional[str] = None
     
-    @validator('password')
+    @field_validator('password')
+    @classmethod
     def validate_password(cls, v: str) -> str:
         """Ensure password meets complexity requirements."""
         if not any(c.isupper() for c in v):
@@ -294,8 +295,9 @@ class APIKeyResponse(BaseModel):
     key: str  # Only shown once at creation
     scopes: List[str]
     expires_at: Optional[datetime]
-    
-    class Config:
-        json_encoders = {
+
+    model_config = {
+        "json_encoders": {
             datetime: lambda v: v.isoformat()
         }
+    }
