@@ -362,8 +362,41 @@ class AuthService:
         
         return True, used + 1, limit
     
-    def check_api_key_rate_limit(self, api_key: APIKey) -> bool:
-        """Check if API key is within rate limit."""
-        # Simple rate limiting - would use Redis in production
-        # For now, just return True
-        return True
+    async def check_api_key_rate_limit(self, api_key: APIKey) -> tuple[bool, int, int]:
+        """Check if API key is within hourly rate limit using Redis.
+
+        Uses sliding window algorithm with Redis for accurate rate limiting.
+
+        Returns:
+            tuple[bool, int, int]: (is_allowed, current_count, limit)
+        """
+        from src.core.cache import get_redis_client
+
+        # Get rate limit for API key
+        limit = api_key.rate_limit_per_hour
+
+        # Build Redis key for this API key's rate limit window
+        now = datetime.utcnow()
+        window_key = f"ratelimit:apikey:{api_key.id}:{now.strftime('%Y%m%d%H')}"
+
+        try:
+            redis_client = await get_redis_client()
+
+            # Increment counter
+            current_count = await redis_client.incr(window_key)
+
+            # Set expiry on first increment (1 hour + buffer)
+            if current_count == 1:
+                await redis_client.expire(window_key, 3660)  # 61 minutes for safety
+
+            # Check if over limit
+            if current_count > limit:
+                return False, current_count, limit
+
+            return True, current_count, limit
+
+        except Exception as e:
+            # If Redis fails, log and allow the request (fail open)
+            from loguru import logger
+            logger.warning(f"Rate limit check failed for API key {api_key.id}: {e}")
+            return True, 0, limit

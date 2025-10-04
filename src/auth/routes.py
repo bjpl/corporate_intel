@@ -260,23 +260,38 @@ async def create_api_key(
 @router.get("/api-keys", response_model=List[dict])
 async def list_api_keys(
     current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    auth_service: AuthService = Depends(get_auth_service)
 ):
-    """List user's API keys."""
-    
+    """List user's API keys with current usage statistics."""
+
     keys = []
     for key in current_user.api_keys:
         if key.is_active:
+            # Get current usage from Redis
+            try:
+                _, current_usage, limit = await auth_service.check_api_key_rate_limit(key)
+                remaining = max(0, limit - current_usage)
+            except:
+                current_usage = 0
+                remaining = key.rate_limit_per_hour
+                limit = key.rate_limit_per_hour
+
             keys.append({
                 "id": str(key.id),
                 "name": key.name,
                 "key_prefix": key.key_prefix,
                 "scopes": key.scopes.split(',') if key.scopes else [],
+                "rate_limit": {
+                    "limit_per_hour": limit,
+                    "current_usage": current_usage,
+                    "remaining": remaining
+                },
                 "created_at": key.created_at.isoformat(),
                 "expires_at": key.expires_at.isoformat() if key.expires_at else None,
                 "last_used_at": key.last_used_at.isoformat() if key.last_used_at else None
             })
-    
+
     return keys
 
 

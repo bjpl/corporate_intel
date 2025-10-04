@@ -121,44 +121,71 @@ class RequireRole:
 
 
 class RateLimiter:
-    """Rate limiting dependency."""
-    
+    """Rate limiting dependency with Redis-backed implementation."""
+
     def __init__(self, calls: int = 100, period: int = 3600):
+        """Initialize rate limiter.
+
+        Args:
+            calls: Number of calls allowed per period
+            period: Time period in seconds (default: 3600 = 1 hour)
+        """
         self.calls = calls
         self.period = period
-    
+
     async def __call__(
         self,
         user: Optional[User] = Depends(get_current_user_optional),
         api_key: Optional[str] = Security(api_key_header),
         auth_service: AuthService = Depends(get_auth_service)
     ) -> bool:
-        """Check rate limit."""
-        
+        """Check rate limit for user or API key.
+
+        Returns:
+            bool: True if within rate limit
+
+        Raises:
+            HTTPException: If rate limit exceeded (429)
+        """
+
         if user:
-            # Check user rate limit
+            # Check user rate limit (daily limit stored in database)
             allowed, used, limit = auth_service.check_rate_limit(user)
-            
+
             if not allowed:
                 raise HTTPException(
                     status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                     detail=f"Rate limit exceeded: {used}/{limit} calls today",
-                    headers={"Retry-After": "3600"}
+                    headers={
+                        "Retry-After": "3600",
+                        "X-RateLimit-Limit": str(limit),
+                        "X-RateLimit-Remaining": "0",
+                        "X-RateLimit-Reset": user.api_calls_reset_at.isoformat()
+                    }
                 )
-        
+
         elif api_key:
-            # Check API key rate limit
+            # Check API key rate limit (hourly limit via Redis)
             try:
                 _, key = auth_service.verify_api_key(api_key)
-                if not auth_service.check_api_key_rate_limit(key):
+                allowed, current, limit = await auth_service.check_api_key_rate_limit(key)
+
+                if not allowed:
                     raise HTTPException(
                         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                        detail="API key rate limit exceeded",
-                        headers={"Retry-After": "3600"}
+                        detail=f"API key rate limit exceeded: {current}/{limit} calls this hour",
+                        headers={
+                            "Retry-After": "3600",
+                            "X-RateLimit-Limit": str(limit),
+                            "X-RateLimit-Remaining": "0",
+                            "X-RateLimit-Reset": str(int((current // limit + 1) * 3600))
+                        }
                     )
             except AuthenticationError:
+                # Invalid API key, but don't block the request
+                # Authentication will fail at the endpoint level
                 pass
-        
+
         return True
 
 
