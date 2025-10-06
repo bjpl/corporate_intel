@@ -4,15 +4,15 @@
 */
 
 :root {
-    /* Color System - WCAG AAA compliant */
-    --primary: #1e3a5f;
-    --primary-dark: #0f1f3a;
-    --primary-light: #2d4f7f;
-    --secondary: #4a90e2;
-    --success: #27ae60;
-    --warning: #f39c12;
-    --danger: #e74c3c;
-    --info: #3498db;
+    /* Professional Color System - WCAG AA compliant (4.5:1 minimum) */
+    --primary: #2C5282;
+    --primary-dark: #1A365D;
+    --primary-light: #4A7BA7;
+    --secondary: #4A7BA7;
+    --success: #2F855A;
+    --warning: #D97706;
+    --danger: #C53030;
+    --info: #2C5282;
     
     /* Neutral Palette */
     --gray-900: #1a1a1a;
@@ -66,7 +66,7 @@
 
 body {
     font-family: var(--font-family);
-    background: linear-gradient(135deg, var(--gray-100) 0%, var(--white) 100%);
+    background: var(--gray-100);
     color: var(--gray-900);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -82,7 +82,7 @@ body {
 
 /* Header */
 .header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    background: var(--primary);
     color: var(--white);
     padding: var(--space-xl) var(--space-2xl);
     box-shadow: var(--shadow-lg);
@@ -168,7 +168,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+    background: var(--primary);
 }
 
 .kpi-card:hover {

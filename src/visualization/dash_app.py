@@ -329,7 +329,7 @@ class CorporateIntelDashboard:
                     }
                 ],
                 style_header={
-                    'backgroundColor': '#1e3a5f',
+                    'backgroundColor': '#2C5282',
                     'color': 'white',
                     'fontWeight': 'bold',
                 },
@@ -398,4 +398,11 @@ class CorporateIntelDashboard:
     
     def run(self, debug: bool = False, port: int = 8050):
         """Run the dashboard application."""
-        self.app.run_server(debug=debug, port=port, host="0.0.0.0")
+        self.app.run(debug=debug, port=port, host="0.0.0.0")
+
+if __name__ == "__main__":
+    """Run the dashboard application."""
+    dashboard = CorporateIntelDashboard()
+    print("🚀 Starting Corporate Intelligence Dashboard...")
+    print("📊 Dashboard will be available at: http://localhost:8050")
+    dashboard.run(debug=True, port=8050)
