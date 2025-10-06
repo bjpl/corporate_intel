@@ -1,6 +1,7 @@
-/* Corporate Intelligence Platform - Dashboard Styles
-   ===================================================
-   SPARC Design Approach: Mobile-first, accessible, performant
+/* Corporate Intelligence Platform - Modern Dashboard Styles
+   ==========================================================
+   Design System: Bootstrap 5 + Custom Professional Theme
+   Features: Glassmorphism, smooth animations, accessibility
 */
 
 :root {
@@ -9,10 +10,10 @@
     --primary-dark: #1A365D;
     --primary-light: #4A7BA7;
     --secondary: #4A7BA7;
-    --success: #2F855A;
-    --warning: #D97706;
-    --danger: #C53030;
-    --info: #2C5282;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
     
     /* Neutral Palette */
     --gray-900: #1a1a1a;
@@ -66,11 +67,79 @@
 
 body {
     font-family: var(--font-family);
-    background: var(--gray-100);
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     color: var(--gray-900);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Bootstrap Card Enhancements */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all var(--transition-base);
+}
+
+.card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 2px solid var(--gray-200);
+    font-weight: 600;
+}
+
+/* Icon Enhancements */
+.fa-2x {
+    opacity: 0.9;
+}
+
+/* Badge Styling */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    letter-spacing: 0.02em;
+}
+
+/* Alert Enhancements */
+.alert {
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Popover Custom Styling */
+.popover {
+    border: none;
+    box-shadow: var(--shadow-xl);
+    border-radius: var(--radius-lg);
+}
+
+.popover-header {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+.popover-body {
+    padding: 1rem;
+}
+
+/* Loading Spinner Enhancement */
+._dash-loading-callback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+/* Graph Container */
+.dash-graph {
+    border-radius: var(--radius-lg);
 }
 
 /* Dashboard Container */
