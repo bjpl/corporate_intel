@@ -347,13 +347,15 @@ def mock_prefect():
 # Test environment settings override
 @pytest.fixture(autouse=True)
 def override_settings():
-    """Override settings for testing."""
+    """Override settings for testing.
+
+    Note: DATABASE_URL and REDIS_URL are computed properties from Settings,
+    not direct fields. Tests using SQLite use TEST_DATABASE_URL directly.
+    """
+    # These are actual fields that can be set
     settings.ENVIRONMENT = "testing"
     settings.DEBUG = True
-    settings.DATABASE_URL = TEST_DATABASE_URL
-    settings.REDIS_URL = "redis://localhost:6379/15"  # Use test database
-    settings.CACHE_ENABLED = False  # Disable caching in tests
-    settings.RATE_LIMIT_ENABLED = False  # Disable rate limiting in tests
-    settings.DATA_QUALITY_ENABLED = False  # Disable data quality checks in tests
+    # Note: Cannot set DATABASE_URL (it's a computed property)
+    # Tests that need database use fixtures with their own engine/session
     yield
     # Reset after tests if needed
