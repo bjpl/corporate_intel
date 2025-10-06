@@ -1,0 +1,30 @@
+{
+  "deployment": [
+    {
+      "key": "deployment/production-plan",
+      "value": "{\n  \"title\": \"Production Deployment Roadmap - Corporate Intelligence Platform\",\n  \"timeline\": \"5-7 days\",\n  \"target_date\": \"2025-10-09\",\n  \"current_readiness\": \"78/100\",\n  \"target_readiness\": \"95/100\",\n  \"test_coverage_current\": \"35%\",\n  \"test_coverage_target\": \"80%\",\n  \"phases\": {\n    \"day1\": \"Foundation & Environment Setup\",\n    \"day2\": \"Application Startup & Basic Testing\",\n    \"day3\": \"Test Coverage Expansion - Critical Modules\",\n    \"day4\": \"Test Coverage Expansion - Infrastructure\",\n    \"day5\": \"Performance Testing & Optimization\",\n    \"day6\": \"Security Hardening & Production Prep\",\n    \"day7\": \"Production Deployment & Validation\"\n  },\n  \"critical_risks\": [\n    \"Untested startup sequence\",\n    \"Low test coverage (35% vs 80% target)\",\n    \"External API dependencies\"\n  ],\n  \"success_metrics\": {\n    \"api_p95_latency\": \"<200ms\",\n    \"error_rate\": \"<1%\",\n    \"test_coverage\": \">=80%\",\n    \"uptime\": \"99.9%\"\n  },\n  \"deliverables\": [\n    \"Production deployment roadmap\",\n    \"Test coverage improvement plan\",\n    \"Integration testing strategy\",\n    \"Performance testing plan\",\n    \"Security audit checklist\",\n    \"Production deployment checklist\",\n    \"Risk assessment and mitigation\"\n  ],\n  \"status\": \"READY FOR EXECUTION\",\n  \"created_by\": \"Production Readiness Specialist\",\n  \"created_at\": \"2025-10-02\"\n}",
+      "namespace": "deployment",
+      "timestamp": 1759471973712
+    }
+  ],
+  "coordination": [
+    {
+      "key": "api-tests/endpoints",
+      "value": "{\"health\": [\"/health\", \"/health/database\", \"/health/cache\", \"/metrics\"], \"companies\": [\"/api/v1/companies/\", \"/api/v1/companies/{id}\", \"/api/v1/companies/{id}/metrics\", \"/api/v1/companies/watchlist\"], \"filings\": [\"/api/v1/filings/\", \"/api/v1/filings/{id}\"], \"auth\": [\"/auth/register\", \"/auth/login\", \"/auth/refresh\", \"/auth/logout\", \"/auth/me\", \"/auth/api-keys\", \"/auth/users\"], \"metrics\": [\"/api/v1/metrics/\"]}",
+      "namespace": "coordination",
+      "timestamp": 1759512040065
+    },
+    {
+      "key": "api-tests/summary",
+      "value": "{\"total_tests\": 137, \"test_files\": 5, \"lines_of_code\": 1979, \"endpoints_tested\": 20, \"status\": \"complete\"}",
+      "namespace": "coordination",
+      "timestamp": 1759512043814
+    },
+    {
+      "key": "api-tests/deliverables",
+      "value": "{\"test_files\": [\"test_health.py\", \"test_companies.py\", \"test_filings.py\", \"test_auth.py\", \"test_metrics.py\"], \"documentation\": [\"API_TESTING_GUIDE.md\", \"TEST_SUMMARY.md\"], \"total_tests\": 137, \"total_lines\": 1979, \"endpoints_covered\": 20, \"authentication_patterns\": [\"JWT\", \"API_Key\", \"RBAC\"], \"completion_status\": \"100%\"}",
+      "namespace": "coordination",
+      "timestamp": 1759512116338
+    }
+  ]
+}

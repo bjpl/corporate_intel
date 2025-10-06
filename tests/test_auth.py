@@ -8,7 +8,10 @@ from unittest.mock import patch
 
 from src.auth.models import UserRole, PermissionScope
 from src.auth.service import AuthenticationError, AuthorizationError
-from src.config import settings
+from src.core.config import get_settings
+
+# Get settings instance
+settings = get_settings()
 
 
 class TestUserRegistration:

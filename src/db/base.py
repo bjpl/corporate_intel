@@ -2,10 +2,15 @@
 
 from typing import Generator
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase
 from sqlalchemy.pool import NullPool
 
 from src.core.config import get_settings
+
+# Define Base here so it can be imported by models
+class Base(DeclarativeBase):
+    """Base class for all database models."""
+    pass
 
 settings = get_settings()
 

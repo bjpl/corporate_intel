@@ -15,7 +15,7 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./scripts/init-db-simple.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-intel_user} -d ${POSTGRES_DB:-corporate_intel}"]
       interval: 10s
@@ -34,6 +34,7 @@ services:
       --appendonly yes
       --maxmemory 512mb
       --maxmemory-policy allkeys-lru
+      --requirepass dev-redis-password
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
@@ -73,7 +74,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: python-builder
       args:
         - BUILDKIT_INLINE_CACHE=1
     image: corporate-intel-api:latest
@@ -97,6 +97,8 @@ services:
       # Redis
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDIS_DB: ${REDIS_DB:-0}
 
       # MinIO
       MINIO_ENDPOINT: minio:9000
@@ -123,6 +125,7 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     ports:
       - "${API_PORT:-8000}:8000"
+      - "8050:8050"  # Dashboard port
     volumes:
       # Mount source code for development (remove in production)
       - ./src:/app/src:ro

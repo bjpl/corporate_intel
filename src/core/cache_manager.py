@@ -34,9 +34,7 @@ async def init_cache() -> redis.Redis:
 
     try:
         # Parse Redis URL or build connection string
-        redis_url = settings.REDIS_URL or (
-            f"redis://:{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
-        )
+        redis_url = settings.redis_url
 
         _redis_client = redis.from_url(
             redis_url,

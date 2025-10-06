@@ -78,9 +78,11 @@ def upgrade() -> None:
     )
 
     # Financial Metrics table (TimescaleDB hypertable)
+    # NOTE: For TimescaleDB hypertables, the partitioning column (metric_date)
+    # must be part of the primary key
     op.create_table(
         'financial_metrics',
-        sa.Column('id', sa.BigInteger, primary_key=True, autoincrement=True),
+        sa.Column('id', sa.BigInteger, autoincrement=True, nullable=False),
         sa.Column('company_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('companies.id'), nullable=False),
         sa.Column('metric_date', sa.DateTime(timezone=True), nullable=False),
         sa.Column('period_type', sa.String(20), nullable=False),
@@ -93,6 +95,8 @@ def upgrade() -> None:
         sa.Column('confidence_score', sa.Float),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
         sa.Column('updated_at', sa.DateTime(timezone=True), onupdate=sa.func.now(), server_default=sa.func.now()),
+        # Composite primary key including the partitioning column
+        sa.PrimaryKeyConstraint('id', 'metric_date', name='financial_metrics_pkey')
     )
 
     # Convert financial_metrics to TimescaleDB hypertable

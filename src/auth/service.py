@@ -15,14 +15,17 @@ from src.auth.models import (
     UserRole, PermissionScope, UserCreate, UserLogin,
     TokenResponse, APIKeyCreate, APIKeyResponse
 )
-from src.config import settings
+from src.core.config import get_settings
 
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# Get settings instance
+_settings = get_settings()
+
 # JWT settings
-SECRET_KEY = settings.SECRET_KEY
+SECRET_KEY = _settings.SECRET_KEY.get_secret_value()
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_DAYS = 7

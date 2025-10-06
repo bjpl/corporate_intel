@@ -42,8 +42,10 @@ RUN pip install --upgrade pip setuptools wheel && \
     fastapi>=0.104.0 \
     uvicorn[standard]>=0.24.0 \
     gunicorn>=21.2.0 \
-    pydantic>=2.5.0 \
+    pydantic[email]>=2.5.0 \
     pydantic-settings>=2.1.0 \
+    python-jose[cryptography]>=3.3.0 \
+    passlib[bcrypt]>=1.7.4 \
     sqlalchemy>=2.0.0 \
     asyncpg>=0.29.0 \
     psycopg2-binary>=2.9.0 \
@@ -57,6 +59,7 @@ RUN pip install --upgrade pip setuptools wheel && \
     opentelemetry-api>=1.21.0 \
     opentelemetry-sdk>=1.21.0 \
     opentelemetry-instrumentation-fastapi>=0.42b0 \
+    opentelemetry-exporter-otlp-proto-grpc>=1.21.0 \
     prometheus-client>=0.19.0 \
     loguru>=0.7.0 \
     sentry-sdk[fastapi]>=1.39.0 \

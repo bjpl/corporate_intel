@@ -45,7 +45,7 @@ def get_async_engine() -> AsyncEngine:
         _async_engine = create_async_engine(
             settings.database_url,
             echo=settings.DEBUG,
-            poolclass=QueuePool,
+            # Async engines use AsyncAdaptedQueuePool by default - don't specify poolclass
             pool_size=pool_size,
             max_overflow=max_overflow,
             pool_recycle=pool_recycle,

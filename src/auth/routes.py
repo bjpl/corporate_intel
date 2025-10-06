@@ -1,8 +1,8 @@
 """Authentication API routes."""
 
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
-from fastapi.security import HTTPAuthorizationCredentials, Security
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, Security
+from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 import logging
 

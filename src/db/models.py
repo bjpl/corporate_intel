@@ -116,11 +116,12 @@ class FinancialMetric(Base, TimestampMixin):
         {"timescaledb_hypertable": {"time_column": "metric_date"}},  # TimescaleDB hypertable
     )
     
+    # Composite primary key (id, metric_date) required for TimescaleDB hypertables
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     company_id = Column(PGUUID(as_uuid=True), ForeignKey("companies.id"), nullable=False)
-    
-    # Time dimension
-    metric_date = Column(DateTime(timezone=True), nullable=False)
+
+    # Time dimension - part of composite primary key for TimescaleDB partitioning
+    metric_date = Column(DateTime(timezone=True), primary_key=True, nullable=False)
     period_type = Column(String(20), nullable=False)  # quarterly, annual, monthly
     
     # Metric identification
