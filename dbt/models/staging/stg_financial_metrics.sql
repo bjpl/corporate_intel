@@ -56,7 +56,7 @@ validated AS (
     WHERE
         -- Remove obviously bad data
         value IS NOT NULL
-        AND value >= 0
+        -- Allow negative values for growth metrics and margins
         AND metric_date <= CURRENT_DATE
         AND metric_date >= '2015-01-01'
 )

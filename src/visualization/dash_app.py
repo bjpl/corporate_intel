@@ -13,14 +13,18 @@ from plotly.subplots import make_subplots
 import dash_bootstrap_components as dbc
 
 from src.core.config import get_settings
-from src.db.session import get_db
+from src.db.session import get_db, get_session_factory
 from src.services.dashboard_service import DashboardService
 from src.visualization.components import (
     create_cohort_heatmap,
     create_competitive_landscape_scatter,
+    create_earnings_growth_distribution,
+    create_margin_comparison_chart,
     create_market_share_sunburst,
     create_metrics_waterfall,
     create_retention_curves,
+    create_revenue_by_category_treemap,
+    create_revenue_comparison_bar,
     create_segment_comparison_radar,
 )
 
@@ -461,12 +465,10 @@ class CorporateIntelDashboard:
         def update_data(category, period, n_intervals):
             """Fetch and filter data based on selections using DashboardService."""
             try:
-                # Use asyncio to run async service methods
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-
                 async def fetch_data():
-                    async for session in get_db():
+                    # Get session factory and create a session context
+                    session_factory = get_session_factory()
+                    async with session_factory() as session:
                         service = DashboardService(session)
 
                         # Fetch company performance data
@@ -484,8 +486,8 @@ class CorporateIntelDashboard:
 
                         return companies_data, market_data, freshness
 
-                companies_data, market_data, freshness = loop.run_until_complete(fetch_data())
-                loop.close()
+                # Run the async function using asyncio.run()
+                companies_data, market_data, freshness = asyncio.run(fetch_data())
 
                 # Build company selector options
                 company_options = [
@@ -521,6 +523,11 @@ class CorporateIntelDashboard:
                 return companies_data, market_data, freshness, company_options, alert_content, show_alert
 
             except Exception as e:
+                # Log the error and fallback to sample data
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Database query failed: {e}", exc_info=True)
+
                 # Fallback to sample data
                 companies_df = self._fetch_company_performance(category, period)
                 market_df = self._fetch_market_data(category, period)

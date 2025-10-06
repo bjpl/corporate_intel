@@ -42,7 +42,7 @@ segment_analysis AS (
         -- Market size metrics
         COUNT(DISTINCT cp.company_id) AS companies_in_segment,
         SUM(cp.latest_revenue) AS total_segment_revenue,
-        SUM(cp.latest_mau) AS total_segment_users,
+        SUM(cp.market_cap) AS total_segment_market_cap,
 
         -- Growth metrics
         AVG(cp.revenue_yoy_growth) AS avg_revenue_growth,
@@ -50,13 +50,14 @@ segment_analysis AS (
         MAX(cp.revenue_yoy_growth) AS max_revenue_growth,
         MIN(cp.revenue_yoy_growth) AS min_revenue_growth,
 
-        -- Retention metrics
-        AVG(cp.latest_nrr) AS avg_nrr,
-        PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cp.latest_nrr) AS median_nrr,
-
-        -- Efficiency metrics
-        AVG(cp.latest_ltv_cac_ratio) AS avg_ltv_cac_ratio,
+        -- Profitability metrics
         AVG(cp.latest_gross_margin) AS avg_gross_margin,
+        AVG(cp.latest_operating_margin) AS avg_operating_margin,
+        AVG(cp.latest_profit_margin) AS avg_profit_margin,
+
+        -- Valuation metrics
+        AVG(cp.pe_ratio) AS avg_pe_ratio,
+        AVG(cp.roe) AS avg_roe,
 
         -- Market concentration (HHI - Herfindahl-Hirschman Index)
         SUM(POWER((cp.latest_revenue / NULLIF(st.total_revenue, 0)) * 100, 2)) AS hhi_index
@@ -131,9 +132,9 @@ segment_opportunities AS (
 
         -- Investment thesis
         CASE
-            WHEN sa.avg_ltv_cac_ratio > 3 AND sa.avg_nrr > 110 THEN 'Strong Unit Economics'
-            WHEN sa.avg_ltv_cac_ratio > 2 AND sa.avg_nrr > 100 THEN 'Solid Fundamentals'
-            WHEN sa.avg_ltv_cac_ratio > 1.5 OR sa.avg_nrr > 100 THEN 'Mixed Signals'
+            WHEN sa.avg_gross_margin > 70 AND sa.avg_operating_margin > 10 AND sa.avg_roe > 15 THEN 'Strong Profitability'
+            WHEN sa.avg_gross_margin > 60 AND sa.avg_operating_margin > 0 THEN 'Solid Fundamentals'
+            WHEN sa.avg_gross_margin > 50 OR sa.avg_operating_margin > -5 THEN 'Mixed Signals'
             ELSE 'Challenging Economics'
         END AS segment_economics
 
@@ -147,7 +148,7 @@ final AS (
         -- Market metrics
         sa.companies_in_segment,
         sa.total_segment_revenue,
-        sa.total_segment_users,
+        sa.total_segment_market_cap,
 
         -- Growth metrics
         sa.avg_revenue_growth,
@@ -155,11 +156,12 @@ final AS (
         sa.max_revenue_growth,
         sa.min_revenue_growth,
 
-        -- Retention & efficiency
-        sa.avg_nrr,
-        sa.median_nrr,
-        sa.avg_ltv_cac_ratio,
+        -- Profitability & efficiency
         sa.avg_gross_margin,
+        sa.avg_operating_margin,
+        sa.avg_profit_margin,
+        sa.avg_pe_ratio,
+        sa.avg_roe,
 
         -- Market structure
         sa.hhi_index,
@@ -180,11 +182,11 @@ final AS (
 
         -- Recommendations
         CASE
-            WHEN so.opportunity_level = 'High Opportunity' AND so.segment_economics IN ('Strong Unit Economics', 'Solid Fundamentals')
+            WHEN so.opportunity_level = 'High Opportunity' AND so.segment_economics IN ('Strong Profitability', 'Solid Fundamentals')
             THEN 'Priority Investment Target'
             WHEN so.opportunity_level = 'High Opportunity'
             THEN 'Growth Opportunity'
-            WHEN so.segment_economics = 'Strong Unit Economics'
+            WHEN so.segment_economics = 'Strong Profitability'
             THEN 'Value Opportunity'
             WHEN cd.disruptor_count > 2
             THEN 'Monitor Disruption'

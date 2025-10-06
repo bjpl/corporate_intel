@@ -188,8 +188,21 @@ async def store_financial_metrics(
         logger.warning(f"{ticker}: No data returned from Alpha Vantage")
         return 0
 
-    # Use current timestamp for metric_date (represents when data was fetched)
-    metric_date = datetime.now(timezone.utc)
+    # Use end of most recent quarter for metric_date (Alpha Vantage provides TTM/current data)
+    # Calculate the last completed quarter-end date
+    now = datetime.now(timezone.utc)
+    current_month = now.month
+    # Quarter ends: Mar 31 (Q1), Jun 30 (Q2), Sep 30 (Q3), Dec 31 (Q4)
+    if current_month <= 3:
+        quarter_end = datetime(now.year - 1, 12, 31, tzinfo=timezone.utc)
+    elif current_month <= 6:
+        quarter_end = datetime(now.year, 3, 31, tzinfo=timezone.utc)
+    elif current_month <= 9:
+        quarter_end = datetime(now.year, 6, 30, tzinfo=timezone.utc)
+    else:  # current_month <= 12
+        quarter_end = datetime(now.year, 9, 30, tzinfo=timezone.utc)
+
+    metric_date = quarter_end
 
     metrics_to_store = []
 

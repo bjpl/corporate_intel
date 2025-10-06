@@ -21,21 +21,12 @@ company_rankings AS (
         -- Rankings within category
         RANK() OVER (PARTITION BY edtech_category ORDER BY latest_revenue DESC NULLS LAST) AS revenue_rank_in_category,
         RANK() OVER (PARTITION BY edtech_category ORDER BY revenue_yoy_growth DESC NULLS LAST) AS growth_rank_in_category,
-        RANK() OVER (PARTITION BY edtech_category ORDER BY latest_nrr DESC NULLS LAST) AS nrr_rank_in_category,
 
         -- Overall rankings
         RANK() OVER (ORDER BY latest_revenue DESC NULLS LAST) AS revenue_rank_overall,
         RANK() OVER (ORDER BY revenue_yoy_growth DESC NULLS LAST) AS growth_rank_overall,
 
         -- Performance scores (0-100)
-        CASE
-            WHEN latest_nrr >= 120 THEN 100
-            WHEN latest_nrr >= 110 THEN 80
-            WHEN latest_nrr >= 100 THEN 60
-            WHEN latest_nrr >= 90 THEN 40
-            ELSE 20
-        END AS retention_score,
-
         CASE
             WHEN revenue_yoy_growth >= 50 THEN 100
             WHEN revenue_yoy_growth >= 30 THEN 80
@@ -45,12 +36,20 @@ company_rankings AS (
         END AS growth_score,
 
         CASE
-            WHEN ltv_cac_ratio >= 3 THEN 100
-            WHEN ltv_cac_ratio >= 2 THEN 80
-            WHEN ltv_cac_ratio >= 1.5 THEN 60
-            WHEN ltv_cac_ratio >= 1 THEN 40
+            WHEN latest_gross_margin >= 80 THEN 100
+            WHEN latest_gross_margin >= 70 THEN 80
+            WHEN latest_gross_margin >= 60 THEN 60
+            WHEN latest_gross_margin >= 50 THEN 40
             ELSE 20
-        END AS efficiency_score
+        END AS margin_score,
+
+        CASE
+            WHEN latest_operating_margin >= 20 THEN 100
+            WHEN latest_operating_margin >= 10 THEN 80
+            WHEN latest_operating_margin >= 0 THEN 60
+            WHEN latest_operating_margin >= -10 THEN 40
+            ELSE 20
+        END AS profitability_score
 
     FROM company_metrics
 ),
@@ -66,11 +65,9 @@ final AS (
 
         -- Current metrics
         latest_revenue,
-        latest_mau,
-        latest_arpu,
-        latest_nrr,
         latest_gross_margin,
-        ltv_cac_ratio AS latest_ltv_cac_ratio,
+        latest_operating_margin,
+        latest_profit_margin,
 
         -- Growth metrics
         revenue_yoy_growth,
@@ -80,27 +77,28 @@ final AS (
         pe_ratio,
         forward_pe,
         market_cap,
+        eps,
+        roe,
 
         -- Rankings
         revenue_rank_in_category,
         growth_rank_in_category,
-        nrr_rank_in_category,
         revenue_rank_overall,
         growth_rank_overall,
 
         -- Performance scores
-        retention_score,
         growth_score,
-        efficiency_score,
-        (retention_score + growth_score + efficiency_score) / 3.0 AS overall_score,
+        margin_score,
+        profitability_score,
+        (growth_score + margin_score + profitability_score) / 3.0 AS overall_score,
 
         -- Health indicators
         CASE
-            WHEN latest_nrr >= 110 AND revenue_yoy_growth >= 20 AND ltv_cac_ratio >= 2
+            WHEN revenue_yoy_growth >= 20 AND latest_operating_margin >= 10 AND latest_gross_margin >= 60
             THEN 'Excellent'
-            WHEN latest_nrr >= 100 AND revenue_yoy_growth >= 0 AND ltv_cac_ratio >= 1.5
+            WHEN revenue_yoy_growth >= 0 AND latest_operating_margin >= 0 AND latest_gross_margin >= 50
             THEN 'Good'
-            WHEN latest_nrr >= 90 OR revenue_yoy_growth < 0 OR ltv_cac_ratio < 1
+            WHEN revenue_yoy_growth < 0 OR latest_operating_margin < -10
             THEN 'Needs Attention'
             ELSE 'At Risk'
         END AS company_health_status,

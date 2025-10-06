@@ -56,13 +56,8 @@ pivoted AS (
         MAX(CASE WHEN metric_type = 'pe_ratio' AND recency_rank = 1 THEN metric_value END) AS pe_ratio,
         MAX(CASE WHEN metric_type = 'forward_pe' AND recency_rank = 1 THEN metric_value END) AS forward_pe,
         MAX(CASE WHEN metric_type = 'market_cap' AND recency_rank = 1 THEN metric_value END) AS market_cap,
-
-        -- Mock/estimated metrics (for dashboard compatibility)
-        -- These would come from additional data sources in production
-        NULL::FLOAT AS latest_mau,
-        NULL::FLOAT AS latest_arpu,
-        100::FLOAT AS latest_nrr,  -- Assume 100% as baseline
-        NULL::FLOAT AS latest_ltv_cac_ratio,
+        MAX(CASE WHEN metric_type = 'eps' AND recency_rank = 1 THEN metric_value END) AS eps,
+        MAX(CASE WHEN metric_type = 'roe' AND recency_rank = 1 THEN metric_value END) AS roe,
 
         -- Data quality
         MAX(metric_date) AS latest_data_date,
@@ -87,10 +82,6 @@ final AS (
         p.latest_gross_margin,
         p.latest_operating_margin,
         p.latest_profit_margin,
-        p.latest_mau,
-        p.latest_arpu,
-        p.latest_nrr,
-        p.latest_ltv_cac_ratio,
 
         -- Growth
         p.revenue_yoy_growth,
@@ -100,13 +91,8 @@ final AS (
         p.pe_ratio,
         p.forward_pe,
         p.market_cap,
-
-        -- Mock calculated metrics for dashboard
-        CASE
-            WHEN p.latest_ltv_cac_ratio > 0
-            THEN p.latest_ltv_cac_ratio
-            ELSE 2.5  -- Mock LTV/CAC ratio
-        END AS ltv_cac_ratio,
+        p.eps,
+        p.roe,
 
         -- Data quality
         p.latest_data_date,
