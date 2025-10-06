@@ -45,11 +45,10 @@ cleaned AS (
         END AS is_complete_record
         
     FROM source
-    WHERE 
-        -- Filter for EdTech companies
-        category IN ({{ "'" + "','".join(var('edtech_categories')) + "'" }})
-        -- Remove test data
-        AND LOWER(name) NOT LIKE '%test%'
+    WHERE
+        -- Remove test data only (don't filter by category - accept all)
+        LOWER(name) NOT LIKE '%test%'
+        AND ticker IS NOT NULL
 )
 
 SELECT * FROM cleaned

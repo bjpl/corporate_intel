@@ -41,15 +41,15 @@ validated AS (
         END AS is_high_confidence,
         
         CASE
-            WHEN metric_type = 'net_revenue_retention' 
-                AND value BETWEEN 50 AND 200 THEN 1
-            WHEN metric_type = 'churn_rate' 
-                AND value BETWEEN 0 AND 50 THEN 1
-            WHEN metric_type = 'gross_margin' 
-                AND value BETWEEN 0 AND 100 THEN 1
-            WHEN metric_type IN ('revenue', 'monthly_active_users')
-                AND value > 0 THEN 1
-            ELSE 0
+            -- Fail if obvious invalid ranges
+            WHEN metric_type IN ('gross_margin', 'operating_margin', 'profit_margin')
+                AND value NOT BETWEEN -100 AND 200 THEN 0
+            WHEN metric_type IN ('pe_ratio', 'forward_pe', 'trailing_pe', 'peg_ratio')
+                AND value NOT BETWEEN -100 AND 1000 THEN 0
+            WHEN metric_type IN ('revenue', 'market_cap', 'eps')
+                AND value < 0 THEN 0
+            -- Otherwise assume valid
+            ELSE 1
         END AS is_valid_range
         
     FROM source

@@ -1,0 +1,61 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw data tables populated by data ingestion pipelines
+    database: corporate_intel
+    schema: public
+    tables:
+      - name: companies
+        description: EdTech company master data
+        columns:
+          - name: id
+            description: Primary key (UUID)
+          - name: ticker
+            description: Stock ticker symbol
+          - name: name
+            description: Company legal name
+          - name: cik
+            description: SEC CIK number
+          - name: sector
+            description: Industry sector
+          - name: subsector
+            description: Industry subsector
+          - name: category
+            description: EdTech category (k12, higher_education, etc.)
+          - name: subcategory
+            description: EdTech subcategories (JSON array)
+          - name: delivery_model
+            description: Business model (B2B, B2C, marketplace)
+          - name: created_at
+            description: Record creation timestamp
+          - name: updated_at
+            description: Record update timestamp
+
+      - name: financial_metrics
+        description: Time-series financial and operational metrics
+        columns:
+          - name: id
+            description: Metric ID
+          - name: company_id
+            description: Foreign key to companies table
+          - name: metric_date
+            description: Metric period date (part of composite primary key for TimescaleDB)
+          - name: period_type
+            description: Period type (quarterly, annual, monthly)
+          - name: metric_type
+            description: Type of metric (revenue, mau, arpu, etc.)
+          - name: metric_category
+            description: Category (financial, operational, edtech_specific)
+          - name: value
+            description: Metric value (numeric)
+          - name: unit
+            description: Unit of measurement (USD, percent, count)
+          - name: source
+            description: Data source (yahoo_finance, alpha_vantage, sec_filing)
+          - name: confidence_score
+            description: Confidence in the data (0-1)
+          - name: created_at
+            description: Record creation timestamp
+          - name: updated_at
+            description: Record update timestamp
