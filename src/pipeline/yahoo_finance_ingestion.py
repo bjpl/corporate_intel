@@ -5,7 +5,7 @@ Yahoo Finance Data Ingestion Pipeline for EdTech Companies
 SPARC SPECIFICATION:
 -------------------
 Purpose: Ingest financial data from Yahoo Finance for 27 EdTech companies
-Target: 2 years of quarterly financial data (8 quarters)
+Target: 5 years of quarterly financial data (20 quarters)
 Output: Populated companies and financial_metrics tables
 
 ARCHITECTURE:
@@ -280,7 +280,7 @@ class YahooFinanceIngestionPipeline:
             Dict containing ingestion statistics and results
         """
         logger.info("Starting Yahoo Finance data ingestion pipeline")
-        logger.info(f"Target: {len(EDTECH_COMPANIES)} companies, 2 years quarterly data")
+        logger.info(f"Target: {len(EDTECH_COMPANIES)} companies, 5 years quarterly data")
 
         for idx, company_data in enumerate(EDTECH_COMPANIES, 1):
             ticker = company_data["ticker"]
@@ -429,8 +429,8 @@ class YahooFinanceIngestionPipeline:
                 logger.warning(f"No quarterly financials available for {ticker}")
                 return
 
-            # Process each quarter (up to 8 quarters = 2 years)
-            quarters_to_process = min(8, len(quarterly_income.columns))
+            # Process each quarter (up to 20 quarters = 5 years)
+            quarters_to_process = min(20, len(quarterly_income.columns))
 
             for i in range(quarters_to_process):
                 quarter_date = quarterly_income.columns[i]
