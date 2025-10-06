@@ -22,7 +22,7 @@ from src.db.base import Base, get_db
 from src.auth.models import User, UserRole, APIKey
 from src.auth.service import AuthService
 from src.core.config import get_settings
-from src.cache.redis_cache import CacheManager
+# CacheManager import removed - not needed for current tests
 
 # Get settings instance
 settings = get_settings()

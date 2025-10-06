@@ -20,13 +20,14 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Mapped, relationship, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, relationship, mapped_column
 
 if TYPE_CHECKING:
     from sqlalchemy.orm import RelationshipProperty
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    """Base class for all database models."""
+    pass
 
 
 class TimestampMixin:

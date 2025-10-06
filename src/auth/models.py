@@ -297,7 +297,10 @@ class APIKeyResponse(BaseModel):
     expires_at: Optional[datetime]
 
     model_config = {
-        "json_encoders": {
-            datetime: lambda v: v.isoformat()
-        }
+        "ser_json_timedelta": "iso8601",
     }
+
+    # Pydantic V2 custom serializer for datetime
+    @staticmethod
+    def serialize_datetime(dt: Optional[datetime]) -> Optional[str]:
+        return dt.isoformat() if dt else None
