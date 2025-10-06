@@ -10,7 +10,7 @@ Rate Limiting:
     - Sequential processing with 12-second delays between companies
 
 Target Companies:
-    Top 10 EdTech companies (same as SEC ingestion)
+    All 27 EdTech companies (expanded watchlist coverage)
 
 Metrics Stored:
     - pe_ratio: Price-to-Earnings ratio
@@ -41,18 +41,43 @@ from src.db.models import Company, FinancialMetric
 from src.db.session import get_session_factory
 
 
-# Top 10 EdTech companies (matching SEC ingestion)
+# All 27 EdTech companies (matching expanded watchlist)
 EDTECH_TICKERS = [
-    'CHGG',  # Chegg
-    'COUR',  # Coursera
-    'DUOL',  # Duolingo
-    'ARCE',  # Arco Platform
-    'LRN',   # Stride (K12)
-    'UDMY',  # Udemy
-    'PSO',   # Pearson
-    'ATGE',  # Adtalem Global Education
-    'LOPE',  # Grand Canyon Education
-    'STRA',  # Strategic Education
+    # Online Learning & EdTech Platforms
+    'CHGG',  # Chegg Inc.
+    'COUR',  # Coursera Inc.
+    'DUOL',  # Duolingo Inc.
+    'TWOU',  # 2U Inc.
+    'ARCE',  # Arco Platform Limited
+    'LAUR',  # Laureate Education Inc.
+    'LRN',   # Stride Inc.
+    'UDMY',  # Udemy Inc.
+    # Publishers & Educational Content
+    'PSO',   # Pearson PLC
+    'JW.A',  # John Wiley & Sons Inc.
+    'SCHL',  # Scholastic Corporation
+    'MH',    # McGraw Hill
+    # Higher Education Institutions
+    'ATGE',  # Adtalem Global Education Inc.
+    'LOPE',  # Grand Canyon Education Inc.
+    'STRA',  # Strategic Education Inc.
+    'PRDO',  # Perdoceo Education Corporation
+    'APEI',  # American Public Education Inc.
+    # Career & Technical Training
+    'UTI',   # Universal Technical Institute Inc.
+    'LINC',  # Lincoln Educational Services Corporation
+    'AFYA',  # Afya Limited
+    # Early Childhood & Supplemental
+    'BFAM',  # Bright Horizons Family Solutions Inc.
+    # Corporate Training
+    'FC',    # Franklin Covey Co.
+    'GHC',   # Graham Holdings Company
+    # Chinese Education Companies
+    'TAL',   # TAL Education Group
+    'EDU',   # New Oriental Education & Technology Group
+    'GOTU',  # Gaotu Techedu Inc.
+    'COE',   # China Online Education Group
+    'FHS',   # First High-School Education Group
 ]
 
 

@@ -4,7 +4,7 @@ Yahoo Finance Data Ingestion Pipeline for EdTech Companies
 
 SPARC SPECIFICATION:
 -------------------
-Purpose: Ingest financial data from Yahoo Finance for top 10 EdTech companies
+Purpose: Ingest financial data from Yahoo Finance for 27 EdTech companies
 Target: 2 years of quarterly financial data (8 quarters)
 Output: Populated companies and financial_metrics tables
 
@@ -41,8 +41,9 @@ from src.db.models import Company, FinancialMetric
 from src.db.session import get_session_factory
 
 
-# Top 10 EdTech Companies to Ingest
+# All 27 EdTech Companies to Ingest
 EDTECH_COMPANIES = [
+    # Online Learning & EdTech Platforms
     {
         "ticker": "CHGG",
         "name": "Chegg Inc.",
@@ -65,17 +66,31 @@ EDTECH_COMPANIES = [
         "subcategory": ["Language Learning", "Mobile-First"],
     },
     {
+        "ticker": "TWOU",
+        "name": "2U Inc.",
+        "sector": "Education Technology",
+        "category": "Higher Ed",
+        "subcategory": ["Online Programs", "Degree Partnerships"],
+    },
+    {
         "ticker": "ARCE",
         "name": "Arco Platform Limited",
         "sector": "Education Technology",
-        "category": "B2B",
+        "category": "K12",
         "subcategory": ["K-12", "Brazil Market"],
+    },
+    {
+        "ticker": "LAUR",
+        "name": "Laureate Education Inc.",
+        "sector": "Education Technology",
+        "category": "Higher Ed",
+        "subcategory": ["International", "University Network"],
     },
     {
         "ticker": "LRN",
         "name": "Stride Inc.",
         "sector": "Education Technology",
-        "category": "B2B",
+        "category": "K12",
         "subcategory": ["K-12", "Virtual Schools"],
     },
     {
@@ -85,6 +100,7 @@ EDTECH_COMPANIES = [
         "category": "Marketplace",
         "subcategory": ["Corporate Learning", "Skills Training"],
     },
+    # Publishers & Educational Content
     {
         "ticker": "PSO",
         "name": "Pearson PLC",
@@ -93,25 +109,142 @@ EDTECH_COMPANIES = [
         "subcategory": ["Higher Ed", "Assessment", "Publishing"],
     },
     {
+        "ticker": "JW.A",
+        "name": "John Wiley & Sons Inc.",
+        "sector": "Education Technology",
+        "category": "B2B",
+        "subcategory": ["Publishing", "Higher Ed"],
+    },
+    {
+        "ticker": "SCHL",
+        "name": "Scholastic Corporation",
+        "sector": "Education Technology",
+        "category": "K12",
+        "subcategory": ["Publishing", "K-12"],
+    },
+    {
+        "ticker": "MH",
+        "name": "McGraw Hill",
+        "sector": "Education Technology",
+        "category": "B2B",
+        "subcategory": ["Publishing", "Higher Ed"],
+    },
+    # Higher Education Institutions
+    {
         "ticker": "ATGE",
         "name": "Adtalem Global Education Inc.",
         "sector": "Education Technology",
-        "category": "B2B",
-        "subcategory": ["Higher Ed", "Healthcare Education"],
+        "category": "Higher Ed",
+        "subcategory": ["Healthcare Education", "Online Programs"],
     },
     {
         "ticker": "LOPE",
         "name": "Grand Canyon Education Inc.",
         "sector": "Education Technology",
-        "category": "B2B",
-        "subcategory": ["Higher Ed", "Online Programs"],
+        "category": "Higher Ed",
+        "subcategory": ["Online Programs", "Traditional Campus"],
     },
     {
         "ticker": "STRA",
         "name": "Strategic Education Inc.",
         "sector": "Education Technology",
-        "category": "B2B",
-        "subcategory": ["Higher Ed", "Career Education"],
+        "category": "Higher Ed",
+        "subcategory": ["Career Education", "Online Programs"],
+    },
+    {
+        "ticker": "PRDO",
+        "name": "Perdoceo Education Corporation",
+        "sector": "Education Technology",
+        "category": "Higher Ed",
+        "subcategory": ["Career College", "Online Programs"],
+    },
+    {
+        "ticker": "APEI",
+        "name": "American Public Education Inc.",
+        "sector": "Education Technology",
+        "category": "Higher Ed",
+        "subcategory": ["Military Education", "Online Programs"],
+    },
+    # Career & Technical Training
+    {
+        "ticker": "UTI",
+        "name": "Universal Technical Institute Inc.",
+        "sector": "Education Technology",
+        "category": "Career Training",
+        "subcategory": ["Automotive", "Technical"],
+    },
+    {
+        "ticker": "LINC",
+        "name": "Lincoln Educational Services Corporation",
+        "sector": "Education Technology",
+        "category": "Career Training",
+        "subcategory": ["Automotive", "Healthcare"],
+    },
+    {
+        "ticker": "AFYA",
+        "name": "Afya Limited",
+        "sector": "Education Technology",
+        "category": "Medical Education",
+        "subcategory": ["Brazil", "Medical Schools"],
+    },
+    # Early Childhood & Supplemental
+    {
+        "ticker": "BFAM",
+        "name": "Bright Horizons Family Solutions Inc.",
+        "sector": "Education Technology",
+        "category": "Early Childhood",
+        "subcategory": ["Daycare", "Corporate Childcare"],
+    },
+    # Corporate Training
+    {
+        "ticker": "FC",
+        "name": "Franklin Covey Co.",
+        "sector": "Education Technology",
+        "category": "Corporate Training",
+        "subcategory": ["Leadership", "Professional Development"],
+    },
+    {
+        "ticker": "GHC",
+        "name": "Graham Holdings Company",
+        "sector": "Education Technology",
+        "category": "Diversified",
+        "subcategory": ["Kaplan", "Corporate Training"],
+    },
+    # Chinese Education Companies
+    {
+        "ticker": "TAL",
+        "name": "TAL Education Group",
+        "sector": "Education Technology",
+        "category": "K12 China",
+        "subcategory": ["K-12", "Tutoring"],
+    },
+    {
+        "ticker": "EDU",
+        "name": "New Oriental Education & Technology Group",
+        "sector": "Education Technology",
+        "category": "K12 China",
+        "subcategory": ["K-12", "Test Prep"],
+    },
+    {
+        "ticker": "GOTU",
+        "name": "Gaotu Techedu Inc.",
+        "sector": "Education Technology",
+        "category": "Online China",
+        "subcategory": ["K-12", "Online Tutoring"],
+    },
+    {
+        "ticker": "COE",
+        "name": "China Online Education Group",
+        "sector": "Education Technology",
+        "category": "Online China",
+        "subcategory": ["K-12", "Online Learning"],
+    },
+    {
+        "ticker": "FHS",
+        "name": "First High-School Education Group",
+        "sector": "Education Technology",
+        "category": "K12 China",
+        "subcategory": ["K-12", "Private Schools"],
     },
 ]
 

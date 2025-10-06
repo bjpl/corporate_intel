@@ -15,6 +15,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
+        extra='ignore',  # Ignore extra fields in .env that aren't defined in Settings
     )
     
     # Application
@@ -95,14 +96,47 @@ class Settings(BaseSettings):
     # EdTech Specific
     EDTECH_COMPANIES_WATCHLIST: list[str] = Field(
         default_factory=lambda: [
-            "CHGG",  # Chegg
-            "COUR",  # Coursera
-            "DUOL",  # Duolingo
-            "TWOU",  # 2U
-            "ARCE",  # Arco Platform
+            # Online Learning & EdTech Platforms
+            "CHGG",  # Chegg - Online student services
+            "COUR",  # Coursera - Online learning platform
+            "DUOL",  # Duolingo - Language learning
+            "TWOU",  # 2U Inc - Online education
+            "ARCE",  # Arco Platform - Brazilian K-12
             "LAUR",  # Laureate Education
-            "INST",  # Instructure
-            "POWL",  # Powell Industries (Powerschool)
+            "LRN",   # Stride Inc (formerly K12)
+            "UDMY",  # Udemy - Online learning marketplace
+
+            # Publishers & Educational Content
+            "PSO",   # Pearson - Global education publisher
+            "JW.A",  # John Wiley & Sons - Academic publishing
+            "SCHL",  # Scholastic Corporation
+            "MH",    # McGraw Hill
+
+            # Higher Education Institutions
+            "ATGE",  # Adtalem Global Education
+            "LOPE",  # Grand Canyon Education
+            "STRA",  # Strategic Education
+            "PRDO",  # Perdoceo Education
+            "APEI",  # American Public Education
+
+            # Career & Technical Training
+            "UTI",   # Universal Technical Institute
+            "LINC",  # Lincoln Educational Services
+            "AFYA",  # Afya Limited - Brazilian medical education
+
+            # Early Childhood & Supplemental
+            "BFAM",  # Bright Horizons Family Solutions
+
+            # Corporate Training
+            "FC",    # Franklin Covey
+            "GHC",   # Graham Holdings (Kaplan)
+
+            # Chinese Education Companies
+            "TAL",   # TAL Education Group
+            "EDU",   # New Oriental Education
+            "GOTU",  # Gaotu Techedu
+            "COE",   # China Online Education Group
+            "FHS",   # First High-School Education Group
         ]
     )
     
