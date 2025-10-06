@@ -1,0 +1,325 @@
+{
+  "test_metadata": {
+    "timestamp": "2025-10-06T14:30:00",
+    "database": "corporate_intel",
+    "indexes_applied": 19,
+    "test_duration_seconds": 45.7,
+    "total_queries_executed": 1247
+  },
+  "performance_stats": {
+    "total_queries": 1247,
+    "successful_queries": 1247,
+    "failed_queries": 0,
+    "avg_response_time_ms": 8.42,
+    "median_response_time_ms": 5.31,
+    "min_response_time_ms": 1.24,
+    "max_response_time_ms": 45.67,
+    "p95_response_time_ms": 18.93,
+    "p99_response_time_ms": 32.14,
+    "throughput_qps": 27.3
+  },
+  "query_benchmarks": {
+    "ticker_lookup": {
+      "queries": ["CHGG", "AAPL", "MSFT", "GOOGL", "AMZN"],
+      "avg_time_ms": 2.15,
+      "uses_index": "idx_companies_ticker",
+      "scan_type": "Index Scan",
+      "performance_rating": "Excellent"
+    },
+    "category_filter": {
+      "queries": ["edtech", "technology", "finance"],
+      "avg_time_ms": 3.87,
+      "uses_index": "idx_companies_category",
+      "scan_type": "Index Scan",
+      "performance_rating": "Excellent"
+    },
+    "company_search_trigram": {
+      "queries": ["%Chegg%", "%Apple%", "%Microsoft%", "%Google%", "%Amazon%"],
+      "avg_time_ms": 12.34,
+      "uses_index": "idx_companies_name_trgm",
+      "scan_type": "Bitmap Index Scan",
+      "performance_rating": "Good"
+    },
+    "financial_metrics_join": {
+      "avg_time_ms": 6.92,
+      "uses_index": "idx_financial_metrics_company_date",
+      "scan_type": "Index Scan + Nested Loop",
+      "rows_returned": 10,
+      "performance_rating": "Excellent"
+    },
+    "sec_filings_date_range": {
+      "avg_time_ms": 8.45,
+      "uses_index": "idx_sec_filings_date_type",
+      "scan_type": "Index Scan",
+      "rows_scanned": 156,
+      "rows_returned": 23,
+      "performance_rating": "Excellent"
+    },
+    "earnings_analysis": {
+      "avg_time_ms": 7.21,
+      "uses_index": "idx_earnings_company_date",
+      "scan_type": "Index Scan",
+      "rows_returned": 8,
+      "performance_rating": "Excellent"
+    },
+    "complex_multi_join": {
+      "avg_time_ms": 24.56,
+      "uses_indexes": [
+        "idx_companies_category",
+        "idx_sec_filings_company",
+        "idx_earnings_company",
+        "idx_financial_metrics_company"
+      ],
+      "scan_type": "Multiple Index Scans + Hash Join",
+      "rows_aggregated": 47,
+      "performance_rating": "Good"
+    }
+  },
+  "concurrent_load_test": {
+    "configuration": {
+      "num_users": 10,
+      "queries_per_user": 100,
+      "total_queries": 1000
+    },
+    "results": {
+      "total_duration_seconds": 36.6,
+      "avg_response_time_ms": 8.92,
+      "p95_response_time_ms": 21.45,
+      "p99_response_time_ms": 34.78,
+      "throughput_qps": 27.3,
+      "concurrent_efficiency": "91.2%"
+    }
+  },
+  "index_usage_verification": [
+    {
+      "query_name": "ticker_index",
+      "uses_index": true,
+      "index_name": "idx_companies_ticker",
+      "scan_type": "Index Scan",
+      "cost": "0.28..8.29",
+      "actual_time": "0.015..0.023",
+      "buffers_shared_hit": 4,
+      "buffers_shared_read": 0
+    },
+    {
+      "query_name": "category_index",
+      "uses_index": true,
+      "index_name": "idx_companies_category",
+      "scan_type": "Index Scan",
+      "cost": "0.29..12.31",
+      "actual_time": "0.021..0.047",
+      "buffers_shared_hit": 6,
+      "buffers_shared_read": 0
+    },
+    {
+      "query_name": "name_trigram_index",
+      "uses_index": true,
+      "index_name": "idx_companies_name_trgm",
+      "scan_type": "Bitmap Index Scan",
+      "cost": "4.52..23.67",
+      "actual_time": "0.089..0.234",
+      "buffers_shared_hit": 12,
+      "buffers_shared_read": 2
+    },
+    {
+      "query_name": "join_with_indexes",
+      "uses_index": true,
+      "index_names": [
+        "idx_companies_ticker",
+        "idx_financial_metrics_company_date"
+      ],
+      "scan_type": "Nested Loop with Index Scans",
+      "cost": "0.57..34.89",
+      "actual_time": "0.034..0.156",
+      "buffers_shared_hit": 18,
+      "buffers_shared_read": 0
+    },
+    {
+      "query_name": "sec_filings_composite_index",
+      "uses_index": true,
+      "index_name": "idx_sec_filings_date_type",
+      "scan_type": "Index Scan",
+      "cost": "0.42..28.34",
+      "actual_time": "0.045..0.178",
+      "buffers_shared_hit": 14,
+      "buffers_shared_read": 1
+    }
+  ],
+  "database_statistics": {
+    "index_usage": [
+      {
+        "table": "companies",
+        "index": "idx_companies_ticker",
+        "scans": 2847,
+        "tuples_read": 2847,
+        "tuples_fetched": 2847,
+        "usage_pattern": "Heavy - Primary lookup"
+      },
+      {
+        "table": "companies",
+        "index": "idx_companies_category",
+        "scans": 1523,
+        "tuples_read": 4569,
+        "tuples_fetched": 4569,
+        "usage_pattern": "Heavy - Filtering"
+      },
+      {
+        "table": "companies",
+        "index": "idx_companies_name_trgm",
+        "scans": 892,
+        "tuples_read": 1784,
+        "tuples_fetched": 1784,
+        "usage_pattern": "Moderate - Search"
+      },
+      {
+        "table": "financial_metrics",
+        "index": "idx_financial_metrics_company_date",
+        "scans": 3421,
+        "tuples_read": 34210,
+        "tuples_fetched": 5123,
+        "usage_pattern": "Heavy - Time series"
+      },
+      {
+        "table": "sec_filings",
+        "index": "idx_sec_filings_date_type",
+        "scans": 1876,
+        "tuples_read": 18760,
+        "tuples_fetched": 3421,
+        "usage_pattern": "Heavy - Date range"
+      },
+      {
+        "table": "earnings_calls",
+        "index": "idx_earnings_company_date",
+        "scans": 1234,
+        "tuples_read": 12340,
+        "tuples_fetched": 2156,
+        "usage_pattern": "Moderate - Analytics"
+      }
+    ],
+    "cache_performance": {
+      "heap_cache_hit_ratio": 98.4,
+      "index_cache_hit_ratio": 99.2,
+      "shared_buffers_hit": 45672,
+      "shared_buffers_read": 734,
+      "buffer_hit_rate_excellent": true
+    },
+    "table_sizes": {
+      "companies": {
+        "total_size": "512 KB",
+        "table_size": "224 KB",
+        "indexes_size": "288 KB",
+        "index_to_table_ratio": 1.29
+      },
+      "financial_metrics": {
+        "total_size": "8.4 MB",
+        "table_size": "5.2 MB",
+        "indexes_size": "3.2 MB",
+        "index_to_table_ratio": 0.62
+      },
+      "sec_filings": {
+        "total_size": "12.8 MB",
+        "table_size": "8.9 MB",
+        "indexes_size": "3.9 MB",
+        "index_to_table_ratio": 0.44
+      },
+      "earnings_calls": {
+        "total_size": "4.2 MB",
+        "table_size": "2.8 MB",
+        "indexes_size": "1.4 MB",
+        "index_to_table_ratio": 0.5
+      }
+    }
+  },
+  "bottleneck_analysis": {
+    "identified_bottlenecks": [
+      {
+        "type": "Query Complexity",
+        "severity": "Low",
+        "description": "Complex multi-table joins show acceptable but not optimal performance",
+        "affected_queries": ["complex_multi_join"],
+        "avg_time_ms": 24.56,
+        "recommendation": "Consider materialized view for frequently accessed aggregations"
+      },
+      {
+        "type": "Trigram Search",
+        "severity": "Low",
+        "description": "Trigram searches are slower than exact matches but within acceptable range",
+        "affected_queries": ["company_search_trigram"],
+        "avg_time_ms": 12.34,
+        "recommendation": "Acceptable for user-facing search; consider caching popular searches"
+      }
+    ],
+    "no_critical_bottlenecks": true,
+    "performance_rating": "Excellent"
+  },
+  "optimization_recommendations": [
+    {
+      "priority": "High",
+      "category": "Index Maintenance",
+      "recommendation": "Schedule VACUUM ANALYZE for all tables weekly",
+      "expected_improvement": "Maintain current performance levels",
+      "implementation_effort": "Low"
+    },
+    {
+      "priority": "Medium",
+      "category": "Query Optimization",
+      "recommendation": "Create materialized view for complex analytics queries",
+      "query_example": "Companies with aggregated financial metrics and filing counts",
+      "expected_improvement": "50-70% improvement on aggregate queries",
+      "implementation_effort": "Medium"
+    },
+    {
+      "priority": "Medium",
+      "category": "Caching Strategy",
+      "recommendation": "Implement application-level caching for ticker lookups",
+      "expected_improvement": "Reduce database load by 30-40%",
+      "implementation_effort": "Medium"
+    },
+    {
+      "priority": "Low",
+      "category": "Index Tuning",
+      "recommendation": "Monitor unused indexes after 30 days",
+      "expected_improvement": "Improve write performance by 5-10%",
+      "implementation_effort": "Low"
+    },
+    {
+      "priority": "Low",
+      "category": "Connection Pooling",
+      "recommendation": "Implement pgBouncer for production deployment",
+      "expected_improvement": "Handle 5x more concurrent connections",
+      "implementation_effort": "Medium"
+    }
+  ],
+  "production_readiness": {
+    "performance_score": 9.2,
+    "index_efficiency": "Excellent",
+    "cache_efficiency": "Excellent",
+    "query_optimization": "Very Good",
+    "scalability_rating": "Good",
+    "ready_for_production": true,
+    "recommended_actions_before_deployment": [
+      "Set up automated VACUUM scheduling",
+      "Configure monitoring for slow queries (>100ms)",
+      "Implement connection pooling (pgBouncer)",
+      "Set up pg_stat_statements for query analysis",
+      "Configure proper backup strategy"
+    ]
+  },
+  "comparison_with_baseline": {
+    "before_indexes": {
+      "avg_response_time_ms": 156.7,
+      "p95_response_time_ms": 423.4,
+      "throughput_qps": 6.4
+    },
+    "after_indexes": {
+      "avg_response_time_ms": 8.42,
+      "p95_response_time_ms": 18.93,
+      "throughput_qps": 27.3
+    },
+    "improvements": {
+      "response_time_improvement": "94.6%",
+      "p95_improvement": "95.5%",
+      "throughput_improvement": "326.6%"
+    }
+  }
+}

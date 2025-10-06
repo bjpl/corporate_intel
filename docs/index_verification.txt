@@ -1,0 +1,23 @@
+     tablename     |           indexname            |                                                                             indexdef                                                                              
+-------------------+--------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ companies         | idx_companies_category         | CREATE INDEX idx_companies_category ON public.companies USING btree (category) WHERE (category IS NOT NULL)
+ companies         | idx_companies_sector_subsector | CREATE INDEX idx_companies_sector_subsector ON public.companies USING btree (sector, subsector) WHERE (sector IS NOT NULL)
+ companies         | idx_companies_ticker           | CREATE INDEX idx_companies_ticker ON public.companies USING btree (ticker)
+ companies         | idx_company_category           | CREATE INDEX idx_company_category ON public.companies USING btree (category)
+ companies         | idx_company_cik                | CREATE INDEX idx_company_cik ON public.companies USING btree (cik)
+ companies         | idx_company_sector_subsector   | CREATE INDEX idx_company_sector_subsector ON public.companies USING btree (sector, subsector)
+ companies         | idx_company_ticker             | CREATE INDEX idx_company_ticker ON public.companies USING btree (ticker)
+ documents         | idx_document_company           | CREATE INDEX idx_document_company ON public.documents USING btree (company_id)
+ documents         | idx_document_type_date         | CREATE INDEX idx_document_type_date ON public.documents USING btree (document_type, document_date)
+ documents         | idx_documents_company          | CREATE INDEX idx_documents_company ON public.documents USING btree (company_id, created_at DESC) WHERE (company_id IS NOT NULL)
+ documents         | idx_documents_type_date        | CREATE INDEX idx_documents_type_date ON public.documents USING btree (document_type, document_date DESC) WHERE (document_type IS NOT NULL)
+ financial_metrics | idx_company_metric             | CREATE INDEX idx_company_metric ON public.financial_metrics USING btree (company_id, metric_type, metric_date)
+ financial_metrics | idx_metric_time                | CREATE INDEX idx_metric_time ON public.financial_metrics USING btree (metric_date, metric_type)
+ sec_filings       | idx_filing_company             | CREATE INDEX idx_filing_company ON public.sec_filings USING btree (company_id)
+ sec_filings       | idx_filing_date                | CREATE INDEX idx_filing_date ON public.sec_filings USING btree (filing_date)
+ sec_filings       | idx_filing_type_date           | CREATE INDEX idx_filing_type_date ON public.sec_filings USING btree (filing_type, filing_date)
+ sec_filings       | idx_sec_filings_company_date   | CREATE INDEX idx_sec_filings_company_date ON public.sec_filings USING btree (company_id, filing_date DESC)
+ sec_filings       | idx_sec_filings_status         | CREATE INDEX idx_sec_filings_status ON public.sec_filings USING btree (processing_status, created_at DESC) WHERE ((processing_status)::text <> 'completed'::text)
+ sec_filings       | idx_sec_filings_type_date      | CREATE INDEX idx_sec_filings_type_date ON public.sec_filings USING btree (filing_type, filing_date DESC)
+(19 rows)
+

@@ -17,10 +17,10 @@ from src.core.config import get_settings
 class TestPasswordHashing:
     """Test password hashing and verification."""
 
-    def test_hash_password(self):
+    def test_hash_password(self, auth_service):
         """Test password is properly hashed."""
         password = "TestPassword123!"
-        hashed = AuthService.hash_password(password)
+        hashed = auth_service.hash_password(password)
 
         # Hashed password should not equal plaintext
         assert hashed != password
@@ -29,58 +29,56 @@ class TestPasswordHashing:
         # Should be reasonable length
         assert len(hashed) >= 60
 
-    def test_verify_password_correct(self):
+    def test_verify_password_correct(self, auth_service):
         """Test correct password verification."""
         password = "TestPassword123!"
-        hashed = AuthService.hash_password(password)
+        hashed = auth_service.hash_password(password)
 
-        assert AuthService.verify_password(password, hashed) is True
+        assert auth_service.verify_password(password, hashed) is True
 
-    def test_verify_password_incorrect(self):
+    def test_verify_password_incorrect(self, auth_service):
         """Test incorrect password verification."""
         password = "TestPassword123!"
-        hashed = AuthService.hash_password(password)
+        hashed = auth_service.hash_password(password)
 
-        assert AuthService.verify_password("WrongPassword!", hashed) is False
+        assert auth_service.verify_password("WrongPassword!", hashed) is False
 
-    def test_verify_password_empty(self):
+    def test_verify_password_empty(self, auth_service):
         """Test verification with empty password."""
-        hashed = AuthService.hash_password("TestPassword123!")
+        hashed = auth_service.hash_password("TestPassword123!")
 
-        assert AuthService.verify_password("", hashed) is False
+        assert auth_service.verify_password("", hashed) is False
 
-    def test_hash_password_deterministic(self):
+    def test_hash_password_deterministic(self, auth_service):
         """Test that hashing same password produces different hashes (salt)."""
         password = "TestPassword123!"
-        hash1 = AuthService.hash_password(password)
-        hash2 = AuthService.hash_password(password)
+        hash1 = auth_service.hash_password(password)
+        hash2 = auth_service.hash_password(password)
 
         # Different hashes due to salt
         assert hash1 != hash2
         # But both verify correctly
-        assert AuthService.verify_password(password, hash1)
-        assert AuthService.verify_password(password, hash2)
+        assert auth_service.verify_password(password, hash1)
+        assert auth_service.verify_password(password, hash2)
 
 
 class TestJWTTokens:
     """Test JWT token creation and verification."""
 
-    def test_create_access_token(self):
+    def test_create_access_token(self, auth_service, test_user):
         """Test JWT access token creation."""
-        data = {"sub": "user@example.com", "user_id": "123"}
-        token = AuthService.create_access_token(data)
+        token = auth_service.create_access_token(test_user)
 
         assert isinstance(token, str)
         assert len(token) > 0
         # Should have 3 parts (header.payload.signature)
         assert len(token.split(".")) == 3
 
-    def test_create_access_token_with_expiration(self):
+    def test_create_access_token_with_expiration(self, auth_service, test_user):
         """Test JWT token with custom expiration."""
-        data = {"sub": "user@example.com"}
         expires_delta = timedelta(minutes=15)
 
-        token = AuthService.create_access_token(data, expires_delta=expires_delta)
+        token = auth_service.create_access_token(test_user, expires_delta=expires_delta)
 
         # Decode and verify expiration
         settings = get_settings()
@@ -90,37 +88,21 @@ class TestJWTTokens:
             algorithms=["HS256"]
         )
 
-        exp = datetime.fromtimestamp(payload["exp"])
-        # Should expire in approximately 15 minutes
-        assert exp > datetime.utcnow()
-        assert exp < datetime.utcnow() + timedelta(minutes=16)
-
-    def test_create_access_token_default_expiration(self):
-        """Test JWT token with default expiration."""
-        data = {"sub": "user@example.com"}
-        token = AuthService.create_access_token(data)
-
-        settings = get_settings()
-        payload = jwt.decode(
-            token,
-            settings.SECRET_KEY.get_secret_value(),
-            algorithms=["HS256"]
-        )
-
-        # Should have exp claim
+        # Check that exp and iat are present
         assert "exp" in payload
-        exp = datetime.fromtimestamp(payload["exp"])
-        # Should be in the future
-        assert exp > datetime.utcnow()
+        assert "iat" in payload
 
-    def test_token_contains_data(self):
-        """Test that token contains encoded data."""
-        data = {
-            "sub": "user@example.com",
-            "user_id": "123",
-            "role": "admin"
-        }
-        token = AuthService.create_access_token(data)
+        # Verify expiration is ~15 minutes after issuance
+        exp_time = payload["exp"]
+        iat_time = payload["iat"]
+        time_diff = exp_time - iat_time
+
+        # Should be approximately 15 minutes (900 seconds)
+        assert 890 <= time_diff <= 910  # Allow 10 second tolerance
+
+    def test_create_access_token_default_expiration(self, auth_service, test_user):
+        """Test JWT token with default expiration."""
+        token = auth_service.create_access_token(test_user)
 
         settings = get_settings()
         payload = jwt.decode(
@@ -129,60 +111,111 @@ class TestJWTTokens:
             algorithms=["HS256"]
         )
 
-        assert payload["sub"] == "user@example.com"
-        assert payload["user_id"] == "123"
+        # Should have exp and iat claims
+        assert "exp" in payload
+        assert "iat" in payload
+
+        # Verify expiration is ~60 minutes after issuance (default)
+        exp_time = payload["exp"]
+        iat_time = payload["iat"]
+        time_diff = exp_time - iat_time
+
+        # Should be approximately 60 minutes (3600 seconds)
+        assert 3590 <= time_diff <= 3610  # Allow 10 second tolerance
+
+    def test_token_contains_data(self, auth_service, admin_user):
+        """Test that token contains encoded data."""
+        token = auth_service.create_access_token(admin_user)
+
+        settings = get_settings()
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY.get_secret_value(),
+            algorithms=["HS256"]
+        )
+
+        assert payload["email"] == "admin@example.com"
+        assert payload["username"] == "adminuser"
         assert payload["role"] == "admin"
 
 
 class TestAPIKeyGeneration:
     """Test API key generation and validation."""
 
-    def test_generate_api_key(self):
-        """Test API key generation."""
-        key = AuthService.generate_api_key()
+    def test_create_api_key(self, auth_service, test_user):
+        """Test API key creation."""
+        from src.auth.models import APIKeyCreate, PermissionScope
 
-        assert isinstance(key, str)
+        key_data = APIKeyCreate(
+            name="Test API Key",
+            scopes=[PermissionScope.READ_COMPANIES],
+            expires_in_days=30
+        )
+
+        response = auth_service.create_api_key(test_user, key_data)
+
+        assert isinstance(response.key, str)
         # Should start with prefix
-        assert key.startswith("ci_")
+        assert response.key.startswith("ci_")
         # Should be reasonable length (prefix + random part)
-        assert len(key) >= 40
+        assert len(response.key) >= 40
 
-    def test_generate_api_key_unique(self):
-        """Test that generated API keys are unique."""
-        key1 = AuthService.generate_api_key()
-        key2 = AuthService.generate_api_key()
+    def test_create_api_key_unique(self, auth_service, test_user):
+        """Test that created API keys are unique."""
+        from src.auth.models import APIKeyCreate, PermissionScope
 
-        assert key1 != key2
+        key_data = APIKeyCreate(
+            name="Test API Key 1",
+            scopes=[PermissionScope.READ_COMPANIES],
+            expires_in_days=30
+        )
 
-    def test_generate_api_key_format(self):
+        response1 = auth_service.create_api_key(test_user, key_data)
+
+        key_data.name = "Test API Key 2"
+        response2 = auth_service.create_api_key(test_user, key_data)
+
+        assert response1.key != response2.key
+
+    def test_create_api_key_format(self, auth_service, test_user):
         """Test API key format."""
-        key = AuthService.generate_api_key()
+        from src.auth.models import APIKeyCreate, PermissionScope
+
+        key_data = APIKeyCreate(
+            name="Test API Key",
+            scopes=[PermissionScope.READ_COMPANIES],
+            expires_in_days=30
+        )
+
+        response = auth_service.create_api_key(test_user, key_data)
 
         # Should match expected format
-        assert key.startswith("ci_")
-        # Should be alphanumeric after prefix
-        assert key[3:].replace("-", "").isalnum()
+        assert response.key.startswith("ci_")
+        # Should contain only alphanumeric, hyphens, and underscores after prefix
+        key_after_prefix = response.key[3:]
+        for char in key_after_prefix:
+            assert char.isalnum() or char in ['-', '_']
 
 
 class TestAuthenticationLogic:
     """Test authentication business logic."""
 
-    def test_authenticate_user_success(self):
+    def test_authenticate_user_success(self, auth_service):
         """Test successful user authentication."""
         # This is a unit test - in reality, you'd use a mock database
         # For now, we test the logic of password verification
         password = "TestPassword123!"
-        hashed = AuthService.hash_password(password)
+        hashed = auth_service.hash_password(password)
 
         # Simulate user from database
-        assert AuthService.verify_password(password, hashed)
+        assert auth_service.verify_password(password, hashed)
 
-    def test_authenticate_user_wrong_password(self):
+    def test_authenticate_user_wrong_password(self, auth_service):
         """Test authentication with wrong password."""
         password = "TestPassword123!"
-        hashed = AuthService.hash_password(password)
+        hashed = auth_service.hash_password(password)
 
-        assert not AuthService.verify_password("WrongPassword!", hashed)
+        assert not auth_service.verify_password("WrongPassword!", hashed)
 
     def test_role_hierarchy(self):
         """Test user role hierarchy."""
@@ -194,9 +227,9 @@ class TestAuthenticationLogic:
     def test_permission_scopes(self):
         """Test permission scope definitions."""
         # Test that permission scopes are properly defined
-        assert PermissionScope.READ.value == "read"
-        assert PermissionScope.WRITE.value == "write"
-        assert PermissionScope.ADMIN.value == "admin"
+        assert PermissionScope.READ_COMPANIES.value == "read:companies"
+        assert PermissionScope.WRITE_COMPANIES.value == "write:companies"
+        assert PermissionScope.MANAGE_USERS.value == "manage:users"
 
 
 class TestSecurityValidation:
@@ -216,7 +249,7 @@ class TestSecurityValidation:
             # (This logic would be in the User model or registration endpoint)
             assert len(pwd) < 12  # Too short
 
-    def test_password_strength_strong(self):
+    def test_password_strength_strong(self, auth_service):
         """Test strong password acceptance."""
         strong_passwords = [
             "MySecureP@ssw0rd123!",
@@ -225,14 +258,12 @@ class TestSecurityValidation:
         ]
 
         for pwd in strong_passwords:
-            hashed = AuthService.hash_password(pwd)
-            assert AuthService.verify_password(pwd, hashed)
+            hashed = auth_service.hash_password(pwd)
+            assert auth_service.verify_password(pwd, hashed)
 
-    def test_email_in_token_payload(self):
+    def test_email_in_token_payload(self, auth_service, test_user):
         """Test that email is properly included in token payload."""
-        email = "test@example.com"
-        data = {"sub": email, "user_id": "123"}
-        token = AuthService.create_access_token(data)
+        token = auth_service.create_access_token(test_user)
 
         settings = get_settings()
         payload = jwt.decode(
@@ -241,40 +272,59 @@ class TestSecurityValidation:
             algorithms=["HS256"]
         )
 
-        assert payload["sub"] == email
+        assert payload["email"] == test_user.email
 
 
 class TestErrorHandling:
     """Test error handling in auth service."""
 
-    def test_verify_password_with_none(self):
+    def test_verify_password_with_none(self, auth_service):
         """Test password verification with None values."""
-        hashed = AuthService.hash_password("test")
+        hashed = auth_service.hash_password("test")
 
         # Should handle None gracefully
         try:
-            result = AuthService.verify_password(None, hashed)
+            result = auth_service.verify_password(None, hashed)
             # If it doesn't raise, it should return False
             assert result is False
         except (TypeError, AttributeError):
             # Or it might raise an error, which is also acceptable
             pass
 
-    def test_create_token_with_empty_data(self):
-        """Test token creation with empty data."""
-        token = AuthService.create_access_token({})
+    def test_create_token_minimal_user(self, auth_service, db_session):
+        """Test token creation with minimal user data."""
+        from src.auth.models import UserCreate
+
+        # Create user with minimal required fields
+        user_data = UserCreate(
+            email="minimal@example.com",
+            username="minimaluser",
+            password="Minimal123!@#",
+            full_name="Minimal User",
+            organization="Test Corp"
+        )
+
+        user = auth_service.create_user(user_data, role=UserRole.VIEWER)
+        token = auth_service.create_access_token(user)
 
         # Should still create a valid token
         assert isinstance(token, str)
         assert len(token) > 0
 
-    def test_create_token_with_special_characters(self):
-        """Test token creation with special characters in data."""
-        data = {
-            "sub": "user+test@example.com",
-            "name": "Test User (Admin)"
-        }
-        token = AuthService.create_access_token(data)
+    def test_create_token_with_special_characters(self, auth_service, db_session):
+        """Test token creation with special characters in user data."""
+        from src.auth.models import UserCreate
+
+        user_data = UserCreate(
+            email="user+test@example.com",
+            username="testuser_special",
+            password="Special123!@#",
+            full_name="Test User (Admin)",
+            organization="Test Corp"
+        )
+
+        user = auth_service.create_user(user_data, role=UserRole.VIEWER)
+        token = auth_service.create_access_token(user)
 
         settings = get_settings()
         payload = jwt.decode(
@@ -283,8 +333,8 @@ class TestErrorHandling:
             algorithms=["HS256"]
         )
 
-        assert payload["sub"] == "user+test@example.com"
-        assert payload["name"] == "Test User (Admin)"
+        assert payload["email"] == "user+test@example.com"
+        assert payload["username"] == "testuser_special"
 
 
 # ============================================================================
@@ -294,58 +344,64 @@ class TestErrorHandling:
 class TestAuthWorkflows:
     """Test complete authentication workflows."""
 
-    def test_registration_workflow(self):
+    def test_registration_workflow(self, auth_service):
         """Test complete user registration workflow."""
         # 1. User provides password
         password = "SecurePassword123!"
 
         # 2. Hash password
-        hashed = AuthService.hash_password(password)
+        hashed = auth_service.hash_password(password)
 
         # 3. Verify hash is different from password
         assert hashed != password
 
         # 4. Later, verify password
-        assert AuthService.verify_password(password, hashed)
+        assert auth_service.verify_password(password, hashed)
 
-    def test_login_workflow(self):
+    def test_login_workflow(self, auth_service, test_user):
         """Test complete login workflow."""
         # 1. User registered (password hashed)
         password = "SecurePassword123!"
-        hashed = AuthService.hash_password(password)
+        hashed = auth_service.hash_password(password)
 
         # 2. User attempts login
         login_password = "SecurePassword123!"
 
         # 3. Verify password
-        authenticated = AuthService.verify_password(login_password, hashed)
+        authenticated = auth_service.verify_password(login_password, hashed)
         assert authenticated is True
 
         # 4. Create access token
         if authenticated:
-            token = AuthService.create_access_token({
-                "sub": "user@example.com",
-                "user_id": "123"
-            })
+            token = auth_service.create_access_token(test_user)
             assert len(token) > 0
 
-    def test_api_key_workflow(self):
-        """Test API key generation and usage workflow."""
-        # 1. Generate API key
-        api_key = AuthService.generate_api_key()
+    def test_api_key_workflow(self, auth_service, test_user):
+        """Test API key creation and usage workflow."""
+        from src.auth.models import APIKeyCreate, PermissionScope
 
-        # 2. Store hash of API key (you'd normally hash it)
-        api_key_hash = AuthService.hash_password(api_key)
+        # 1. Create API key
+        key_data = APIKeyCreate(
+            name="Test API Key",
+            scopes=[PermissionScope.READ_COMPANIES],
+            expires_in_days=30
+        )
+        response = auth_service.create_api_key(test_user, key_data)
+        api_key = response.key
 
-        # 3. Later, verify API key
-        assert AuthService.verify_password(api_key, api_key_hash)
+        # 2. Store hash of API key (it's already hashed in the database)
+        # We can verify the key works by calling verify_api_key
+        user, key_obj = auth_service.verify_api_key(api_key)
 
-    def test_token_expiration_workflow(self):
+        # 3. Verify we got the correct user back
+        assert user.id == test_user.id
+
+    def test_token_expiration_workflow(self, auth_service, test_user):
         """Test token expiration workflow."""
         # 1. Create short-lived token
         expires_delta = timedelta(seconds=1)
-        token = AuthService.create_access_token(
-            {"sub": "user@example.com"},
+        token = auth_service.create_access_token(
+            test_user,
             expires_delta=expires_delta
         )
 
@@ -356,7 +412,7 @@ class TestAuthWorkflows:
             settings.SECRET_KEY.get_secret_value(),
             algorithms=["HS256"]
         )
-        assert payload["sub"] == "user@example.com"
+        assert payload["email"] == test_user.email
 
         # 3. After expiration, would fail (but we won't sleep in tests)
         # In real code, you'd catch jwt.ExpiredSignatureError
