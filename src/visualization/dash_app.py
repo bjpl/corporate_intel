@@ -1,39 +1,48 @@
-"""Plotly Dash application for corporate intelligence visualization."""
+"""Plotly Dash application for corporate intelligence visualization.
 
-import asyncio
-from datetime import datetime, timedelta
+Clean implementation focused on REAL data visualization only.
+- 4 KPI cards: Total Revenue, Avg Gross Margin, Avg Operating Margin, Companies with Earnings
+- 4 Visualizations: Revenue Bar, Margin Comparison, Market Treemap, Earnings Box Plot
+- 1 Data Table: Comprehensive company metrics
+"""
+
+import logging
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
-from dash import Dash, Input, Output, State, callback, dcc, html
+from dash import Dash, Input, Output, callback, dcc, html
 from dash.dash_table import DataTable
-from plotly.subplots import make_subplots
 import dash_bootstrap_components as dbc
+from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
 
 from src.core.config import get_settings
-from src.db.session import get_db, get_session_factory
-from src.services.dashboard_service import DashboardService
 from src.visualization.components import (
-    create_cohort_heatmap,
-    create_competitive_landscape_scatter,
     create_earnings_growth_distribution,
     create_margin_comparison_chart,
-    create_market_share_sunburst,
-    create_metrics_waterfall,
-    create_retention_curves,
     create_revenue_by_category_treemap,
     create_revenue_comparison_bar,
-    create_segment_comparison_radar,
 )
 
 
 class CorporateIntelDashboard:
-    """Main dashboard application for EdTech intelligence."""
+    """Main dashboard application for EdTech intelligence - Real data only."""
 
     def __init__(self):
         self.settings = get_settings()
+        self.logger = logging.getLogger(__name__)
+
+        # Create synchronous database engine for Dash callbacks
+        try:
+            sync_url = self.settings.sync_database_url
+            self.engine = create_engine(sync_url, pool_pre_ping=True)
+            self.logger.info("Database engine initialized successfully")
+        except Exception as e:
+            self.logger.warning(f"Failed to initialize database engine: {e}. Dashboard will show 'No data' messages.")
+            self.engine = None
+
         self.app = Dash(
             __name__,
             title="Corporate Intelligence Platform",
@@ -43,9 +52,9 @@ class CorporateIntelDashboard:
         )
         self._setup_layout()
         self._register_callbacks()
-    
+
     def _setup_layout(self):
-        """Create dashboard layout."""
+        """Create dashboard layout with clean, data-focused design."""
         self.app.layout = dbc.Container([
             # Header
             dbc.Row([
@@ -56,7 +65,7 @@ class CorporateIntelDashboard:
                     ], className="dashboard-title text-white"),
                     html.P([
                         "Real-time competitive analysis and market intelligence",
-                        dbc.Badge("Live", color="success", className="ms-3"),
+                        dbc.Badge("Live Data", color="success", className="ms-3"),
                     ], className="dashboard-subtitle text-white-50"),
                 ], width=12, className="py-4", style={"backgroundColor": "#2C5282"}),
             ], className="mb-4"),
@@ -90,39 +99,19 @@ class CorporateIntelDashboard:
                                 value="all",
                                 clearable=False,
                             ),
-                        ], md=4),
+                        ], md=6),
 
                         dbc.Col([
                             html.Label([
-                                html.I(className="fas fa-calendar me-2"),
-                                "Time Period"
+                                html.I(className="fas fa-sync me-2"),
+                                "Auto-Refresh"
                             ], className="fw-bold"),
-                            dcc.Dropdown(
-                                id="period-filter",
-                                options=[
-                                    {"label": "Last Quarter", "value": "1Q"},
-                                    {"label": "Last 2 Quarters", "value": "2Q"},
-                                    {"label": "Last Year", "value": "4Q"},
-                                    {"label": "Last 2 Years", "value": "8Q"},
-                                ],
-                                value="4Q",
-                                clearable=False,
+                            dbc.Switch(
+                                id="auto-refresh-toggle",
+                                label="Enable auto-refresh (1 min)",
+                                value=False,
                             ),
-                        ], md=4),
-
-                        dbc.Col([
-                            html.Label([
-                                html.I(className="fas fa-building me-2"),
-                                "Comparison Companies"
-                            ], className="fw-bold"),
-                            dcc.Dropdown(
-                                id="company-selector",
-                                options=[],
-                                value=[],
-                                multi=True,
-                                placeholder="Select companies to compare",
-                            ),
-                        ], md=4),
+                        ], md=6),
                     ]),
                 ]),
             ], className="mb-4"),
@@ -130,33 +119,32 @@ class CorporateIntelDashboard:
             # KPI Cards
             dbc.Row(id="kpi-cards", className="mb-4"),
 
-            # Main visualizations
+            # Main visualizations - Row 1
             dbc.Row([
-                # Competitive Landscape
+                # Revenue Comparison
                 dbc.Col([
                     dbc.Card([
                         dbc.CardHeader([
                             html.Div([
                                 html.H4([
-                                    html.I(className="fas fa-globe me-2"),
-                                    "Competitive Landscape"
+                                    html.I(className="fas fa-chart-bar me-2"),
+                                    "Revenue Comparison"
                                 ], className="d-inline"),
                                 dbc.Button(
                                     html.I(className="fas fa-info-circle"),
-                                    id="info-competitive",
+                                    id="info-revenue",
                                     color="link",
                                     size="sm",
                                     className="float-end"
                                 ),
                                 dbc.Popover([
-                                    dbc.PopoverHeader("Competitive Landscape Analysis"),
+                                    dbc.PopoverHeader("Company Revenue Analysis"),
                                     dbc.PopoverBody([
-                                        html.P("This scatter plot visualizes company positioning based on:"),
+                                        html.P("Shows latest revenue for all tracked companies:"),
                                         html.Ul([
-                                            html.Li("X-axis: Revenue growth rate (YoY %)"),
-                                            html.Li("Y-axis: Net Revenue Retention (NRR %)"),
-                                            html.Li("Bubble size: Total revenue"),
-                                            html.Li("Color: EdTech category segment"),
+                                            html.Li("Companies sorted by revenue (ascending)"),
+                                            html.Li("Color-coded by EdTech category"),
+                                            html.Li("Hover for exact revenue values"),
                                         ]),
                                         html.Hr(),
                                         html.Small([
@@ -164,14 +152,14 @@ class CorporateIntelDashboard:
                                             "Data from mart_company_performance"
                                         ], className="text-muted"),
                                     ]),
-                                ], target="info-competitive", trigger="hover"),
+                                ], target="info-revenue", trigger="hover"),
                             ]),
                         ]),
                         dbc.CardBody([
                             dcc.Loading(
-                                id="loading-competitive",
+                                id="loading-revenue",
                                 type="default",
-                                children=[dcc.Graph(id="competitive-landscape-chart")],
+                                children=[dcc.Graph(id="revenue-chart")],
                             ),
                             dbc.Row([
                                 dbc.Col([
@@ -179,60 +167,60 @@ class CorporateIntelDashboard:
                                         html.I(className="fas fa-table me-1"),
                                         "Source: mart_company_performance"
                                     ], color="info", className="me-2"),
-                                    dbc.Badge(id="badge-competitive-updated", color="success"),
+                                    dbc.Badge(id="badge-revenue-updated", color="success"),
                                 ], className="mt-2"),
                             ]),
                         ]),
                     ]),
                 ], md=6, className="mb-4"),
 
-                # Market Share
+                # Margin Comparison
                 dbc.Col([
                     dbc.Card([
                         dbc.CardHeader([
                             html.Div([
                                 html.H4([
-                                    html.I(className="fas fa-chart-pie me-2"),
-                                    "Market Share Distribution"
+                                    html.I(className="fas fa-percentage me-2"),
+                                    "Margin Comparison"
                                 ], className="d-inline"),
                                 dbc.Button(
                                     html.I(className="fas fa-info-circle"),
-                                    id="info-market-share",
+                                    id="info-margin",
                                     color="link",
                                     size="sm",
                                     className="float-end"
                                 ),
                                 dbc.Popover([
-                                    dbc.PopoverHeader("Market Share Breakdown"),
+                                    dbc.PopoverHeader("Profitability Analysis"),
                                     dbc.PopoverBody([
-                                        html.P("Hierarchical view of market segmentation:"),
+                                        html.P("Compares gross and operating margins:"),
                                         html.Ul([
-                                            html.Li("Inner ring: EdTech categories"),
-                                            html.Li("Outer ring: Individual companies"),
-                                            html.Li("Size: Revenue contribution"),
+                                            html.Li("Top 15 companies by revenue"),
+                                            html.Li("Gross margin (blue) vs Operating margin (green)"),
+                                            html.Li("Grouped bars for easy comparison"),
                                         ]),
                                         html.Hr(),
                                         html.Small([
                                             html.I(className="fas fa-database me-2"),
-                                            "Data from mart_competitive_landscape"
+                                            "Data from mart_company_performance"
                                         ], className="text-muted"),
                                     ]),
-                                ], target="info-market-share", trigger="hover"),
+                                ], target="info-margin", trigger="hover"),
                             ]),
                         ]),
                         dbc.CardBody([
                             dcc.Loading(
-                                id="loading-market-share",
+                                id="loading-margin",
                                 type="default",
-                                children=[dcc.Graph(id="market-share-chart")],
+                                children=[dcc.Graph(id="margin-chart")],
                             ),
                             dbc.Row([
                                 dbc.Col([
                                     dbc.Badge([
                                         html.I(className="fas fa-table me-1"),
-                                        "Source: mart_competitive_landscape"
+                                        "Source: mart_company_performance"
                                     ], color="info", className="me-2"),
-                                    dbc.Badge(id="badge-market-share-updated", color="success"),
+                                    dbc.Badge(id="badge-margin-updated", color="success"),
                                 ], className="mt-2"),
                             ]),
                         ]),
@@ -240,180 +228,117 @@ class CorporateIntelDashboard:
                 ], md=6, className="mb-4"),
             ]),
 
-            # Row 2: Performance Metrics
+            # Main visualizations - Row 2
             dbc.Row([
-                # Waterfall Chart
+                # Market Treemap
                 dbc.Col([
                     dbc.Card([
                         dbc.CardHeader([
                             html.Div([
                                 html.H4([
-                                    html.I(className="fas fa-water me-2"),
-                                    "Revenue Waterfall Analysis"
+                                    html.I(className="fas fa-sitemap me-2"),
+                                    "Market Distribution Treemap"
                                 ], className="d-inline"),
                                 dbc.Button(
                                     html.I(className="fas fa-info-circle"),
-                                    id="info-waterfall",
+                                    id="info-treemap",
                                     color="link",
                                     size="sm",
                                     className="float-end"
                                 ),
                                 dbc.Popover([
-                                    dbc.PopoverHeader("Revenue Waterfall"),
+                                    dbc.PopoverHeader("Market Segmentation"),
                                     dbc.PopoverBody([
-                                        html.P("Breakdown of revenue components:"),
+                                        html.P("Hierarchical revenue distribution:"),
                                         html.Ul([
-                                            html.Li("Starting revenue baseline"),
-                                            html.Li("New customer revenue (green)"),
-                                            html.Li("Expansion revenue (green)"),
-                                            html.Li("Churn revenue (red)"),
-                                            html.Li("Ending revenue total"),
+                                            html.Li("Categories: EdTech segments"),
+                                            html.Li("Companies: Individual players"),
+                                            html.Li("Size represents revenue"),
+                                            html.Li("Color indicates category"),
                                         ]),
-                                        html.P([
-                                            html.Strong("Note: "),
-                                            "Select a company to view waterfall analysis"
-                                        ], className="text-warning small"),
+                                        html.Hr(),
+                                        html.Small([
+                                            html.I(className="fas fa-database me-2"),
+                                            "Data from mart_company_performance"
+                                        ], className="text-muted"),
                                     ]),
-                                ], target="info-waterfall", trigger="hover"),
+                                ], target="info-treemap", trigger="hover"),
                             ]),
                         ]),
                         dbc.CardBody([
                             dcc.Loading(
-                                id="loading-waterfall",
+                                id="loading-treemap",
                                 type="default",
-                                children=[dcc.Graph(id="waterfall-chart")],
+                                children=[dcc.Graph(id="treemap-chart")],
                             ),
+                            dbc.Row([
+                                dbc.Col([
+                                    dbc.Badge([
+                                        html.I(className="fas fa-table me-1"),
+                                        "Source: mart_company_performance"
+                                    ], color="info", className="me-2"),
+                                    dbc.Badge(id="badge-treemap-updated", color="success"),
+                                ], className="mt-2"),
+                            ]),
                         ]),
                     ]),
                 ], md=6, className="mb-4"),
 
-                # Radar Chart
+                # Earnings Growth Distribution
                 dbc.Col([
                     dbc.Card([
                         dbc.CardHeader([
                             html.Div([
                                 html.H4([
-                                    html.I(className="fas fa-radar me-2"),
-                                    "Segment Performance Radar"
+                                    html.I(className="fas fa-chart-area me-2"),
+                                    "Earnings Growth Distribution"
                                 ], className="d-inline"),
                                 dbc.Button(
                                     html.I(className="fas fa-info-circle"),
-                                    id="info-radar",
+                                    id="info-earnings",
                                     color="link",
                                     size="sm",
                                     className="float-end"
                                 ),
                                 dbc.Popover([
-                                    dbc.PopoverHeader("Multi-Metric Comparison"),
+                                    dbc.PopoverHeader("Growth Analysis"),
                                     dbc.PopoverBody([
-                                        html.P("Normalized performance across metrics:"),
+                                        html.P("Distribution of earnings growth by category:"),
                                         html.Ul([
-                                            html.Li("Revenue growth rate"),
-                                            html.Li("Net revenue retention"),
-                                            html.Li("LTV/CAC ratio"),
-                                            html.Li("Market concentration"),
-                                            html.Li("Segment maturity"),
+                                            html.Li("Box plot shows quartiles and outliers"),
+                                            html.Li("Individual points for each company"),
+                                            html.Li("Color-coded by category"),
                                         ]),
-                                        html.P("All values normalized to 0-100 scale", className="small text-muted"),
+                                        html.Hr(),
+                                        html.Small([
+                                            html.I(className="fas fa-database me-2"),
+                                            "Data from mart_company_performance"
+                                        ], className="text-muted"),
                                     ]),
-                                ], target="info-radar", trigger="hover"),
+                                ], target="info-earnings", trigger="hover"),
                             ]),
                         ]),
                         dbc.CardBody([
                             dcc.Loading(
-                                id="loading-radar",
+                                id="loading-earnings",
                                 type="default",
-                                children=[dcc.Graph(id="radar-chart")],
+                                children=[dcc.Graph(id="earnings-chart")],
                             ),
+                            dbc.Row([
+                                dbc.Col([
+                                    dbc.Badge([
+                                        html.I(className="fas fa-table me-1"),
+                                        "Source: mart_company_performance"
+                                    ], color="info", className="me-2"),
+                                    dbc.Badge(id="badge-earnings-updated", color="success"),
+                                ], className="mt-2"),
+                            ]),
                         ]),
                     ]),
                 ], md=6, className="mb-4"),
             ]),
 
-            # Row 3: Retention & Cohorts
-            dbc.Row([
-                # Retention Curves
-                dbc.Col([
-                    dbc.Card([
-                        dbc.CardHeader([
-                            html.Div([
-                                html.H4([
-                                    html.I(className="fas fa-chart-line me-2"),
-                                    "Retention Curves"
-                                ], className="d-inline"),
-                                dbc.Button(
-                                    html.I(className="fas fa-info-circle"),
-                                    id="info-retention",
-                                    color="link",
-                                    size="sm",
-                                    className="float-end"
-                                ),
-                                dbc.Popover([
-                                    dbc.PopoverHeader("Customer Retention Analysis"),
-                                    dbc.PopoverBody([
-                                        html.P("Track customer retention over time:"),
-                                        html.Ul([
-                                            html.Li("X-axis: Months since acquisition"),
-                                            html.Li("Y-axis: Retention rate (%)"),
-                                            html.Li("Multiple cohorts compared"),
-                                        ]),
-                                        html.P("Higher curves indicate better retention", className="small text-muted"),
-                                    ]),
-                                ], target="info-retention", trigger="hover"),
-                            ]),
-                        ]),
-                        dbc.CardBody([
-                            dcc.Loading(
-                                id="loading-retention",
-                                type="default",
-                                children=[dcc.Graph(id="retention-curves-chart")],
-                            ),
-                        ]),
-                    ]),
-                ], md=6, className="mb-4"),
-
-                # Cohort Heatmap
-                dbc.Col([
-                    dbc.Card([
-                        dbc.CardHeader([
-                            html.Div([
-                                html.H4([
-                                    html.I(className="fas fa-th me-2"),
-                                    "Cohort Analysis Heatmap"
-                                ], className="d-inline"),
-                                dbc.Button(
-                                    html.I(className="fas fa-info-circle"),
-                                    id="info-cohort",
-                                    color="link",
-                                    size="sm",
-                                    className="float-end"
-                                ),
-                                dbc.Popover([
-                                    dbc.PopoverHeader("Cohort Revenue Heatmap"),
-                                    dbc.PopoverBody([
-                                        html.P("Visualize cohort performance:"),
-                                        html.Ul([
-                                            html.Li("Rows: Acquisition cohorts"),
-                                            html.Li("Columns: Months since acquisition"),
-                                            html.Li("Color: Revenue or retention %"),
-                                        ]),
-                                        html.P("Darker colors indicate higher values", className="small text-muted"),
-                                    ]),
-                                ], target="info-cohort", trigger="hover"),
-                            ]),
-                        ]),
-                        dbc.CardBody([
-                            dcc.Loading(
-                                id="loading-cohort",
-                                type="default",
-                                children=[dcc.Graph(id="cohort-heatmap")],
-                            ),
-                        ]),
-                    ]),
-                ], md=6, className="mb-4"),
-            ]),
-
-            # Row 4: Detailed Table
+            # Detailed Table
             dbc.Row([
                 dbc.Col([
                     dbc.Card([
@@ -438,63 +363,90 @@ class CorporateIntelDashboard:
             dcc.Interval(
                 id="interval-component",
                 interval=60*1000,  # Update every minute
-                n_intervals=0
+                n_intervals=0,
+                disabled=True  # Start disabled
             ),
 
             # Store components for data
             dcc.Store(id="filtered-data"),
-            dcc.Store(id="market-data"),
             dcc.Store(id="data-freshness"),
 
         ], fluid=True, className="px-4 py-3")
-    
+
     def _register_callbacks(self):
         """Register dashboard callbacks."""
 
         @self.app.callback(
+            Output("interval-component", "disabled"),
+            Input("auto-refresh-toggle", "value")
+        )
+        def toggle_auto_refresh(auto_refresh):
+            """Enable/disable auto-refresh."""
+            return not auto_refresh
+
+        @self.app.callback(
             [Output("filtered-data", "data"),
-             Output("market-data", "data"),
              Output("data-freshness", "data"),
-             Output("company-selector", "options"),
              Output("data-freshness-alert", "children"),
              Output("data-freshness-alert", "is_open")],
             [Input("category-filter", "value"),
-             Input("period-filter", "value"),
              Input("interval-component", "n_intervals")]
         )
-        def update_data(category, period, n_intervals):
-            """Fetch and filter data based on selections using DashboardService."""
+        def update_data(category, n_intervals):
+            """Fetch and filter data based on selections using synchronous database queries."""
             try:
-                async def fetch_data():
-                    # Get session factory and create a session context
-                    session_factory = get_session_factory()
-                    async with session_factory() as session:
-                        service = DashboardService(session)
+                # Only attempt database queries if engine is available
+                if self.engine is None:
+                    raise SQLAlchemyError("Database engine not initialized")
 
-                        # Fetch company performance data
-                        companies_data = await service.get_company_performance(
-                            category=None if category == "all" else category
-                        )
+                with self.engine.connect() as conn:
+                    # Query company performance data from mart
+                    category_filter = None if category == "all" else category
 
-                        # Fetch competitive landscape
-                        market_data = await service.get_competitive_landscape(
-                            category=None if category == "all" else category
-                        )
+                    company_query = text("""
+                        SELECT
+                            ticker,
+                            company_name,
+                            edtech_category,
+                            latest_revenue,
+                            latest_gross_margin,
+                            latest_operating_margin,
+                            latest_profit_margin,
+                            revenue_yoy_growth,
+                            earnings_growth,
+                            overall_score,
+                            company_health_status,
+                            revenue_rank_in_category,
+                            revenue_rank_overall
+                        FROM public_marts.mart_company_performance
+                        WHERE (:category IS NULL OR edtech_category = :category)
+                        ORDER BY latest_revenue DESC NULLS LAST
+                    """)
 
-                        # Fetch data freshness
-                        freshness = await service.get_data_freshness()
+                    company_result = conn.execute(
+                        company_query,
+                        {"category": category_filter}
+                    )
+                    companies_data = [dict(row._mapping) for row in company_result]
 
-                        return companies_data, market_data, freshness
+                    # Query data freshness
+                    freshness_query = text("""
+                        SELECT
+                            MAX(refreshed_at) as last_updated,
+                            COUNT(DISTINCT ticker) as companies_count
+                        FROM public_marts.mart_company_performance
+                    """)
 
-                # Run the async function using asyncio.run()
-                companies_data, market_data, freshness = asyncio.run(fetch_data())
+                    freshness_result = conn.execute(freshness_query)
+                    freshness_row = freshness_result.fetchone()
 
-                # Build company selector options
-                company_options = [
-                    {"label": f"{c['ticker']} - {c['company_name']}",
-                     "value": c['ticker']}
-                    for c in companies_data
-                ]
+                    if freshness_row and freshness_row[0]:
+                        freshness = {
+                            "last_updated": freshness_row[0].isoformat() if freshness_row[0] else None,
+                            "companies_count": freshness_row[1] or 0
+                        }
+                    else:
+                        freshness = {}
 
                 # Build freshness alert
                 if freshness.get("last_updated"):
@@ -520,38 +472,26 @@ class CorporateIntelDashboard:
                     ]
                     show_alert = True
 
-                return companies_data, market_data, freshness, company_options, alert_content, show_alert
+                self.logger.info(f"Successfully fetched {len(companies_data)} companies from database")
+                return companies_data, freshness, alert_content, show_alert
 
-            except Exception as e:
-                # Log the error and fallback to sample data
-                import logging
-                logger = logging.getLogger(__name__)
-                logger.error(f"Database query failed: {e}", exc_info=True)
-
-                # Fallback to sample data
-                companies_df = self._fetch_company_performance(category, period)
-                market_df = self._fetch_market_data(category, period)
-
-                company_options = [
-                    {"label": f"{row['ticker']} - {row['company_name']}",
-                     "value": row['ticker']}
-                    for _, row in companies_df.iterrows()
-                ]
+            except (SQLAlchemyError, Exception) as e:
+                # Log the error
+                self.logger.error(f"Database query failed: {e}", exc_info=True)
 
                 alert_content = [
                     html.I(className="fas fa-database me-2"),
-                    "Using sample data (database not available)",
+                    "Database connection error. Please check your connection.",
                 ]
 
-                return companies_df.to_dict('records'), market_df.to_dict('records'), {}, company_options, alert_content, True
-        
+                return [], {}, alert_content, True
+
         @self.app.callback(
             Output("kpi-cards", "children"),
-            [Input("filtered-data", "data"),
-             Input("market-data", "data")]
+            Input("filtered-data", "data")
         )
-        def update_kpis(companies_data, market_data):
-            """Update KPI cards with modern design."""
+        def update_kpis(companies_data):
+            """Update KPI cards with real data."""
             if not companies_data:
                 return [
                     dbc.Col([
@@ -562,19 +502,13 @@ class CorporateIntelDashboard:
                     ], width=12)
                 ]
 
-            companies_df = pd.DataFrame(companies_data)
+            df = pd.DataFrame(companies_data)
 
-            # Calculate KPIs
-            total_revenue = companies_df['latest_revenue'].fillna(0).sum() / 1e9
-            avg_growth = companies_df['revenue_yoy_growth'].fillna(0).mean()
-            avg_nrr = companies_df['latest_nrr'].fillna(0).mean()
-            total_users = companies_df['latest_mau'].fillna(0).sum() / 1e6
-
-            # Calculate trends (mock data for now)
-            revenue_trend = "+12.3%"
-            growth_trend = "+2.1pp"
-            nrr_trend = "+5pp"
-            users_trend = "+18.5%"
+            # Calculate KPIs from real data
+            total_revenue = df['latest_revenue'].fillna(0).sum() / 1e9
+            avg_gross_margin = df['latest_gross_margin'].fillna(0).mean()
+            avg_operating_margin = df['latest_operating_margin'].fillna(0).mean()
+            companies_with_earnings = df['earnings_growth'].notna().sum()
 
             kpi_cards = [
                 dbc.Col([
@@ -582,13 +516,8 @@ class CorporateIntelDashboard:
                         dbc.CardBody([
                             html.Div([
                                 html.I(className="fas fa-dollar-sign fa-2x text-primary mb-3"),
-                                html.H6("Total Market Revenue", className="text-muted mb-2"),
-                                html.H3(f"${total_revenue:.1f}B", className="mb-1 fw-bold text-primary"),
-                                html.Div([
-                                    html.I(className="fas fa-arrow-up me-1 text-success"),
-                                    html.Span(revenue_trend, className="text-success fw-bold"),
-                                    html.Span(" vs. last period", className="text-muted small ms-1"),
-                                ]),
+                                html.H6("Total Revenue", className="text-muted mb-2"),
+                                html.H3(f"${total_revenue:.2f}B", className="mb-1 fw-bold text-primary"),
                             ]),
                             html.Hr(className="my-2"),
                             html.Small([
@@ -604,18 +533,13 @@ class CorporateIntelDashboard:
                         dbc.CardBody([
                             html.Div([
                                 html.I(className="fas fa-chart-line fa-2x text-success mb-3"),
-                                html.H6("Avg YoY Growth", className="text-muted mb-2"),
-                                html.H3(f"{avg_growth:.1f}%", className="mb-1 fw-bold text-success"),
-                                html.Div([
-                                    html.I(className="fas fa-arrow-up me-1 text-success"),
-                                    html.Span(growth_trend, className="text-success fw-bold"),
-                                    html.Span(" percentage points", className="text-muted small ms-1"),
-                                ]),
+                                html.H6("Avg Gross Margin", className="text-muted mb-2"),
+                                html.H3(f"{avg_gross_margin:.1f}%", className="mb-1 fw-bold text-success"),
                             ]),
                             html.Hr(className="my-2"),
                             html.Small([
                                 html.I(className="fas fa-info-circle me-1"),
-                                "Year-over-year revenue growth"
+                                "Average across all companies"
                             ], className="text-muted"),
                         ]),
                     ], className="h-100 border-start border-success border-4"),
@@ -625,19 +549,14 @@ class CorporateIntelDashboard:
                     dbc.Card([
                         dbc.CardBody([
                             html.Div([
-                                html.I(className="fas fa-redo fa-2x text-info mb-3"),
-                                html.H6("Avg Net Revenue Retention", className="text-muted mb-2"),
-                                html.H3(f"{avg_nrr:.0f}%", className="mb-1 fw-bold text-info"),
-                                html.Div([
-                                    html.I(className="fas fa-arrow-up me-1 text-success"),
-                                    html.Span(nrr_trend, className="text-success fw-bold"),
-                                    html.Span(" improvement", className="text-muted small ms-1"),
-                                ]),
+                                html.I(className="fas fa-percentage fa-2x text-info mb-3"),
+                                html.H6("Avg Operating Margin", className="text-muted mb-2"),
+                                html.H3(f"{avg_operating_margin:.1f}%", className="mb-1 fw-bold text-info"),
                             ]),
                             html.Hr(className="my-2"),
                             html.Small([
                                 html.I(className="fas fa-info-circle me-1"),
-                                "Customer revenue retention rate"
+                                "Operating efficiency metric"
                             ], className="text-muted"),
                         ]),
                     ], className="h-100 border-start border-info border-4"),
@@ -647,19 +566,14 @@ class CorporateIntelDashboard:
                     dbc.Card([
                         dbc.CardBody([
                             html.Div([
-                                html.I(className="fas fa-users fa-2x text-warning mb-3"),
-                                html.H6("Total Active Users", className="text-muted mb-2"),
-                                html.H3(f"{total_users:.1f}M", className="mb-1 fw-bold text-warning"),
-                                html.Div([
-                                    html.I(className="fas fa-arrow-up me-1 text-success"),
-                                    html.Span(users_trend, className="text-success fw-bold"),
-                                    html.Span(" user growth", className="text-muted small ms-1"),
-                                ]),
+                                html.I(className="fas fa-building fa-2x text-warning mb-3"),
+                                html.H6("Companies with Earnings", className="text-muted mb-2"),
+                                html.H3(f"{companies_with_earnings}", className="mb-1 fw-bold text-warning"),
                             ]),
                             html.Hr(className="my-2"),
                             html.Small([
                                 html.I(className="fas fa-info-circle me-1"),
-                                "Monthly active users across all companies"
+                                "Companies reporting earnings growth"
                             ], className="text-muted"),
                         ]),
                     ], className="h-100 border-start border-warning border-4"),
@@ -667,16 +581,15 @@ class CorporateIntelDashboard:
             ]
 
             return kpi_cards
-        
+
         @self.app.callback(
-            [Output("competitive-landscape-chart", "figure"),
-             Output("badge-competitive-updated", "children")],
+            [Output("revenue-chart", "figure"),
+             Output("badge-revenue-updated", "children")],
             [Input("filtered-data", "data"),
-             Input("company-selector", "value"),
              Input("data-freshness", "data")]
         )
-        def update_competitive_landscape(companies_data, selected_companies, freshness):
-            """Update competitive landscape scatter plot."""
+        def update_revenue_chart(companies_data, freshness):
+            """Update revenue comparison chart."""
             if not companies_data:
                 empty_fig = go.Figure()
                 empty_fig.add_annotation(
@@ -685,182 +598,116 @@ class CorporateIntelDashboard:
                     x=0.5, y=0.5, showarrow=False,
                     font=dict(size=20, color="gray")
                 )
+                empty_fig.update_layout(template="plotly_white", height=400)
                 return empty_fig, "No data"
 
+            # Prepare DataFrame with correct column names
             df = pd.DataFrame(companies_data)
+            df = df.rename(columns={
+                'latest_revenue': 'revenue',
+                'edtech_category': 'category'
+            })
 
-            # Highlight selected companies
-            if selected_companies:
-                df['selected'] = df['ticker'].isin(selected_companies)
-            else:
-                df['selected'] = False
+            figure = create_revenue_comparison_bar(df)
 
-            figure = create_competitive_landscape_scatter(df, selected_companies or [])
-
-            # Create timestamp badge
-            if freshness.get("last_updated"):
-                time_ago = "Updated recently"
-            else:
-                time_ago = "Using sample data"
-
-            badge_content = [html.I(className="fas fa-clock me-1"), time_ago]
-
+            badge_content = [html.I(className="fas fa-clock me-1"), "Updated recently"]
             return figure, badge_content
-        
+
         @self.app.callback(
-            [Output("market-share-chart", "figure"),
-             Output("badge-market-share-updated", "children")],
-            [Input("market-data", "data"),
-             Input("category-filter", "value"),
+            [Output("margin-chart", "figure"),
+             Output("badge-margin-updated", "children")],
+            [Input("filtered-data", "data"),
              Input("data-freshness", "data")]
         )
-        def update_market_share(market_data, category, freshness):
-            """Update market share sunburst chart."""
-            if not market_data:
+        def update_margin_chart(companies_data, freshness):
+            """Update margin comparison chart."""
+            if not companies_data:
                 empty_fig = go.Figure()
                 empty_fig.add_annotation(
-                    text="No market data available",
+                    text="No data available",
                     xref="paper", yref="paper",
                     x=0.5, y=0.5, showarrow=False,
                     font=dict(size=20, color="gray")
                 )
+                empty_fig.update_layout(template="plotly_white", height=400)
                 return empty_fig, "No data"
 
-            # Handle both dict and list formats
-            if isinstance(market_data, dict) and 'segments' in market_data:
-                df = pd.DataFrame(market_data['segments'])
-            else:
-                df = pd.DataFrame(market_data)
+            df = pd.DataFrame(companies_data)
+            df = df.rename(columns={
+                'latest_revenue': 'revenue',
+                'latest_gross_margin': 'gross_margin',
+                'latest_operating_margin': 'operating_margin'
+            })
 
-            figure = create_market_share_sunburst(df, category)
+            figure = create_margin_comparison_chart(df, top_n=15)
 
             badge_content = [html.I(className="fas fa-clock me-1"), "Updated recently"]
             return figure, badge_content
-        
+
         @self.app.callback(
-            Output("waterfall-chart", "figure"),
+            [Output("treemap-chart", "figure"),
+             Output("badge-treemap-updated", "children")],
             [Input("filtered-data", "data"),
-             Input("company-selector", "value")]
+             Input("data-freshness", "data")]
         )
-        def update_waterfall(companies_data, selected_companies):
-            """Update revenue waterfall chart."""
-            if not companies_data or not selected_companies:
-                empty_fig = go.Figure()
-                empty_fig.add_annotation(
-                    text="Select a company to view waterfall analysis",
-                    xref="paper", yref="paper",
-                    x=0.5, y=0.5, showarrow=False,
-                    font=dict(size=16, color="gray")
-                )
-                return empty_fig
-
-            df = pd.DataFrame(companies_data)
-            company_data = df[df['ticker'] == selected_companies[0]]
-
-            if company_data.empty:
-                empty_fig = go.Figure()
-                empty_fig.add_annotation(
-                    text="Company data not available",
-                    xref="paper", yref="paper",
-                    x=0.5, y=0.5, showarrow=False,
-                    font=dict(size=16, color="gray")
-                )
-                return empty_fig
-
-            return create_metrics_waterfall(company_data.iloc[0])
-
-        @self.app.callback(
-            Output("radar-chart", "figure"),
-            [Input("market-data", "data")]
-        )
-        def update_radar_chart(market_data):
-            """Update segment performance radar chart."""
-            if not market_data:
-                empty_fig = go.Figure()
-                empty_fig.add_annotation(
-                    text="No segment data available",
-                    xref="paper", yref="paper",
-                    x=0.5, y=0.5, showarrow=False,
-                    font=dict(size=16, color="gray")
-                )
-                return empty_fig
-
-            # Handle both dict and list formats
-            if isinstance(market_data, dict) and 'segments' in market_data:
-                df = pd.DataFrame(market_data['segments'])
-            else:
-                df = pd.DataFrame(market_data)
-
-            return create_segment_comparison_radar(df)
-
-        @self.app.callback(
-            Output("retention-curves-chart", "figure"),
-            [Input("filtered-data", "data"),
-             Input("company-selector", "value")]
-        )
-        def update_retention_curves(companies_data, selected_companies):
-            """Update retention curves chart."""
+        def update_treemap_chart(companies_data, freshness):
+            """Update market treemap chart."""
             if not companies_data:
                 empty_fig = go.Figure()
                 empty_fig.add_annotation(
-                    text="No retention data available",
+                    text="No data available",
                     xref="paper", yref="paper",
                     x=0.5, y=0.5, showarrow=False,
-                    font=dict(size=16, color="gray")
+                    font=dict(size=20, color="gray")
                 )
-                return empty_fig
+                empty_fig.update_layout(template="plotly_white", height=400)
+                return empty_fig, "No data"
 
             df = pd.DataFrame(companies_data)
+            df = df.rename(columns={
+                'latest_revenue': 'revenue',
+                'edtech_category': 'category'
+            })
 
-            # Filter by selected companies if any
-            if selected_companies:
-                df = df[df['ticker'].isin(selected_companies)]
+            figure = create_revenue_by_category_treemap(df)
 
-            return create_retention_curves(df)
+            badge_content = [html.I(className="fas fa-clock me-1"), "Updated recently"]
+            return figure, badge_content
 
         @self.app.callback(
-            Output("cohort-heatmap", "figure"),
+            [Output("earnings-chart", "figure"),
+             Output("badge-earnings-updated", "children")],
             [Input("filtered-data", "data"),
-             Input("company-selector", "value")]
+             Input("data-freshness", "data")]
         )
-        def update_cohort_heatmap(companies_data, selected_companies):
-            """Update cohort analysis heatmap."""
+        def update_earnings_chart(companies_data, freshness):
+            """Update earnings growth distribution chart."""
             if not companies_data:
                 empty_fig = go.Figure()
                 empty_fig.add_annotation(
-                    text="No cohort data available",
+                    text="No data available",
                     xref="paper", yref="paper",
                     x=0.5, y=0.5, showarrow=False,
-                    font=dict(size=16, color="gray")
+                    font=dict(size=20, color="gray")
                 )
-                return empty_fig
+                empty_fig.update_layout(template="plotly_white", height=400)
+                return empty_fig, "No data"
 
             df = pd.DataFrame(companies_data)
+            df = df.rename(columns={
+                'edtech_category': 'category'
+            })
 
-            # Use first selected company or first in list
-            if selected_companies:
-                company_data = df[df['ticker'] == selected_companies[0]]
-            else:
-                company_data = df.head(1)
+            figure = create_earnings_growth_distribution(df)
 
-            if company_data.empty:
-                empty_fig = go.Figure()
-                empty_fig.add_annotation(
-                    text="Select a company to view cohort analysis",
-                    xref="paper", yref="paper",
-                    x=0.5, y=0.5, showarrow=False,
-                    font=dict(size=16, color="gray")
-                )
-                return empty_fig
-
-            return create_cohort_heatmap(company_data.iloc[0])
+            badge_content = [html.I(className="fas fa-clock me-1"), "Updated recently"]
+            return figure, badge_content
 
         @self.app.callback(
             Output("performance-table", "children"),
-            [Input("filtered-data", "data"),
-             Input("company-selector", "value")]
+            Input("filtered-data", "data")
         )
-        def update_performance_table(companies_data, selected_companies):
+        def update_performance_table(companies_data):
             """Update performance details table."""
             if not companies_data:
                 return dbc.Alert([
@@ -870,12 +717,8 @@ class CorporateIntelDashboard:
 
             df = pd.DataFrame(companies_data)
 
-            # Filter for selected companies or show top 10
-            if selected_companies:
-                df = df[df['ticker'].isin(selected_companies)]
-            else:
-                # Sort by revenue and take top 10
-                df = df.sort_values('latest_revenue', ascending=False, na_position='last').head(10)
+            # Sort by revenue and take all companies
+            df = df.sort_values('latest_revenue', ascending=False, na_position='last')
 
             if df.empty:
                 return dbc.Alert([
@@ -883,11 +726,11 @@ class CorporateIntelDashboard:
                     "No companies match the current filters."
                 ], color="info")
 
-            # Format columns
+            # Format columns for display
             display_columns = [
                 'ticker', 'company_name', 'edtech_category',
-                'latest_revenue', 'revenue_yoy_growth', 'latest_nrr',
-                'latest_mau', 'latest_arpu', 'overall_score'
+                'latest_revenue', 'latest_gross_margin', 'latest_operating_margin',
+                'revenue_yoy_growth', 'earnings_growth', 'overall_score', 'company_health_status'
             ]
 
             # Ensure all columns exist
@@ -901,17 +744,17 @@ class CorporateIntelDashboard:
             df_display['latest_revenue'] = df_display['latest_revenue'].apply(
                 lambda x: f"${x/1e6:.1f}M" if pd.notna(x) and x > 0 else "-"
             )
+            df_display['latest_gross_margin'] = df_display['latest_gross_margin'].apply(
+                lambda x: f"{x:.1f}%" if pd.notna(x) else "-"
+            )
+            df_display['latest_operating_margin'] = df_display['latest_operating_margin'].apply(
+                lambda x: f"{x:.1f}%" if pd.notna(x) else "-"
+            )
             df_display['revenue_yoy_growth'] = df_display['revenue_yoy_growth'].apply(
                 lambda x: f"{x:.1f}%" if pd.notna(x) else "-"
             )
-            df_display['latest_nrr'] = df_display['latest_nrr'].apply(
-                lambda x: f"{x:.0f}%" if pd.notna(x) else "-"
-            )
-            df_display['latest_mau'] = df_display['latest_mau'].apply(
-                lambda x: f"{x/1e3:.0f}K" if pd.notna(x) and x > 0 else "-"
-            )
-            df_display['latest_arpu'] = df_display['latest_arpu'].apply(
-                lambda x: f"${x:.0f}" if pd.notna(x) else "-"
+            df_display['earnings_growth'] = df_display['earnings_growth'].apply(
+                lambda x: f"{x:.1f}%" if pd.notna(x) else "-"
             )
             df_display['overall_score'] = df_display['overall_score'].apply(
                 lambda x: f"{x:.0f}" if pd.notna(x) else "-"
@@ -924,11 +767,12 @@ class CorporateIntelDashboard:
                     {"name": "Company", "id": "company_name"},
                     {"name": "Category", "id": "edtech_category"},
                     {"name": "Revenue", "id": "latest_revenue"},
+                    {"name": "Gross Margin", "id": "latest_gross_margin"},
+                    {"name": "Operating Margin", "id": "latest_operating_margin"},
                     {"name": "YoY Growth", "id": "revenue_yoy_growth"},
-                    {"name": "NRR", "id": "latest_nrr"},
-                    {"name": "MAU", "id": "latest_mau"},
-                    {"name": "ARPU", "id": "latest_arpu"},
+                    {"name": "Earnings Growth", "id": "earnings_growth"},
                     {"name": "Score", "id": "overall_score"},
+                    {"name": "Health Status", "id": "company_health_status"},
                 ],
                 style_cell={
                     'textAlign': 'left',
@@ -945,7 +789,23 @@ class CorporateIntelDashboard:
                     {
                         'if': {'row_index': 'odd'},
                         'backgroundColor': '#f8f9fa',
-                    }
+                    },
+                    {
+                        'if': {
+                            'filter_query': '{company_health_status} = "Excellent"',
+                            'column_id': 'company_health_status'
+                        },
+                        'backgroundColor': '#d4edda',
+                        'color': '#155724',
+                    },
+                    {
+                        'if': {
+                            'filter_query': '{company_health_status} = "At Risk"',
+                            'column_id': 'company_health_status'
+                        },
+                        'backgroundColor': '#f8d7da',
+                        'color': '#721c24',
+                    },
                 ],
                 style_header={
                     'backgroundColor': '#2C5282',
@@ -961,59 +821,10 @@ class CorporateIntelDashboard:
                 },
                 sort_action="native",
                 filter_action="native",
-                page_size=10,
+                page_size=20,
                 page_action="native",
             )
-    
-    
-    def _fetch_company_performance(self, category: str, period: str) -> pd.DataFrame:
-        """Fetch company performance data from database."""
-        # In production, this would query mart_company_performance
-        # Using sample data structure for demonstration
-        
-        sample_data = {
-            'ticker': ['CHGG', 'COUR', 'DUOL', 'TWOU', 'ARCE'],
-            'company_name': ['Chegg', 'Coursera', 'Duolingo', '2U', 'Arco Platform'],
-            'edtech_category': ['direct_to_consumer', 'higher_education', 'direct_to_consumer', 
-                               'higher_education', 'k12'],
-            'latest_revenue': [644.9e6, 523.8e6, 484.2e6, 945.8e6, 312.4e6],
-            'revenue_yoy_growth': [-7.2, 21.0, 42.9, -12.5, 18.3],
-            'latest_nrr': [92, 108, 124, 85, 115],
-            'latest_mau': [4.2e6, 118e6, 83.1e6, 12.8e6, 2.1e6],
-            'latest_arpu': [12.8, 48.5, 4.9, 245.0, 124.0],
-            'latest_ltv_cac_ratio': [1.2, 2.8, 4.1, 0.9, 3.2],
-            'overall_score': [45, 72, 89, 38, 78],
-        }
-        
-        df = pd.DataFrame(sample_data)
-        
-        if category != "all":
-            df = df[df['edtech_category'] == category]
-        
-        return df
-    
-    def _fetch_market_data(self, category: str, period: str) -> pd.DataFrame:
-        """Fetch market data from database."""
-        # In production, this would query mart_competitive_landscape
-        # Using sample data structure
-        
-        sample_data = {
-            'edtech_category': ['k12', 'higher_education', 'corporate_learning', 
-                               'direct_to_consumer', 'enabling_technology'],
-            'total_segment_revenue': [2.3e9, 4.1e9, 3.2e9, 5.8e9, 1.9e9],
-            'companies_in_segment': [12, 18, 15, 24, 9],
-            'avg_revenue_growth': [15.2, 8.9, 22.4, 31.5, 18.7],
-            'avg_nrr': [108, 102, 115, 98, 112],
-            'hhi_index': [1823, 2156, 1452, 987, 2534],
-        }
-        
-        df = pd.DataFrame(sample_data)
-        
-        if category != "all":
-            df = df[df['edtech_category'] == category]
-        
-        return df
-    
+
     def run(self, debug: bool = False, port: int = 8050):
         """Run the dashboard application."""
         self.app.run(debug=debug, port=port, host="0.0.0.0")
