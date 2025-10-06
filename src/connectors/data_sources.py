@@ -39,6 +39,25 @@ from src.core.cache import cache_key_wrapper, get_cache
 from src.core.config import get_settings
 
 
+def safe_float(value: Any, default: float = 0.0) -> float:
+    """
+    Safely convert value to float, handling 'None' strings, None, empty strings.
+
+    Args:
+        value: The value to convert to float
+        default: Default value to return if conversion fails
+
+    Returns:
+        Float value or default if conversion fails
+    """
+    if value is None or value == '' or value == 'None' or value == 'null':
+        return default
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
+
+
 class RateLimiter:
     """Rate limiter for API calls."""
     
@@ -216,40 +235,40 @@ class AlphaVantageConnector:
         """Get company overview with fundamental data."""
         if not self.fd:
             return {}
-        
+
         await self.rate_limiter.acquire()
-        
+
         try:
             data, _ = self.fd.get_company_overview(ticker)
-            
+
             # Extract EdTech-relevant metrics
             return {
                 'ticker': ticker,
-                'market_cap': float(data.get('MarketCapitalization', 0)),
-                'pe_ratio': float(data.get('PERatio', 0)),
-                'peg_ratio': float(data.get('PEGRatio', 0)),
-                'dividend_yield': float(data.get('DividendYield', 0)),
-                'eps': float(data.get('EPS', 0)),
-                'revenue_ttm': float(data.get('RevenueTTM', 0)),
-                'revenue_per_share_ttm': float(data.get('RevenuePerShareTTM', 0)),
-                'profit_margin': float(data.get('ProfitMargin', 0)),
-                'operating_margin_ttm': float(data.get('OperatingMarginTTM', 0)),
-                'return_on_assets_ttm': float(data.get('ReturnOnAssetsTTM', 0)),
-                'return_on_equity_ttm': float(data.get('ReturnOnEquityTTM', 0)),
-                'quarterly_earnings_growth_yoy': float(data.get('QuarterlyEarningsGrowthYOY', 0)),
-                'quarterly_revenue_growth_yoy': float(data.get('QuarterlyRevenueGrowthYOY', 0)),
-                'analyst_target_price': float(data.get('AnalystTargetPrice', 0)),
-                'trailing_pe': float(data.get('TrailingPE', 0)),
-                'forward_pe': float(data.get('ForwardPE', 0)),
-                'price_to_sales_ttm': float(data.get('PriceToSalesRatioTTM', 0)),
-                'price_to_book': float(data.get('PriceToBookRatio', 0)),
-                'ev_to_revenue': float(data.get('EVToRevenue', 0)),
-                'ev_to_ebitda': float(data.get('EVToEBITDA', 0)),
-                'beta': float(data.get('Beta', 0)),
-                '52_week_high': float(data.get('52WeekHigh', 0)),
-                '52_week_low': float(data.get('52WeekLow', 0)),
+                'market_cap': safe_float(data.get('MarketCapitalization'), 0.0),
+                'pe_ratio': safe_float(data.get('PERatio'), 0.0),
+                'peg_ratio': safe_float(data.get('PEGRatio'), 0.0),
+                'dividend_yield': safe_float(data.get('DividendYield'), 0.0),
+                'eps': safe_float(data.get('EPS'), 0.0),
+                'revenue_ttm': safe_float(data.get('RevenueTTM'), 0.0),
+                'revenue_per_share_ttm': safe_float(data.get('RevenuePerShareTTM'), 0.0),
+                'profit_margin': safe_float(data.get('ProfitMargin'), 0.0),
+                'operating_margin_ttm': safe_float(data.get('OperatingMarginTTM'), 0.0),
+                'return_on_assets_ttm': safe_float(data.get('ReturnOnAssetsTTM'), 0.0),
+                'return_on_equity_ttm': safe_float(data.get('ReturnOnEquityTTM'), 0.0),
+                'quarterly_earnings_growth_yoy': safe_float(data.get('QuarterlyEarningsGrowthYOY'), 0.0),
+                'quarterly_revenue_growth_yoy': safe_float(data.get('QuarterlyRevenueGrowthYOY'), 0.0),
+                'analyst_target_price': safe_float(data.get('AnalystTargetPrice'), 0.0),
+                'trailing_pe': safe_float(data.get('TrailingPE'), 0.0),
+                'forward_pe': safe_float(data.get('ForwardPE'), 0.0),
+                'price_to_sales_ttm': safe_float(data.get('PriceToSalesRatioTTM'), 0.0),
+                'price_to_book': safe_float(data.get('PriceToBookRatio'), 0.0),
+                'ev_to_revenue': safe_float(data.get('EVToRevenue'), 0.0),
+                'ev_to_ebitda': safe_float(data.get('EVToEBITDA'), 0.0),
+                'beta': safe_float(data.get('Beta'), 0.0),
+                '52_week_high': safe_float(data.get('52WeekHigh'), 0.0),
+                '52_week_low': safe_float(data.get('52WeekLow'), 0.0),
             }
-            
+
         except Exception as e:
             logger.error(f"Error fetching Alpha Vantage data for {ticker}: {e}")
             return {}

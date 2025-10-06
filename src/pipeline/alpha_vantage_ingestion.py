@@ -30,6 +30,7 @@ import sys
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
+import aiohttp
 from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
@@ -111,7 +112,9 @@ class AlphaVantageIngestionResult:
         self.metrics_fetched = 0
         self.metrics_stored = 0
         self.error_message: Optional[str] = None
+        self.error_category: Optional[str] = None
         self.company_id: Optional[str] = None
+        self.retry_count: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
@@ -121,7 +124,9 @@ class AlphaVantageIngestionResult:
             'metrics_fetched': self.metrics_fetched,
             'metrics_stored': self.metrics_stored,
             'error_message': self.error_message,
+            'error_category': self.error_category,
             'company_id': str(self.company_id) if self.company_id else None,
+            'retry_count': self.retry_count,
         }
 
 
@@ -259,19 +264,32 @@ async def store_financial_metrics(
 async def ingest_alpha_vantage_for_company(
     ticker: str,
     connector: AlphaVantageConnector,
-    session: AsyncSession
+    session: AsyncSession,
+    _retry_state: Optional[Dict[str, int]] = None
 ) -> AlphaVantageIngestionResult:
     """Fetch and store Alpha Vantage data for a single company.
+
+    Implements retry logic with exponential backoff for transient failures:
+    - Max 3 attempts
+    - Wait time: 4s, 8s, 16s (exponential backoff)
+    - Retries on network errors (ClientError, TimeoutError)
+    - Does NOT retry on data quality issues (ValueError)
 
     Args:
         ticker: Company ticker symbol
         connector: Alpha Vantage connector instance
         session: Database session
+        _retry_state: Internal state for tracking retries (used internally)
 
     Returns:
         AlphaVantageIngestionResult with operation details
     """
+    # Initialize retry state if not provided
+    if _retry_state is None:
+        _retry_state = {'attempt': 0}
+
     result = AlphaVantageIngestionResult(ticker)
+    result.retry_count = _retry_state['attempt']
 
     try:
         # Get or create company record
@@ -279,6 +297,7 @@ async def ingest_alpha_vantage_for_company(
 
         if not company:
             result.error_message = "Failed to get/create company record"
+            result.error_category = "database_error"
             return result
 
         result.company_id = company.id
@@ -287,8 +306,20 @@ async def ingest_alpha_vantage_for_company(
         logger.debug(f"{ticker}: Fetching data from Alpha Vantage API...")
         av_data = await connector.get_company_overview(ticker)
 
-        if not av_data:
-            result.error_message = "No data returned from Alpha Vantage"
+        # Validate API response format
+        if not av_data or not isinstance(av_data, dict):
+            result.error_message = "Invalid API response format (empty or not a dict)"
+            result.error_category = "api_format_error"
+            return result
+
+        # Validate ticker match
+        if av_data.get('ticker') and av_data.get('ticker') != ticker.upper():
+            logger.warning(
+                f"{ticker}: API returned data for wrong ticker: "
+                f"expected {ticker.upper()}, got {av_data.get('ticker')}"
+            )
+            result.error_message = f"Ticker mismatch: expected {ticker.upper()}, got {av_data.get('ticker')}"
+            result.error_category = "data_validation_error"
             return result
 
         result.metrics_fetched = len([v for v in av_data.values() if v])
@@ -302,14 +333,74 @@ async def ingest_alpha_vantage_for_company(
         )
 
         result.metrics_stored = metrics_stored
+
+        # Check if we got any valid data to store
+        if result.metrics_fetched == 0 or metrics_stored == 0:
+            result.error_message = "No valid metrics returned from API or stored"
+            result.error_category = "no_data"
+            await session.rollback()
+            return result
+
         result.success = metrics_stored > 0
 
         # Commit the transaction
         await session.commit()
 
+        if result.success and result.retry_count > 0:
+            logger.info(f"{ticker}: Succeeded after {result.retry_count} retries")
+
+    except ValueError as e:
+        # Data quality/conversion errors - don't retry
+        if "'None'" in str(e) or "None" in str(e):
+            result.error_message = "API returned 'None' values (data quality issue)"
+            result.error_category = "data_quality_error"
+        else:
+            result.error_message = f"Value conversion error: {str(e)}"
+            result.error_category = "conversion_error"
+        logger.error(f"{ticker}: {result.error_category} - {result.error_message}")
+        await session.rollback()
+
+    except aiohttp.ClientError as e:
+        # Network errors - will be retried manually
+        result.error_message = f"Network error: {str(e)}"
+        result.error_category = "network_error"
+        await session.rollback()
+
+        # Retry logic
+        _retry_state['attempt'] += 1
+        if _retry_state['attempt'] < 3:
+            wait_time = min(4 * (2 ** (_retry_state['attempt'] - 1)), 60)  # 4s, 8s, 16s
+            logger.warning(f"{ticker}: Network error (attempt {_retry_state['attempt']}/3) - {str(e)}, retrying in {wait_time}s")
+            await asyncio.sleep(wait_time)
+            return await ingest_alpha_vantage_for_company(ticker, connector, session, _retry_state)
+        else:
+            logger.error(f"{ticker}: Network error after {_retry_state['attempt']} attempts - {str(e)}")
+            result.retry_count = _retry_state['attempt']
+            raise  # Max retries exceeded
+
+    except asyncio.TimeoutError as e:
+        # Timeout errors - will be retried manually
+        result.error_message = f"Request timeout: {str(e)}"
+        result.error_category = "timeout_error"
+        await session.rollback()
+
+        # Retry logic
+        _retry_state['attempt'] += 1
+        if _retry_state['attempt'] < 3:
+            wait_time = min(4 * (2 ** (_retry_state['attempt'] - 1)), 60)  # 4s, 8s, 16s
+            logger.warning(f"{ticker}: Timeout (attempt {_retry_state['attempt']}/3), retrying in {wait_time}s")
+            await asyncio.sleep(wait_time)
+            return await ingest_alpha_vantage_for_company(ticker, connector, session, _retry_state)
+        else:
+            logger.error(f"{ticker}: Timeout after {_retry_state['attempt']} attempts")
+            result.retry_count = _retry_state['attempt']
+            raise  # Max retries exceeded
+
     except Exception as e:
-        logger.error(f"{ticker}: Error during ingestion - {str(e)}", exc_info=True)
-        result.error_message = str(e)
+        # Unexpected errors
+        result.error_message = f"Unexpected error: {str(e)}"
+        result.error_category = "unexpected_error"
+        logger.error(f"{ticker}: Unexpected error during ingestion - {str(e)}", exc_info=True)
         await session.rollback()
 
     return result
@@ -400,6 +491,15 @@ async def run_alpha_vantage_ingestion(
     # Calculate summary statistics
     total_metrics_fetched = sum(r.metrics_fetched for r in results)
     total_metrics_stored = sum(r.metrics_stored for r in results)
+    total_retries = sum(r.retry_count for r in results)
+    companies_with_retries = [r.ticker for r in results if r.retry_count > 0]
+    succeeded_after_retry = [r.ticker for r in results if r.success and r.retry_count > 0]
+
+    # Categorize failures
+    failure_categories = {}
+    for r in results:
+        if not r.success and r.error_category:
+            failure_categories[r.error_category] = failure_categories.get(r.error_category, 0) + 1
 
     logger.info("-" * 80)
     logger.info("ALPHA VANTAGE INGESTION SUMMARY")
@@ -409,6 +509,28 @@ async def run_alpha_vantage_ingestion(
     logger.info(f"Failed: {len(failed_companies)}")
     if failed_companies:
         logger.info(f"Failed companies: {', '.join(failed_companies)}")
+
+    # Retry statistics
+    logger.info("-" * 80)
+    logger.info("RETRY STATISTICS")
+    logger.info(f"Total retry attempts: {total_retries}")
+    logger.info(f"Companies requiring retries: {len(companies_with_retries)}")
+    if companies_with_retries:
+        logger.info(f"Companies with retries: {', '.join(companies_with_retries)}")
+    logger.info(f"Companies succeeded after retry: {len(succeeded_after_retry)}")
+    if succeeded_after_retry:
+        logger.info(f"Recovered via retry: {', '.join(succeeded_after_retry)}")
+
+    # Failure analysis
+    if failure_categories:
+        logger.info("-" * 80)
+        logger.info("FAILURE CATEGORIES")
+        for category, count in sorted(failure_categories.items(), key=lambda x: x[1], reverse=True):
+            logger.info(f"  {category}: {count} companies")
+
+    # Metrics summary
+    logger.info("-" * 80)
+    logger.info("METRICS SUMMARY")
     logger.info(f"Total metrics fetched: {total_metrics_fetched}")
     logger.info(f"Total metrics stored: {total_metrics_stored}")
     logger.info(f"Average metrics per company: {total_metrics_stored / len(tickers):.1f}")
