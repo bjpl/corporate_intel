@@ -17,6 +17,24 @@ import jwt
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+
+def pytest_addoption(parser):
+    """Add custom command line options."""
+    parser.addoption(
+        "--real-world",
+        action="store_true",
+        default=False,
+        help="Enable real-world API tests (calls actual APIs, may be slow and incur costs)"
+    )
+
+
+def pytest_configure(config):
+    """Register custom markers."""
+    config.addinivalue_line(
+        "markers",
+        "real_world: mark test as requiring real API calls (slow, may incur costs)"
+    )
+
 from src.api.main import app
 from src.db.base import Base, get_db
 from src.auth.models import User, UserRole, APIKey

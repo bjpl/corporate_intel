@@ -10,7 +10,19 @@ from typing import Any, Dict, List, Optional
 import httpx
 import pandas as pd
 from great_expectations.core.batch import RuntimeBatchRequest
-from great_expectations.data_context import DataContext
+
+# Handle Great Expectations API changes across versions
+try:
+    from great_expectations.data_context import DataContext
+except ImportError:
+    # Newer versions of Great Expectations
+    try:
+        from great_expectations.data_context.data_context.file_data_context import FileDataContext as DataContext
+    except ImportError:
+        # If still failing, create a simple context wrapper
+        from great_expectations.data_context import get_context
+        DataContext = lambda project_config: get_context(project_config=project_config)
+
 from great_expectations.data_context.types.base import (
     DataContextConfig,
     InMemoryStoreBackendDefaults,
