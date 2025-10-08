@@ -276,6 +276,181 @@ async def test_yahoo_quarterly_data_quality(real_world_enabled):
 
 
 # ============================================================================
+# ALPHA VANTAGE STANDALONE TESTS (Optional - requires API key)
+# ============================================================================
+
+@pytest.mark.real_world
+@pytest.mark.asyncio
+async def test_alpha_vantage_direct_connectivity(real_world_enabled):
+    """Test Alpha Vantage API directly.
+
+    Validates:
+    - API key configuration
+    - API endpoint accessibility
+    - Response format
+    - Data completeness
+
+    Expected duration: ~2 seconds
+
+    Note: Requires ALPHA_VANTAGE_API_KEY in .env
+    """
+    settings = get_settings()
+
+    # Check if API key is configured
+    try:
+        api_key = settings.ALPHA_VANTAGE_API_KEY.get_secret_value()
+        if not api_key or api_key == "your_api_key_here":
+            pytest.skip("ALPHA_VANTAGE_API_KEY not configured")
+    except (AttributeError, ValueError):
+        pytest.skip("ALPHA_VANTAGE_API_KEY not configured")
+
+    # Alpha Vantage API endpoint
+    url = "https://www.alphavantage.co/query"
+    params = {
+        "function": "OVERVIEW",
+        "symbol": "DUOL",
+        "apikey": api_key
+    }
+
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.get(url, params=params)
+
+        # Validate response
+        assert response.status_code == 200, f"Alpha Vantage API returned {response.status_code}"
+
+        data = response.json()
+
+        # Validate response format
+        assert isinstance(data, dict), f"Expected dict, got {type(data)}"
+
+        # Check for rate limit message
+        if "Note" in data or "Information" in data:
+            pytest.skip("API rate limit reached or invalid response")
+
+        # Validate key fields
+        assert "Symbol" in data or "symbol" in data, "Missing symbol in response"
+        assert "Name" in data or "name" in data, "Missing company name"
+
+        company_name = data.get("Name") or data.get("name", "Unknown")
+
+        print(f"\n✓ Alpha Vantage test passed: {company_name}")
+
+
+@pytest.mark.real_world
+@pytest.mark.asyncio
+async def test_alpha_vantage_data_quality(real_world_enabled):
+    """Test Alpha Vantage fundamental data quality.
+
+    Validates:
+    - Key metrics presence (P/E, EPS, market cap)
+    - Data type correctness
+    - Value range validation
+
+    Expected duration: ~2 seconds
+
+    Note: Requires ALPHA_VANTAGE_API_KEY in .env
+    """
+    settings = get_settings()
+
+    # Check if API key is configured
+    try:
+        api_key = settings.ALPHA_VANTAGE_API_KEY.get_secret_value()
+        if not api_key or api_key == "your_api_key_here":
+            pytest.skip("ALPHA_VANTAGE_API_KEY not configured")
+    except (AttributeError, ValueError):
+        pytest.skip("ALPHA_VANTAGE_API_KEY not configured")
+
+    url = "https://www.alphavantage.co/query"
+    params = {
+        "function": "OVERVIEW",
+        "symbol": "DUOL",
+        "apikey": api_key
+    }
+
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.get(url, params=params)
+        data = response.json()
+
+        # Skip if rate limited
+        if "Note" in data or "Information" in data:
+            pytest.skip("API rate limit reached")
+
+        # Validate expected fields exist
+        expected_fields = ["Symbol", "Name", "MarketCapitalization"]
+
+        for field in expected_fields:
+            assert field in data, f"Missing field: {field}"
+
+        # Validate data types and ranges
+        if "PERatio" in data and data["PERatio"] != "None":
+            pe_ratio = float(data["PERatio"])
+            assert 0 < pe_ratio < 1000, f"P/E ratio out of reasonable range: {pe_ratio}"
+
+        if "MarketCapitalization" in data and data["MarketCapitalization"] != "None":
+            market_cap = float(data["MarketCapitalization"])
+            assert market_cap > 0, f"Invalid market cap: {market_cap}"
+
+        print(f"\n✓ Alpha Vantage data quality validated for {data.get('Symbol')}")
+
+
+@pytest.mark.real_world
+@pytest.mark.asyncio
+async def test_alpha_vantage_rate_limiting(real_world_enabled):
+    """Test Alpha Vantage rate limiting awareness.
+
+    Alpha Vantage free tier: 5 calls per minute, 500 per day
+    This test makes 3 sequential calls to verify rate limiting.
+
+    Expected duration: ~30 seconds (due to 12s delays)
+
+    Note: Requires ALPHA_VANTAGE_API_KEY in .env
+    """
+    settings = get_settings()
+
+    # Check if API key is configured
+    try:
+        api_key = settings.ALPHA_VANTAGE_API_KEY.get_secret_value()
+        if not api_key or api_key == "your_api_key_here":
+            pytest.skip("ALPHA_VANTAGE_API_KEY not configured")
+    except (AttributeError, ValueError):
+        pytest.skip("ALPHA_VANTAGE_API_KEY not configured")
+
+    url = "https://www.alphavantage.co/query"
+
+    # Make 3 requests with 12-second delays (5 calls/min = 12s between calls)
+    start_time = datetime.now()
+    tickers = ["DUOL", "CHGG", "COUR"]
+
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        for i, ticker in enumerate(tickers):
+            params = {
+                "function": "OVERVIEW",
+                "symbol": ticker,
+                "apikey": api_key
+            }
+
+            response = await client.get(url, params=params)
+            assert response.status_code == 200
+
+            data = response.json()
+
+            # Check for rate limit message
+            if "Note" in data:
+                pytest.skip("API rate limit message received")
+
+            # Wait between requests (except after last one)
+            if i < len(tickers) - 1:
+                await asyncio.sleep(12)
+
+    elapsed = (datetime.now() - start_time).total_seconds()
+
+    # Should take at least 24 seconds for 3 requests with 12s delays
+    assert elapsed >= 20.0, f"Rate limiting too fast: {elapsed}s"
+
+    print(f"\n✓ Alpha Vantage rate limiting compliant: 3 requests in {elapsed:.2f}s")
+
+
+# ============================================================================
 # CROSS-SOURCE CONSISTENCY
 # ============================================================================
 

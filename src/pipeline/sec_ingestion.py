@@ -28,8 +28,33 @@ from great_expectations.data_context.types.base import (
     InMemoryStoreBackendDefaults,
 )
 from loguru import logger
-from prefect import flow, task
-from prefect.tasks import task_input_hash
+
+# Make Prefect optional for testing environments
+try:
+    from prefect import flow, task
+    from prefect.tasks import task_input_hash
+    PREFECT_AVAILABLE = True
+except ImportError:
+    # Dummy decorators when Prefect is not available (for testing)
+    def flow(*args, **kwargs):
+        """Dummy flow decorator when Prefect unavailable."""
+        def decorator(func):
+            return func
+        return decorator if not args else decorator(args[0])
+
+    def task(*args, **kwargs):
+        """Dummy task decorator when Prefect unavailable."""
+        def decorator(func):
+            return func
+        return decorator if not args else decorator(args[0])
+
+    def task_input_hash(*args, **kwargs):
+        """Dummy task_input_hash when Prefect unavailable."""
+        return None
+
+    PREFECT_AVAILABLE = False
+    logger.warning("Prefect not available - flows will run as regular functions")
+
 from pydantic import BaseModel, Field
 
 from src.core.config import get_settings
