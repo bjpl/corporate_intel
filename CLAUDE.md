@@ -1,7 +1,67 @@
 # Claude Code Configuration - Corporate Intelligence Platform
 
-**Version**: 2.1 (Reorganized October 6, 2025)
+**Version**: 2.2 (Enhanced with Keyword Triggers - October 6, 2025)
 **Auto-Loaded**: This file is automatically read by Claude Code at every session start
+
+---
+
+## 🔑 KEYWORD TRIGGERS - Quick Lookup
+
+**When you see/think**: → **Apply this MANDATORY**:
+- "explain", "why", "context" → MANDATORY-1 (Transparency)
+- "praise", "great job", "awesome" → MANDATORY-2 (Professional Tone)
+- "commit", "push", "git" → MANDATORY-3 (Version Control)
+- "unclear", "not sure", "which way" → MANDATORY-5 (Clarify)
+- "agents", "parallel", "swarm" → MANDATORY-6 (Swarm Orchestration)
+- "error", "failure", "crash" → MANDATORY-7 (Error Handling)
+- "test", "validate", "verify" → MANDATORY-8 (Testing)
+- "password", "key", "secret" → MANDATORY-9 (Security)
+- "design", "architecture", "structure" → MANDATORY-10 (Architecture)
+- "MVP", "ship", "deploy" → MANDATORY-11 (Incremental)
+- "document", "README", "docs" → MANDATORY-12 (Documentation)
+- "dependency", "package", "library" → MANDATORY-13 (Dependencies)
+- "optimize", "performance", "slow" → MANDATORY-14 (Performance)
+- "state", "transition", "idempotent" → MANDATORY-15 (State)
+- "learn", "improve", "what worked" → MANDATORY-16 (Learning)
+- "log", "monitor", "health check" → MANDATORY-17 (Observability)
+- "cache", "API calls", "quota" → MANDATORY-18 (Resource)
+- "user", "UX", "interface" → MANDATORY-19 (User Experience)
+- "validate", "data quality", "integrity" → MANDATORY-20 (Data Quality)
+- "context", "prior work", "previous" → MANDATORY-21 (Context)
+- "bias", "privacy", "ethical" → MANDATORY-22 (Ethics)
+- "collaborate", "coordinate", "handoff" → MANDATORY-23 (Collaboration)
+- "backup", "rollback", "recovery" → MANDATORY-24 (Recovery)
+- "refactor", "debt", "technical debt" → MANDATORY-25 (Tech Debt)
+
+---
+
+## ⚡ CONDENSED SUMMARIES (TL;DR)
+
+**MANDATORY-1**: Explain actions in detail with reasoning
+**MANDATORY-2**: Be direct, honest, professional - no sycophancy or excessive praise
+**MANDATORY-3**: Commit frequently with clear messages
+**MANDATORY-4**: Build for individual use first, plan for multi-user future
+**MANDATORY-5**: Ask questions when uncertain or unclear
+**MANDATORY-6**: Use Task tool for execution, MCP for coordination only
+**MANDATORY-7**: Handle errors gracefully, never fail silently
+**MANDATORY-8**: Test before considering complete, verify changes work
+**MANDATORY-9**: No secrets in code, use environment variables
+**MANDATORY-10**: Simple, modular design with SOLID principles
+**MANDATORY-11**: Small increments, daily delivery, edit over create
+**MANDATORY-12**: Document "why" not "what", never create docs proactively
+**MANDATORY-13**: Minimize dependencies, pin versions, document choices
+**MANDATORY-14**: Profile before optimize, readability first
+**MANDATORY-15**: Explicit state transitions, idempotent operations
+**MANDATORY-16**: Document learnings, identify patterns, improve processes
+**MANDATORY-17**: Log operations, track metrics, implement health checks
+**MANDATORY-18**: Batch operations, cache strategies, avoid redundancy
+**MANDATORY-19**: Clarity and usability, actionable errors, accessible design
+**MANDATORY-20**: Validate boundaries, consistency checks, data provenance
+**MANDATORY-21**: Preserve context, build on prior work, reference history
+**MANDATORY-22**: Consider bias/privacy, transparent limitations, decline harm
+**MANDATORY-23**: Share context, coordinate work, clear handoffs
+**MANDATORY-24**: Reversible operations, backups before destruction, test recovery
+**MANDATORY-25**: Flag refactoring needs, balance speed vs debt, document shortcuts
 
 ---
 
@@ -214,6 +274,10 @@
 
 ## 🚨 CONCURRENT EXECUTION & FILE MANAGEMENT
 
+**⚡ CRITICAL KEYWORDS**: parallel, batch, concurrent, single message, Task tool
+
+**TL;DR**: Batch ALL related operations in ONE message. Use Task tool for agents. Never save to root.
+
 **ABSOLUTE RULES** (implements MANDATORY-18: Resource Optimization):
 
 1. **ALL operations MUST be concurrent/parallel in a single message**
@@ -352,6 +416,10 @@ This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Co
 
 ## 🎯 CRITICAL: Agent Spawning Pattern
 
+**🔑 KEYWORDS**: Task, spawn, parallel agents, single message
+
+**TL;DR**: Always use `Task("description", "prompt", "agent-type")` in ONE message for ALL agents. MCP is optional.
+
 **Claude Code's Task tool is PRIMARY** (implements MANDATORY-6: Swarm Orchestration):
 
 ```javascript
@@ -420,6 +488,42 @@ claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional: Cloud fea
 # ═══════════════════════════════════════════════════════
 # PART 5: QUICK REFERENCE
 # ═══════════════════════════════════════════════════════
+
+## 🎯 Scenario-Based Quick Lookup
+
+**When task involves**: → **Quick actions**:
+
+**Multiple agents needed**:
+```javascript
+// ✅ Spawn ALL in ONE message
+Task("Agent 1", "...", "type1")
+Task("Agent 2", "...", "type2")
+TodoWrite { todos: [...5-10 todos...] }
+```
+
+**Testing needed**:
+```bash
+pytest tests/ --cov=src --cov-report=html  # MANDATORY-8
+```
+
+**Committing changes**:
+```bash
+git add . && git commit -m "type: description" && git push  # MANDATORY-3
+```
+
+**Performance issue**:
+```bash
+# Profile first (MANDATORY-14), then optimize
+pytest tests/ --durations=10  # Find slow tests
+```
+
+**Security concern**:
+```bash
+# Check for secrets (MANDATORY-9)
+grep -r "password\|api.key\|secret" src/ --exclude-dir=.git
+```
+
+---
 
 ## Common Commands
 
