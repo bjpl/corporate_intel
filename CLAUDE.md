@@ -1,36 +1,33 @@
 # Claude Code Configuration - Corporate Intelligence Platform
 
-**Version**: 2.0 (Reorganized October 6, 2025)
-**Auto-Loaded**: This file is automatically read by Claude Code at session start
+**Version**: 2.1 (Reorganized October 6, 2025)
+**Auto-Loaded**: This file is automatically read by Claude Code at every session start
 
 ---
 
-## 📑 Documentation Structure
+## 📑 Table of Contents
 
-**This file (CLAUDE.md)**: Core instructions that Claude Code auto-loads
-**Additional files** (for detailed reference):
-- `AGENT_INSTRUCTIONS.md` - Detailed behavioral guidance
-- `SPARC_SETUP.md` - SPARC methodology details
-- `QUICK_START.md` - Tool setup and command examples
+1. [MANDATORY Operating Instructions](#mandatory-operating-instructions) - Behavioral directives (ALWAYS APPLY)
+2. [Critical Execution Rules](#critical-execution-rules) - Concurrent execution & file management
+3. [SPARC Methodology](#sparc-methodology) - Development workflow
+4. [Agent Configuration](#agent-configuration) - Available agents & coordination
+5. [Quick Reference](#quick-reference) - Common commands & patterns
 
 ---
 
 # ═══════════════════════════════════════════════════════
-# AGENT OPERATING INSTRUCTIONS - MANDATORY COMPLIANCE
+# PART 1: MANDATORY OPERATING INSTRUCTIONS
+# ALL DIRECTIVES MANDATORY - STRICT COMPLIANCE REQUIRED
 # ═══════════════════════════════════════════════════════
 
-## 🎯 How These Work Together
+## 🎯 Priority & Relationship
 
-**Layered Guidance (Complementary, Not Conflicting)**:
-```
-MANDATORY Directives  ← HOW to operate professionally (behavior, quality)
-       ↓ Implemented through ↓
-SPARC Methodology     ← WHAT process to follow (workflow, phases)
-       ↓ Executed using ↓
-Technical Tools       ← WHICH tools to use (MCP, agents, commands)
-```
+**These directives are foundational behavioral principles** that apply universally:
+- **HOW to operate**: Professional behavior, quality standards, ethics
+- **Work with SPARC**: MANDATORY principles guide SPARC execution
+- **Complementary layers**: Behavioral (MANDATORY) + Methodological (SPARC) + Technical (Tools)
 
-**Priority**: MANDATORY directives are foundational behavioral principles. SPARC and technical config implement these principles. They enhance each other, rarely conflict.
+**No conflicts**: They enhance each other. If apparent conflict, MANDATORY principles (quality, security, ethics) take precedence.
 
 ---
 
@@ -71,7 +68,6 @@ Technical Tools       ← WHICH tools to use (MCP, agents, commands)
 → Topology: Use Claude Flow's MCP for agent topology and communication
 → Execution: Use Task tool (Claude Code) for actual agent spawning and execution
 → Separation: Distinguish orchestration layer (Flow/MCP) from execution layer (Task tool)
-→ Details: See SPARC_SETUP.md and QUICK_START.md for coordination examples
 
 ## [MANDATORY-7] ERROR HANDLING & RESILIENCE
 → Implement graceful error handling with clear error messages
@@ -207,83 +203,278 @@ Technical Tools       ← WHICH tools to use (MCP, agents, commands)
 → Prevent debt from compounding unchecked
 
 # ═══════════════════════════════════════════════════════
-# END MANDATORY DIRECTIVES - STRICT COMPLIANCE REQUIRED
+# END MANDATORY DIRECTIVES - COMPLIANCE REQUIRED
 # ═══════════════════════════════════════════════════════
 
 ---
 
-## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
+# ═══════════════════════════════════════════════════════
+# PART 2: CRITICAL EXECUTION RULES
+# ═══════════════════════════════════════════════════════
+
+## 🚨 CONCURRENT EXECUTION & FILE MANAGEMENT
 
 **ABSOLUTE RULES** (implements MANDATORY-18: Resource Optimization):
 
 1. **ALL operations MUST be concurrent/parallel in a single message**
 2. **NEVER save working files, text/mds and tests to the root folder**
 3. **ALWAYS organize files in appropriate subdirectories**
-4. **USE CLAUDE CODE'S TASK TOOL** for spawning agents concurrently
+4. **USE CLAUDE CODE'S TASK TOOL** for spawning agents concurrently, not just MCP
 
 ### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
 
 **MANDATORY PATTERNS**:
 - **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
-- **Task tool**: ALWAYS spawn ALL agents in ONE message with full instructions
+- **Task tool (Claude Code)**: ALWAYS spawn ALL agents in ONE message with full instructions
 - **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
 - **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
+- **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
 
-### 📁 File Organization
-**NEVER save to root. Use**: `/src`, `/tests`, `/docs`, `/config`, `/scripts`, `/examples`
+### 📁 File Organization Rules
+
+**NEVER save to root folder. Use these directories:**
+- `/src` - Source code files
+- `/tests` - Test files
+- `/docs` - Documentation and markdown files
+- `/config` - Configuration files
+- `/scripts` - Utility scripts
+- `/examples` - Example code
 
 ---
 
-## 🚀 Quick Reference
+# ═══════════════════════════════════════════════════════
+# PART 3: SPARC METHODOLOGY
+# ═══════════════════════════════════════════════════════
 
-### SPARC Commands (see SPARC_SETUP.md for details)
-```bash
-npx claude-flow sparc tdd "<feature>"      # TDD workflow
-npx claude-flow sparc run <mode> "<task>"  # Execute specific mode
-npx claude-flow sparc batch <modes>        # Parallel execution
-```
+## Project Overview
 
-### Available Agents (see QUICK_START.md for full list)
-**Core**: `coder`, `reviewer`, `tester`, `planner`, `researcher`
-**Total**: 54 specialized agents available
+This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
 
-### Agent Spawning Pattern (MANDATORY-6: Swarm Orchestration)
+**SPARC implements MANDATORY directives**: Testing (MANDATORY-8), Architecture (MANDATORY-10), Documentation (MANDATORY-12)
+
+## SPARC Commands
+
+### Core Commands
+- `npx claude-flow sparc modes` - List available modes
+- `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
+- `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
+- `npx claude-flow sparc info <mode>` - Get mode details
+
+### Batchtools Commands
+- `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
+- `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
+- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
+
+### Build Commands
+- `npm run build` - Build project
+- `npm run test` - Run tests
+- `npm run lint` - Linting
+- `npm run typecheck` - Type checking
+
+## SPARC Workflow Phases
+
+1. **Specification** - Requirements analysis (`sparc run spec-pseudocode`)
+2. **Pseudocode** - Algorithm design (`sparc run spec-pseudocode`)
+3. **Architecture** - System design (`sparc run architect`)
+4. **Refinement** - TDD implementation (`sparc tdd`)
+5. **Completion** - Integration (`sparc run integration`)
+
+## Code Style & Best Practices
+
+**Aligns with MANDATORY directives**:
+- **Modular Design**: Files under 500 lines (MANDATORY-10: Architecture)
+- **Environment Safety**: Never hardcode secrets (MANDATORY-9: Security)
+- **Test-First**: Write tests before implementation (MANDATORY-8: Testing)
+- **Clean Architecture**: Separate concerns (MANDATORY-10: Architecture)
+- **Documentation**: Keep updated (MANDATORY-12: Documentation)
+
+---
+
+# ═══════════════════════════════════════════════════════
+# PART 4: AGENT CONFIGURATION & COORDINATION
+# ═══════════════════════════════════════════════════════
+
+## 🚀 Available Agents (54 Total)
+
+### Core Development
+`coder`, `reviewer`, `tester`, `planner`, `researcher`
+
+### Swarm Coordination
+`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
+
+### Consensus & Distributed
+`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
+
+### Performance & Optimization
+`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
+
+### GitHub & Repository
+`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
+
+### SPARC Methodology
+`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
+
+### Specialized Development
+`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
+
+### Testing & Validation
+`tdd-london-swarm`, `production-validator`
+
+### Migration & Planning
+`migration-planner`, `swarm-init`
+
+---
+
+## 🎯 Claude Code vs MCP Tools
+
+### Claude Code Handles ALL EXECUTION:
+- **Task tool**: Spawn and run agents concurrently for actual work (PRIMARY)
+- File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
+- Code generation and programming
+- Bash commands and system operations
+- Implementation work
+- TodoWrite and task management
+- Git operations
+- Package management
+- Testing and debugging
+
+### MCP Tools ONLY COORDINATE:
+- Swarm initialization (topology setup)
+- Agent type definitions (coordination patterns)
+- Task orchestration (high-level planning)
+- Memory management
+- Neural features
+- Performance tracking
+
+**KEY**: MCP coordinates the strategy, Claude Code's Task tool executes with real agents.
+
+---
+
+## 🎯 CRITICAL: Agent Spawning Pattern
+
+**Claude Code's Task tool is PRIMARY** (implements MANDATORY-6: Swarm Orchestration):
+
 ```javascript
-// ✅ CORRECT: Spawn ALL agents in ONE message
-Task("Research agent", "Analyze...", "researcher")
-Task("Coder agent", "Implement...", "coder")
-Task("Tester agent", "Create tests...", "tester")
+// ✅ CORRECT: Use Claude Code's Task tool for parallel agent execution
+[Single Message]:
+  Task("Research agent", "Analyze requirements...", "researcher")
+  Task("Coder agent", "Implement features...", "coder")
+  Task("Tester agent", "Create tests...", "tester")
+  Task("Reviewer agent", "Review code...", "reviewer")
+
+  // Batch ALL todos together
+  TodoWrite { todos: [
+    {content: "Research API patterns", status: "in_progress"},
+    {content: "Design database schema", status: "in_progress"},
+    {content: "Implement authentication", status: "pending"},
+    {content: "Build REST endpoints", status: "pending"},
+    {content: "Write unit tests", status: "pending"},
+    {content: "Integration tests", status: "pending"},
+    {content: "API documentation", status: "pending"},
+    {content: "Performance optimization", status: "pending"}
+  ]}
 ```
 
-### MCP vs Task Tool
-- **Claude Code Task tool**: Actual agent execution (PRIMARY)
-- **MCP tools**: Coordination setup only (OPTIONAL)
+**MCP tools are OPTIONAL** (only for coordination setup):
+- `mcp__claude-flow__swarm_init` - Initialize topology
+- `mcp__claude-flow__agent_spawn` - Define agent types
+- `mcp__claude-flow__task_orchestrate` - High-level orchestration
 
 ---
 
-## 🎯 Key Principles Summary
+## 📋 Agent Coordination Protocol
+
+### Every Agent Spawned via Task Tool SHOULD:
+
+**1️⃣ BEFORE Work:**
+```bash
+npx claude-flow@alpha hooks pre-task --description "[task]"
+npx claude-flow@alpha hooks session-restore --session-id "swarm-[id]"
+```
+
+**2️⃣ DURING Work:**
+```bash
+npx claude-flow@alpha hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
+npx claude-flow@alpha hooks notify --message "[what was done]"
+```
+
+**3️⃣ AFTER Work:**
+```bash
+npx claude-flow@alpha hooks post-task --task-id "[task]"
+npx claude-flow@alpha hooks session-end --export-metrics true
+```
+
+---
+
+## 🚀 Quick Setup
+
+```bash
+# Add MCP servers (Claude Flow required, others optional)
+claude mcp add claude-flow npx claude-flow@alpha mcp start
+claude mcp add ruv-swarm npx ruv-swarm mcp start  # Optional: Enhanced coordination
+claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional: Cloud features
+```
+
+---
+
+# ═══════════════════════════════════════════════════════
+# PART 5: QUICK REFERENCE
+# ═══════════════════════════════════════════════════════
+
+## Common Commands
+
+**SPARC Workflow**:
+```bash
+npx claude-flow sparc tdd "<feature>"      # Full TDD workflow
+npx claude-flow sparc run architect        # Architecture phase
+npx claude-flow sparc batch modes          # Parallel execution
+```
+
+**Testing**:
+```bash
+npm run test                               # Run all tests
+pytest tests/ --cov=src --cov-report=html # Coverage report
+```
+
+**Docker**:
+```bash
+docker compose up -d                       # Start all services
+docker ps                                  # Check services
+python -m src.visualization.dash_app      # Start dashboard
+```
+
+---
+
+## Performance Benefits
+
+- **84.8% SWE-Bench solve rate**
+- **32.3% token reduction** (MANDATORY-18: Resource Optimization)
+- **2.8-4.4x speed improvement**
+- **27+ neural models**
+
+---
+
+## Integration Tips
+
+1. Start with basic swarm init
+2. Scale agents gradually (MANDATORY-18: Resource Optimization)
+3. Use memory for context (MANDATORY-21: Context Preservation)
+4. Monitor progress regularly (MANDATORY-17: Observability)
+5. Train patterns from success (MANDATORY-16: Continuous Learning)
+6. Enable hooks automation
+7. Use GitHub tools first
+
+---
+
+## 🎯 Key Principles (Quick Summary)
 
 1. **MANDATORY directives are universal** - behavioral foundation
 2. **SPARC provides methodology** - systematic workflow
-3. **Parallel execution critical** - batch operations (MANDATORY-18)
+3. **Parallel execution critical** - batch all operations (MANDATORY-18)
 4. **Quality over speed** - test, validate, document (MANDATORY-8, 12)
 5. **Professional communication** - direct, honest, objective (MANDATORY-2)
 6. **Security first** - no secrets in code (MANDATORY-9)
 7. **Context preservation** - build on prior work (MANDATORY-21)
-
----
-
-## 📚 Additional Documentation (Human Reference)
-
-**Detailed Guidance** (not auto-loaded, read when needed):
-- `AGENT_INSTRUCTIONS.md` - Full MANDATORY directives with examples
-- `SPARC_SETUP.md` - Complete SPARC methodology guide
-- `QUICK_START.md` - Comprehensive tool and command reference
-
-**Project Documentation**:
-- `README.md` - Project overview
-- `docs/deployment_validation_report_2025-10-06.md` - Deployment status
-- `daily_reports/2025-10-06/` - Today's complete session report
 
 ---
 
@@ -295,8 +486,22 @@ Task("Tester agent", "Create tests...", "tester")
 
 ---
 
+## 📚 Additional Documentation (Human Reference)
+
+**Detailed Files** (not auto-loaded, but available):
+- `AGENT_INSTRUCTIONS.md` - Extended MANDATORY directive examples
+- `SPARC_SETUP.md` - Detailed SPARC methodology guide
+- `QUICK_START.md` - Comprehensive tool/command reference
+
+**Project Documentation**:
+- `README.md` - Project overview
+- `docs/deployment_validation_report_2025-10-06.md` - Current deployment status
+- `daily_reports/2025-10-06/` - Today's session report
+
+---
+
 **Remember**:
-- **This file (CLAUDE.md) is auto-loaded** - contains all mandatory directives
-- **Other .md files** are human reference - read when you need detailed examples
-- **MANDATORY directives always apply** - they're in this auto-loaded file
+- **All MANDATORY directives are in THIS file** - always loaded automatically
+- **SPARC and tools are in THIS file** - quick reference always available
+- **Other .md files** - detailed examples for human reference
 - **Claude Flow coordinates, Claude Code creates, MANDATORY directives ensure quality!**
