@@ -18,7 +18,7 @@ from prometheus_client import make_asgi_app
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-from src.api.v1 import companies, filings, intelligence, metrics, reports
+from src.api.v1 import companies, filings, health, intelligence, metrics, reports
 from src.auth.routes import router as auth_router
 from src.core.cache_manager import check_cache_health, close_cache, init_cache
 from src.core.config import get_settings
@@ -196,7 +196,12 @@ def create_application() -> FastAPI:
         prefix=f"{settings.API_V1_PREFIX}/reports",
         tags=["reports"],
     )
-    
+    app.include_router(
+        health.router,
+        prefix=f"{settings.API_V1_PREFIX}/health",
+        tags=["health"],
+    )
+
     # Instrument with OpenTelemetry
     if settings.OTEL_TRACES_ENABLED:
         FastAPIInstrumentor.instrument_app(app)
