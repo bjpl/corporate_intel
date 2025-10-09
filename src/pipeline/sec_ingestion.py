@@ -72,10 +72,11 @@ class FilingRequest(BaseModel):
 
 class SECAPIClient:
     """Client for SEC EDGAR API with rate limiting."""
-    
+
     BASE_URL = "https://data.sec.gov"
     ARCHIVES_URL = "https://www.sec.gov/Archives/edgar/data"
-    
+    TICKER_CIK_MAPPING_URL = "https://www.sec.gov/files/company_tickers.json"
+
     def __init__(self):
         self.settings = get_settings()
         self.headers = {
@@ -83,20 +84,66 @@ class SECAPIClient:
             "Accept": "application/json",
         }
         self.rate_limiter = RateLimiter(self.settings.SEC_RATE_LIMIT)
+        self._ticker_cik_cache: Optional[Dict[str, str]] = None
     
-    async def get_company_info(self, ticker: str) -> Dict[str, Any]:
-        """Fetch company information from SEC."""
+    async def get_ticker_to_cik_mapping(self) -> Dict[str, str]:
+        """Fetch the official SEC ticker-to-CIK mapping.
+
+        Returns a dictionary mapping ticker symbols to CIK numbers.
+        Caches the result to avoid repeated API calls.
+        """
+        if self._ticker_cik_cache is not None:
+            return self._ticker_cik_cache
+
         await self.rate_limiter.acquire()
-        
+
         async with httpx.AsyncClient() as client:
-            # Get CIK from ticker
-            tickers_url = f"{self.BASE_URL}/submissions/CIK{ticker.upper()}.json"
-            response = await client.get(tickers_url, headers=self.headers)
-            
+            response = await client.get(self.TICKER_CIK_MAPPING_URL, headers=self.headers)
+
+            if response.status_code != 200:
+                logger.error(f"Failed to fetch ticker mapping: {response.status_code}")
+                return {}
+
+            data = response.json()
+
+            # Convert to ticker -> CIK mapping (data is indexed by integers)
+            mapping = {}
+            for entry in data.values():
+                if isinstance(entry, dict) and "ticker" in entry and "cik_str" in entry:
+                    ticker = entry["ticker"].upper()
+                    cik = str(entry["cik_str"]).zfill(10)  # Zero-pad to 10 digits
+                    mapping[ticker] = cik
+
+            self._ticker_cik_cache = mapping
+            logger.info(f"Loaded {len(mapping)} ticker-to-CIK mappings from SEC")
+            return mapping
+
+    async def get_company_info(self, ticker: str) -> Dict[str, Any]:
+        """Fetch company information from SEC.
+
+        First looks up the CIK from the ticker, then fetches company submissions.
+        """
+        # Get CIK from ticker using official mapping
+        ticker_mapping = await self.get_ticker_to_cik_mapping()
+        cik = ticker_mapping.get(ticker.upper())
+
+        if not cik:
+            logger.error(f"Ticker {ticker} not found in SEC ticker-to-CIK mapping")
+            return {}
+
+        logger.info(f"Found CIK {cik} for ticker {ticker}")
+
+        await self.rate_limiter.acquire()
+
+        async with httpx.AsyncClient() as client:
+            # Fetch company submissions using CIK
+            submissions_url = f"{self.BASE_URL}/submissions/CIK{cik}.json"
+            response = await client.get(submissions_url, headers=self.headers)
+
             if response.status_code == 200:
                 return response.json()
             else:
-                logger.error(f"Failed to fetch company info for {ticker}: {response.status_code}")
+                logger.error(f"Failed to fetch company info for CIK {cik} (ticker {ticker}): {response.status_code}")
                 return {}
     
     async def get_filings(

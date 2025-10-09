@@ -274,3 +274,98 @@ async def delete_company(
     cache = get_cache()
     await cache.delete(f"company:{company_id}")
     await cache.delete("companies:*")
+
+
+class TrendingCompanyResponse(BaseModel):
+    """Trending company response with performance indicators."""
+
+    ticker: str
+    company_name: str
+    edtech_category: str
+    revenue_yoy_growth: Optional[float] = None
+    latest_revenue: Optional[float] = None
+    overall_score: Optional[float] = None
+    growth_rank: Optional[int] = None
+    company_health_status: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+@router.get("/trending/top-performers", response_model=List[TrendingCompanyResponse])
+@cache_key_wrapper(prefix="trending_top", expire=900)
+async def get_top_performers(
+    metric: str = Query(
+        "growth",
+        description="Ranking metric: growth (YoY growth), revenue (total revenue), score (overall performance score)"
+    ),
+    category: Optional[str] = Query(None, description="Filter by EdTech category"),
+    limit: int = Query(10, ge=1, le=50, description="Number of companies to return"),
+    db: Session = Depends(get_db),
+) -> List[TrendingCompanyResponse]:
+    """Get top performing companies based on selected metric.
+
+    Returns the highest-performing EdTech companies ranked by:
+    - growth: Revenue YoY growth percentage
+    - revenue: Total revenue (largest companies)
+    - score: Overall performance score (combines growth, margins, profitability)
+
+    Data source: mart_company_performance (data warehouse)
+    """
+    # Map metric parameter to database column
+    metric_mapping = {
+        "growth": "revenue_yoy_growth",
+        "revenue": "latest_revenue",
+        "score": "overall_score",
+    }
+
+    order_column = metric_mapping.get(metric, "overall_score")
+
+    try:
+        # Query from data warehouse mart
+        query = text(f"""
+            SELECT
+                ticker,
+                company_name,
+                edtech_category,
+                revenue_yoy_growth,
+                latest_revenue,
+                overall_score,
+                growth_rank_overall as growth_rank,
+                company_health_status
+            FROM public_marts.mart_company_performance
+            WHERE (:category IS NULL OR edtech_category = :category)
+                AND {order_column} IS NOT NULL
+            ORDER BY {order_column} DESC
+            LIMIT :limit
+        """)
+
+        result = db.execute(
+            query,
+            {
+                "category": category,
+                "limit": limit,
+            }
+        )
+
+        companies = []
+        for row in result:
+            companies.append(TrendingCompanyResponse(
+                ticker=row[0],
+                company_name=row[1],
+                edtech_category=row[2],
+                revenue_yoy_growth=float(row[3]) if row[3] is not None else None,
+                latest_revenue=float(row[4]) if row[4] is not None else None,
+                overall_score=float(row[5]) if row[5] is not None else None,
+                growth_rank=int(row[6]) if row[6] is not None else None,
+                company_health_status=row[7],
+            ))
+
+        logger.info(f"Retrieved {len(companies)} top performers (metric={metric}, category={category or 'all'})")
+        return companies
+
+    except Exception as e:
+        logger.error(f"Error fetching top performers: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve top performers: {str(e)}",
+        )
