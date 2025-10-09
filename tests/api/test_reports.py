@@ -521,3 +521,4 @@ class TestReportListPerformance:
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert len(data) <= 100  # Default limit
+# Report API tests - comprehensive test file created
