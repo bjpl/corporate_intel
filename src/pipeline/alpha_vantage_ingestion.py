@@ -32,14 +32,17 @@ from typing import Any, Dict, List, Optional
 
 import aiohttp
 from loguru import logger
-from sqlalchemy import select
-from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.connectors.data_sources import AlphaVantageConnector
 from src.core.config import get_settings
-from src.db.models import Company, FinancialMetric
+from src.db.models import Company
 from src.db.session import get_session_factory
+from src.pipeline.common import (
+    get_or_create_company,
+    upsert_financial_metric,
+    run_coordination_hook,
+)
 
 
 # All 27 EdTech companies (matching expanded watchlist)
@@ -130,43 +133,7 @@ class AlphaVantageIngestionResult:
         }
 
 
-async def get_or_create_company(
-    session: AsyncSession,
-    ticker: str
-) -> Optional[Company]:
-    """Get existing company or create a new one.
-
-    Args:
-        session: Database session
-        ticker: Company ticker symbol
-
-    Returns:
-        Company instance or None if creation fails
-    """
-    # Try to find existing company
-    result = await session.execute(
-        select(Company).where(Company.ticker == ticker.upper())
-    )
-    company = result.scalar_one_or_none()
-
-    if company:
-        logger.debug(f"Found existing company: {ticker} (ID: {company.id})")
-        return company
-
-    # Create new company
-    logger.info(f"Creating new company record for {ticker}")
-    company = Company(
-        ticker=ticker.upper(),
-        name=f"{ticker} (Auto-created)",  # Will be updated with real name from API
-        sector="Education Technology",
-        category="EdTech",
-    )
-
-    session.add(company)
-    await session.flush()  # Get the ID without committing
-
-    logger.info(f"Created company: {ticker} (ID: {company.id})")
-    return company
+# Removed: get_or_create_company now imported from src.pipeline.common
 
 
 async def store_financial_metrics(
@@ -209,9 +176,9 @@ async def store_financial_metrics(
 
     metric_date = quarter_end
 
-    metrics_to_store = []
+    metrics_stored = 0
 
-    # Process each metric mapping
+    # Process each metric mapping using common utility
     for metric_type, config in METRIC_MAPPINGS.items():
         av_field = config['av_field']
         value = av_data.get(av_field)
@@ -224,41 +191,27 @@ async def store_financial_metrics(
         if config['unit'] == 'percent' and isinstance(value, float):
             value = value * 100  # Convert 0.15 -> 15.0
 
-        metrics_to_store.append({
-            'company_id': company_id,
-            'metric_date': metric_date,
-            'period_type': 'quarterly',  # Most Alpha Vantage data is quarterly/TTM
-            'metric_type': metric_type,
-            'metric_category': config['category'],
-            'value': float(value),
-            'unit': config['unit'],
-            'source': 'alpha_vantage',
-            'confidence_score': 0.95,  # High confidence for direct API data
-        })
+        # Use common utility for upsert
+        await upsert_financial_metric(
+            session,
+            company_id=company_id,
+            metric_date=metric_date,
+            period_type='quarterly',
+            metric_type=metric_type,
+            value=float(value),
+            unit=config['unit'],
+            metric_category=config['category'],
+            source='alpha_vantage',
+            confidence_score=0.95,
+        )
+        metrics_stored += 1
 
-    if not metrics_to_store:
+    if metrics_stored == 0:
         logger.warning(f"{ticker}: No valid metrics to store")
-        return 0
+    else:
+        logger.info(f"{ticker}: Stored {metrics_stored} financial metrics")
 
-    # Batch upsert all metrics
-    # Using PostgreSQL's INSERT ... ON CONFLICT DO UPDATE
-    stmt = insert(FinancialMetric).values(metrics_to_store)
-
-    # Update if conflict on unique constraint (company_id, metric_type, metric_date, period_type)
-    stmt = stmt.on_conflict_do_update(
-        index_elements=['company_id', 'metric_type', 'metric_date', 'period_type'],
-        set_={
-            'value': stmt.excluded.value,
-            'confidence_score': stmt.excluded.confidence_score,
-            'updated_at': datetime.now(timezone.utc),
-        }
-    )
-
-    await session.execute(stmt)
-
-    logger.info(f"{ticker}: Stored {len(metrics_to_store)} financial metrics")
-
-    return len(metrics_to_store)
+    return metrics_stored
 
 
 async def ingest_alpha_vantage_for_company(
@@ -551,18 +504,7 @@ async def main():
 
     # Pre-task hook
     logger.info("Running pre-task hook...")
-    try:
-        subprocess.run(
-            [
-                "npx", "claude-flow@alpha", "hooks", "pre-task",
-                "--description", "Alpha Vantage ingestion for EdTech companies"
-            ],
-            check=False,
-            capture_output=True,
-            timeout=10
-        )
-    except Exception as e:
-        logger.warning(f"Could not run pre-task hook: {e}")
+    await run_coordination_hook("pre-task", description="Alpha Vantage ingestion for EdTech companies")
 
     # Run ingestion
     try:
@@ -570,18 +512,7 @@ async def main():
 
         # Post-task hook
         logger.info("Running post-task hook...")
-        try:
-            subprocess.run(
-                [
-                    "npx", "claude-flow@alpha", "hooks", "post-task",
-                    "--task-id", "alpha-vantage-ingestion"
-                ],
-                check=False,
-                capture_output=True,
-                timeout=10
-            )
-        except Exception as e:
-            logger.warning(f"Could not run post-task hook: {e}")
+        await run_coordination_hook("post-task", task_id="alpha-vantage-ingestion")
 
         # Exit with error code if any companies failed
         if summary['failed_companies']:

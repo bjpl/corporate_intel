@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.cache_manager import get_cache
 from src.db.models import Company, FinancialMetric
+from src.repositories import CompanyRepository, MetricsRepository
 
 
 class DashboardService:
@@ -200,21 +201,21 @@ class DashboardService:
         limit: Optional[int],
         min_revenue: Optional[float]
     ) -> List[Dict[str, Any]]:
-        """Fallback method to query raw tables if mart doesn't exist yet."""
+        """Fallback method to query raw tables if mart doesn't exist yet.
+
+        Uses CompanyRepository for cleaner data access abstraction.
+        """
         logger.warning("Using fallback query - mart_company_performance not available")
 
         try:
-            # Build query against raw tables
-            query = select(Company).order_by(Company.name)
+            # Use repository pattern for cleaner data access
+            company_repo = CompanyRepository(self.session)
 
+            # Get companies based on filters
             if category:
-                query = query.where(Company.category == category)
-
-            if limit:
-                query = query.limit(limit)
-
-            result = await self.session.execute(query)
-            companies = result.scalars().all()
+                companies = await company_repo.find_by_category(category, limit=limit)
+            else:
+                companies = await company_repo.get_all(limit=limit, order_by="name")
 
             # Return basic company info
             data = [
@@ -364,10 +365,9 @@ class DashboardService:
             return cached_data
 
         try:
-            # Get company basic info
-            query = select(Company).where(Company.ticker == ticker)
-            result = await self.session.execute(query)
-            company = result.scalar_one_or_none()
+            # Use repository for cleaner data access
+            company_repo = CompanyRepository(self.session)
+            company = await company_repo.find_by_ticker(ticker)
 
             if not company:
                 logger.warning(f"Company {ticker} not found")
@@ -455,27 +455,24 @@ class DashboardService:
             return pd.DataFrame(cached_data)
 
         try:
-            # Get company ID
-            company_query = select(Company).where(Company.ticker == ticker)
-            company_result = await self.session.execute(company_query)
-            company = company_result.scalar_one_or_none()
+            # Use repositories for cleaner data access
+            company_repo = CompanyRepository(self.session)
+            metrics_repo = MetricsRepository(self.session)
+
+            # Get company
+            company = await company_repo.find_by_ticker(ticker)
 
             if not company:
                 logger.warning(f"Company {ticker} not found")
                 return pd.DataFrame()
 
-            # Get quarterly metrics
-            cutoff_date = datetime.utcnow() - timedelta(days=quarters * 90)
-
-            metrics_query = select(FinancialMetric).where(
-                FinancialMetric.company_id == company.id,
-                FinancialMetric.metric_type == metric_type,
-                FinancialMetric.period_type == "quarterly",
-                FinancialMetric.metric_date >= cutoff_date
-            ).order_by(FinancialMetric.metric_date.desc())
-
-            result = await self.session.execute(metrics_query)
-            metrics = result.scalars().all()
+            # Get quarterly metrics using repository
+            metrics = await metrics_repo.get_metrics_by_period(
+                company.id,
+                metric_type,
+                period_type="quarterly",
+                quarters=quarters
+            )
 
             if not metrics:
                 logger.info(f"No metrics found for {ticker} - {metric_type}")

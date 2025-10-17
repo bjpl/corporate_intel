@@ -1,0 +1,157 @@
+# Staging Docker Compose Configuration
+# Use with: docker-compose -f docker-compose.staging.yml up -d
+# Mirrors production but with staging-specific settings
+
+version: '3.8'
+
+services:
+  # PostgreSQL with TimescaleDB
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: corporate-intel-staging-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      # Staging performance tuning (lower than production)
+      POSTGRES_MAX_CONNECTIONS: 100
+      POSTGRES_SHARED_BUFFERS: 512MB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 2GB
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - staging_postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - staging-network
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: corporate-intel-staging-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - staging_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - staging-network
+
+  # Corporate Intelligence API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: staging
+    image: corporate-intel:staging-latest
+    container_name: corporate-intel-staging-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Database
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      # Application
+      ENVIRONMENT: staging
+      DEBUG: "true"
+      LOG_LEVEL: DEBUG
+      SECRET_KEY: ${SECRET_KEY}
+      # External APIs
+      ALPHA_VANTAGE_API_KEY: ${ALPHA_VANTAGE_API_KEY}
+      NEWSAPI_KEY: ${NEWSAPI_KEY}
+      SEC_USER_AGENT: ${SEC_USER_AGENT}
+    ports:
+      - "8000:8000"
+    volumes:
+      - staging_api_logs:/app/logs
+      - staging_api_cache:/app/cache
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - staging-network
+
+  # Prometheus (optional for staging)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: corporate-intel-staging-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - staging_prometheus_data:/prometheus
+    networks:
+      - staging-network
+
+  # Grafana (optional for staging)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: corporate-intel-staging-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_SERVER_ROOT_URL: http://staging.corporate-intel.example.com:3000
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - staging_grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - staging-network
+
+networks:
+  staging-network:
+    driver: bridge
+    name: corporate-intel-staging-network
+
+volumes:
+  staging_postgres_data:
+    name: corporate-intel-staging-postgres-data
+  staging_redis_data:
+    name: corporate-intel-staging-redis-data
+  staging_api_logs:
+    name: corporate-intel-staging-api-logs
+  staging_api_cache:
+    name: corporate-intel-staging-api-cache
+  staging_prometheus_data:
+    name: corporate-intel-staging-prometheus-data
+  staging_grafana_data:
+    name: corporate-intel-staging-grafana-data

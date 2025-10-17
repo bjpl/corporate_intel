@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import great_expectations as gx
+import numpy as np
 import pandas as pd
 import pandera as pa
 from great_expectations.checkpoint import Checkpoint
@@ -18,7 +19,7 @@ from src.core.config import get_settings
 
 
 # Pandera schemas for dataframe validation
-class FinancialMetricsSchema(pa.SchemaModel):
+class FinancialMetricsSchema(pa.DataFrameModel):
     """Schema for financial metrics dataframe."""
     
     company_id: Series[str] = pa.Field(nullable=False)
@@ -58,7 +59,7 @@ class FinancialMetricsSchema(pa.SchemaModel):
         return Series(checks)
 
 
-class SECFilingSchema(pa.SchemaModel):
+class SECFilingSchema(pa.DataFrameModel):
     """Schema for SEC filing data."""
     
     company_id: Series[str] = pa.Field(nullable=False)
@@ -90,7 +91,7 @@ class DataQualityValidator:
         self.context = self._initialize_context()
         self.expectations = self._load_expectations()
     
-    def _initialize_context(self) -> gx.DataContext:
+    def _initialize_context(self) -> gx.data_context.DataContext:
         """Initialize Great Expectations context."""
         config = {
             "datasources": {
@@ -231,7 +232,7 @@ class DataQualityValidator:
     def validate_dataframe(
         self,
         df: pd.DataFrame,
-        schema: pa.SchemaModel
+        schema: pa.DataFrameModel
     ) -> tuple[bool, List[str]]:
         """Validate dataframe using Pandera schema."""
         try:

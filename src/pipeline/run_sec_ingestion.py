@@ -13,6 +13,7 @@ from typing import List, Dict, Any
 from loguru import logger
 
 from src.pipeline.sec_ingestion import batch_sec_ingestion_flow, FilingRequest
+from src.pipeline.common import run_coordination_hook
 
 
 # Top 10 EdTech companies
@@ -118,18 +119,7 @@ async def main():
 
     # Run hooks: pre-task
     logger.info("Running pre-task hook...")
-    try:
-        import subprocess
-        subprocess.run(
-            [
-                "npx", "claude-flow@alpha", "hooks", "pre-task",
-                "--description", "SEC filings ingestion for 10 EdTech companies"
-            ],
-            check=False,
-            capture_output=True
-        )
-    except Exception as e:
-        logger.warning(f"Could not run pre-task hook: {e}")
+    await run_coordination_hook("pre-task", description="SEC filings ingestion for 10 EdTech companies")
 
     # Run the ingestion
     try:
@@ -137,17 +127,7 @@ async def main():
 
         # Run hooks: post-task notification
         logger.info("Running post-task hook...")
-        try:
-            subprocess.run(
-                [
-                    "npx", "claude-flow@alpha", "hooks", "post-task",
-                    "--task-id", "sec-ingestion"
-                ],
-                check=False,
-                capture_output=True
-            )
-        except Exception as e:
-            logger.warning(f"Could not run post-task hook: {e}")
+        await run_coordination_hook("post-task", task_id="sec-ingestion")
 
         return summary
 

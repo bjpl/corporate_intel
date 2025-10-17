@@ -33,12 +33,17 @@ import pytz
 import yfinance as yf
 from loguru import logger
 from sqlalchemy import select, and_
-from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.config import get_settings
 from src.db.models import Company, FinancialMetric
 from src.db.session import get_session_factory
+from src.pipeline.common import (
+    get_or_create_company,
+    upsert_financial_metric,
+    notify_progress,
+    run_coordination_hook,
+)
 
 
 # All 27 EdTech Companies to Ingest
@@ -374,31 +379,32 @@ class YahooFinanceIngestionPipeline:
         )
         existing_company = result.scalar_one_or_none()
 
-        # Prepare company data
-        company_values = {
-            "ticker": ticker,
-            "name": company_data["name"],
-            "sector": company_data["sector"],
-            "category": company_data["category"],
-            "subcategory": company_data["subcategory"],
-            "website": yf_data.get("website", ""),
-            "employee_count": yf_data.get("fullTimeEmployees", 0),
-            "headquarters": f"{yf_data.get('city', '')}, {yf_data.get('country', '')}".strip(", "),
-        }
-
         if existing_company:
-            # Update existing company
-            for key, value in company_values.items():
-                setattr(existing_company, key, value)
+            # Update existing company with new data
+            existing_company.name = company_data["name"]
+            existing_company.sector = company_data["sector"]
+            existing_company.category = company_data["category"]
+            existing_company.subcategory = company_data["subcategory"]
+            existing_company.website = yf_data.get("website", "")
+            existing_company.employee_count = yf_data.get("fullTimeEmployees", 0)
+            existing_company.headquarters = f"{yf_data.get('city', '')}, {yf_data.get('country', '')}".strip(", ")
 
             self.stats["companies_updated"] += 1
             logger.info(f"Updated company: {ticker}")
             return existing_company
         else:
-            # Create new company
-            company = Company(**company_values)
-            self.session.add(company)
-            await self.session.flush()  # Get the ID
+            # Use common utility for company creation
+            company = await get_or_create_company(
+                self.session,
+                ticker=ticker,
+                name=company_data["name"],
+                sector=company_data["sector"],
+                category=company_data["category"],
+                subcategory=company_data["subcategory"],
+                website=yf_data.get("website", ""),
+                employee_count=yf_data.get("fullTimeEmployees", 0),
+                headquarters=f"{yf_data.get('city', '')}, {yf_data.get('country', '')}".strip(", "),
+            )
 
             self.stats["companies_created"] += 1
             logger.info(f"Created company: {ticker}")
@@ -485,14 +491,18 @@ class YahooFinanceIngestionPipeline:
                         "metric_category": "financial",
                     })
 
-                # Insert all metrics for this quarter
+                # Insert all metrics for this quarter using common utility
                 for metric_data in metrics_to_insert:
-                    await self._upsert_metric(
+                    await upsert_financial_metric(
+                        self.session,
                         company_id=company.id,
                         metric_date=quarter_date,
                         period_type="quarterly",
+                        source="yahoo_finance",
+                        confidence_score=0.95,
                         **metric_data
                     )
+                    self.stats["metrics_created"] += 1
 
             logger.info(f"Ingested {quarters_to_process} quarters of financial data for {ticker}")
 
@@ -500,106 +510,13 @@ class YahooFinanceIngestionPipeline:
             logger.error(f"Error ingesting quarterly financials for {ticker}: {e}")
             raise
 
-    async def _upsert_metric(
-        self,
-        company_id: UUID,
-        metric_date: datetime,
-        period_type: str,
-        metric_type: str,
-        value: float,
-        unit: str,
-        metric_category: str,
-        source: str = "yahoo_finance",
-        confidence_score: float = 0.95,
-    ) -> None:
-        """Insert or update a financial metric with conflict resolution.
-
-        Args:
-            company_id: Company UUID
-            metric_date: Date of the metric
-            period_type: Type of period (quarterly, annual, monthly)
-            metric_type: Type of metric (revenue, margin, etc.)
-            value: Metric value
-            unit: Unit of measurement
-            metric_category: Category (financial, operational, etc.)
-            source: Data source
-            confidence_score: Confidence in the data quality
-        """
-        # Ensure metric_date is timezone-aware (PostgreSQL TIMESTAMP WITH TIME ZONE requirement)
-        if isinstance(metric_date, pd.Timestamp):
-            # Convert pandas Timestamp to timezone-aware datetime
-            if metric_date.tzinfo is None:
-                metric_date = metric_date.tz_localize('UTC').to_pydatetime()
-            else:
-                metric_date = metric_date.to_pydatetime()
-        elif isinstance(metric_date, datetime):
-            # Convert naive datetime to timezone-aware
-            if metric_date.tzinfo is None:
-                metric_date = metric_date.replace(tzinfo=pytz.UTC)
-
-        # Create insert statement with ON CONFLICT DO UPDATE
-        stmt = insert(FinancialMetric).values(
-            company_id=company_id,
-            metric_date=metric_date,
-            period_type=period_type,
-            metric_type=metric_type,
-            metric_category=metric_category,
-            value=value,
-            unit=unit,
-            source=source,
-            confidence_score=confidence_score,
-        )
-
-        # On conflict, update the value and metadata
-        stmt = stmt.on_conflict_do_update(
-            index_elements=["company_id", "metric_type", "metric_date", "period_type"],
-            set_={
-                "value": stmt.excluded.value,
-                "unit": stmt.excluded.unit,
-                "source": stmt.excluded.source,
-                "confidence_score": stmt.excluded.confidence_score,
-                "updated_at": datetime.utcnow(),
-            }
-        )
-
-        result = await self.session.execute(stmt)
-
-        # Track whether this was an insert or update
-        if result.rowcount > 0:
-            # Check if this was an update by querying
-            check_result = await self.session.execute(
-                select(FinancialMetric).where(
-                    and_(
-                        FinancialMetric.company_id == company_id,
-                        FinancialMetric.metric_type == metric_type,
-                        FinancialMetric.metric_date == metric_date,
-                        FinancialMetric.period_type == period_type,
-                    )
-                )
-            )
-
-            if check_result.scalar_one_or_none():
-                self.stats["metrics_updated"] += 1
-            else:
-                self.stats["metrics_created"] += 1
-
     async def _notify_progress(self, message: str) -> None:
         """Send progress notification via coordination hooks.
 
         Args:
             message: Progress message
         """
-        try:
-            process = await asyncio.create_subprocess_exec(
-                "npx", "claude-flow@alpha", "hooks", "notify",
-                "--message", message,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
-            )
-            await process.communicate()
-        except Exception as e:
-            # Don't fail ingestion if notification fails
-            logger.debug(f"Could not send progress notification: {e}")
+        await notify_progress(message)
 
     def _generate_report(self) -> Dict[str, Any]:
         """Generate ingestion report.
@@ -662,16 +579,7 @@ async def run_ingestion() -> Dict[str, Any]:
             logger.info("=" * 80)
 
             # Run post-task hook
-            try:
-                process = await asyncio.create_subprocess_exec(
-                    "npx", "claude-flow@alpha", "hooks", "post-task",
-                    "--task-id", "yahoo-ingestion",
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE
-                )
-                await process.communicate()
-            except Exception as e:
-                logger.debug(f"Could not run post-task hook: {e}")
+            await run_coordination_hook("post-task", task_id="yahoo-ingestion")
 
             return report
 
