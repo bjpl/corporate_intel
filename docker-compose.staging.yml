@@ -19,10 +19,9 @@ services:
       POSTGRES_SHARED_BUFFERS: 512MB
       POSTGRES_EFFECTIVE_CACHE_SIZE: 2GB
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:5435:5432"
     volumes:
       - staging_postgres_data:/var/lib/postgresql/data
-      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -43,7 +42,7 @@ services:
       --maxmemory-policy allkeys-lru
       --requirepass ${REDIS_PASSWORD}
     ports:
-      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:6382:6379"
     volumes:
       - staging_redis_data:/data
     healthcheck:
@@ -89,8 +88,15 @@ services:
       ALPHA_VANTAGE_API_KEY: ${ALPHA_VANTAGE_API_KEY}
       NEWSAPI_KEY: ${NEWSAPI_KEY}
       SEC_USER_AGENT: ${SEC_USER_AGENT}
+      # MinIO Object Storage
+      MINIO_ENDPOINT: ${MINIO_HOST}:${MINIO_PORT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_SECURE: ${MINIO_SECURE}
+      MINIO_BUCKET_DOCUMENTS: ${MINIO_BUCKET}
+      MINIO_BUCKET_REPORTS: ${MINIO_BUCKET}
     ports:
-      - "8000:8000"
+      - "8004:8000"
     volumes:
       - staging_api_logs:/app/logs
       - staging_api_cache:/app/cache
@@ -113,7 +119,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=7d'
     ports:
-      - "127.0.0.1:9090:9090"
+      - "127.0.0.1:9091:9090"
     volumes:
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - staging_prometheus_data:/prometheus
@@ -129,7 +135,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
       GF_SERVER_ROOT_URL: http://staging.corporate-intel.example.com:3000
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3001:3000"
     volumes:
       - staging_grafana_data:/var/lib/grafana
     depends_on:
