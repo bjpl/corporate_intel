@@ -40,12 +40,13 @@ async def get_or_create_company(
     name: Optional[str] = None,
     sector: str = "Education Technology",
     category: str = "EdTech",
+    defaults: Optional[Dict[str, Any]] = None,
     **extra_fields
 ) -> Optional[Company]:
     """Get existing company or create a new one.
 
-    This function handles the common pattern of checking if a company exists
-    and creating it if not. Used across all ingestion pipelines.
+    This is the canonical implementation used across all ingestion pipelines.
+    Consolidates both repository-based and direct SQL approaches for flexibility.
 
     Args:
         session: Database session
@@ -53,12 +54,14 @@ async def get_or_create_company(
         name: Company name (auto-generated if not provided)
         sector: Business sector (default: Education Technology)
         category: Company category (default: EdTech)
+        defaults: Optional dict of default values (alternative to kwargs)
         **extra_fields: Additional fields (website, employee_count, headquarters, subcategory)
 
     Returns:
         Company instance or None if creation fails
 
     Example:
+        # Using kwargs
         company = await get_or_create_company(
             session,
             ticker="CHGG",
@@ -66,40 +69,50 @@ async def get_or_create_company(
             website="https://www.chegg.com",
             employee_count=3000
         )
+
+        # Using defaults dict
+        company = await get_or_create_company(
+            session,
+            ticker="CHGG",
+            defaults={"name": "Chegg Inc.", "website": "https://www.chegg.com"}
+        )
     """
+    from src.repositories import CompanyRepository
+
     ticker_upper = ticker.upper()
 
-    # Try to find existing company
-    result = await session.execute(
-        select(Company).where(Company.ticker == ticker_upper)
-    )
-    company = result.scalar_one_or_none()
+    # Merge defaults dict with extra_fields, giving precedence to explicit fields
+    merged_defaults = {}
+    if defaults:
+        merged_defaults.update(defaults)
+    merged_defaults.update(extra_fields)
 
-    if company:
-        logger.debug(f"Found existing company: {ticker_upper} (ID: {company.id})")
+    # Add explicit parameters if provided
+    if name:
+        merged_defaults['name'] = name
+    if sector and 'sector' not in merged_defaults:
+        merged_defaults['sector'] = sector
+    if category and 'category' not in merged_defaults:
+        merged_defaults['category'] = category
+
+    try:
+        # Use repository pattern for consistency
+        repo = CompanyRepository(session)
+        company, created = await repo.get_or_create_by_ticker(
+            ticker_upper,
+            defaults=merged_defaults if merged_defaults else None
+        )
+
+        if created:
+            logger.info(f"Created new company record for {ticker_upper}")
+        else:
+            logger.debug(f"Found existing company: {ticker_upper} (ID: {company.id})")
+
         return company
 
-    # Create new company
-    logger.info(f"Creating new company record for {ticker_upper}")
-
-    company_data = {
-        "ticker": ticker_upper,
-        "name": name or f"{ticker_upper} (Auto-created)",
-        "sector": sector,
-        "category": category,
-    }
-
-    # Add extra fields if provided
-    for field in ["website", "employee_count", "headquarters", "subcategory"]:
-        if field in extra_fields:
-            company_data[field] = extra_fields[field]
-
-    company = Company(**company_data)
-    session.add(company)
-    await session.flush()  # Get the ID without committing
-
-    logger.info(f"Created company: {ticker_upper} (ID: {company.id})")
-    return company
+    except Exception as e:
+        logger.error(f"Failed to get/create company {ticker_upper}: {e}", exc_info=True)
+        return None
 
 
 async def upsert_financial_metric(
