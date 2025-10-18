@@ -1,0 +1,28 @@
+# Grafana Datasource Provisioning
+# Corporate Intel Production Monitoring
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    version: 1
+    editable: false
+    jsonData:
+      httpMethod: POST
+      timeInterval: 30s
+      queryTimeout: 60s
+      defaultRegion: us-east-1
+      customQueryParameters: ""
+      manageAlerts: true
+      prometheusType: Prometheus
+      prometheusVersion: 2.45.0
+      cacheLevel: High
+      incrementalQuerying: true
+      incrementalQueryOverlapWindow: 10m
+      exemplarTraceIdDestinations:
+        - name: trace_id
+          datasourceUid: tempo

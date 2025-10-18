@@ -1,0 +1,268 @@
+{
+  "corporate_intelligence_platform": {
+    "version": "0.1.0",
+    "environment": "staging",
+    "last_validated": "2025-10-17T18:58:14Z",
+    "services": {
+      "api": {
+        "base_url": "http://localhost:8004",
+        "health_endpoints": {
+          "/health": {
+            "method": "GET",
+            "description": "Main health check endpoint",
+            "expected_status": 200,
+            "response_format": "json",
+            "response_schema": {
+              "status": "string (healthy|degraded|unhealthy)",
+              "version": "string",
+              "environment": "string"
+            },
+            "validation_status": "PASS",
+            "last_response_time": "0.012s"
+          },
+          "/metrics/": {
+            "method": "GET",
+            "description": "Prometheus metrics endpoint",
+            "expected_status": 200,
+            "response_format": "prometheus",
+            "validation_status": "PASS"
+          },
+          "/docs": {
+            "method": "GET",
+            "description": "Interactive API documentation (Swagger UI)",
+            "expected_status": 200,
+            "response_format": "html"
+          },
+          "/openapi.json": {
+            "method": "GET",
+            "description": "OpenAPI specification",
+            "expected_status": 200,
+            "response_format": "json"
+          }
+        }
+      },
+      "postgresql": {
+        "container": "corporate-intel-staging-postgres",
+        "host": "localhost",
+        "port": 5435,
+        "database": "corporate_intel_staging",
+        "user": "intel_staging_user",
+        "health_checks": {
+          "pg_isready": {
+            "command": "pg_isready -U intel_staging_user -d corporate_intel_staging",
+            "expected_output": "accepting connections",
+            "validation_status": "PASS"
+          },
+          "connection_count": {
+            "query": "SELECT COUNT(*) FROM pg_stat_activity WHERE datname='corporate_intel_staging'",
+            "current_value": 6,
+            "healthy_range": "1-50",
+            "validation_status": "PASS"
+          },
+          "database_size": {
+            "query": "SELECT pg_size_pretty(pg_database_size('corporate_intel_staging'))",
+            "current_value": "10 MB",
+            "validation_status": "PASS"
+          },
+          "timescaledb_extension": {
+            "query": "SELECT extversion FROM pg_extension WHERE extname='timescaledb'",
+            "current_version": "2.22.1",
+            "validation_status": "PASS"
+          },
+          "table_count": {
+            "query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public'",
+            "current_value": 14,
+            "validation_status": "PASS"
+          }
+        }
+      },
+      "redis": {
+        "container": "corporate-intel-staging-redis",
+        "host": "localhost",
+        "port": 6382,
+        "health_checks": {
+          "ping": {
+            "command": "redis-cli -a [PASSWORD] ping",
+            "expected_output": "PONG",
+            "validation_status": "PASS"
+          },
+          "memory_usage": {
+            "info_section": "memory",
+            "metric": "used_memory_human",
+            "current_value": "1.04M",
+            "validation_status": "PASS"
+          },
+          "connected_clients": {
+            "info_section": "clients",
+            "metric": "connected_clients",
+            "current_value": 5,
+            "validation_status": "PASS"
+          },
+          "version": {
+            "info_section": "server",
+            "metric": "redis_version",
+            "current_value": "7.4.5",
+            "validation_status": "PASS"
+          },
+          "cache_hit_ratio": {
+            "info_section": "stats",
+            "metrics": ["keyspace_hits", "keyspace_misses"],
+            "current_value": "N/A (no requests yet)",
+            "healthy_threshold": "> 80%"
+          }
+        }
+      },
+      "prometheus": {
+        "base_url": "http://localhost:9091",
+        "health_endpoints": {
+          "/-/healthy": {
+            "method": "GET",
+            "description": "Prometheus health check",
+            "expected_status": 200,
+            "expected_body": "Prometheus Server is Healthy.",
+            "validation_status": "PASS"
+          },
+          "/-/ready": {
+            "method": "GET",
+            "description": "Prometheus readiness check",
+            "expected_status": 200,
+            "expected_body": "Prometheus Server is Ready."
+          },
+          "/api/v1/targets": {
+            "method": "GET",
+            "description": "Active scrape targets status",
+            "expected_status": 200,
+            "response_format": "json",
+            "current_targets": {
+              "total": 7,
+              "up": 2,
+              "down": 5,
+              "details": [
+                {
+                  "job": "corporate-intel-api",
+                  "instance": "api:8000",
+                  "health": "up"
+                },
+                {
+                  "job": "prometheus",
+                  "instance": "localhost:9090",
+                  "health": "up"
+                },
+                {
+                  "job": "docker",
+                  "instance": "cadvisor:8080",
+                  "health": "down",
+                  "error": "no such host"
+                },
+                {
+                  "job": "nginx",
+                  "instance": "nginx-exporter:9113",
+                  "health": "down",
+                  "error": "no such host"
+                },
+                {
+                  "job": "node-exporter",
+                  "instance": "node-exporter:9100",
+                  "health": "down",
+                  "error": "no such host"
+                },
+                {
+                  "job": "postgres-exporter",
+                  "instance": "postgres-exporter:9187",
+                  "health": "down",
+                  "error": "no such host"
+                },
+                {
+                  "job": "redis-exporter",
+                  "instance": "redis-exporter:9121",
+                  "health": "down",
+                  "error": "no such host"
+                }
+              ]
+            },
+            "validation_status": "WARNING - some targets down"
+          }
+        }
+      },
+      "grafana": {
+        "base_url": "http://localhost:3001",
+        "health_endpoints": {
+          "/api/health": {
+            "method": "GET",
+            "description": "Grafana health check",
+            "expected_status": 200,
+            "response_format": "json",
+            "response_schema": {
+              "database": "string (ok|error)",
+              "version": "string",
+              "commit": "string"
+            },
+            "current_version": "12.2.0",
+            "validation_status": "PASS"
+          },
+          "/api/ds/query": {
+            "method": "POST",
+            "description": "Data source query endpoint",
+            "authentication": "required"
+          }
+        }
+      },
+      "docker_containers": {
+        "staging_containers": {
+          "corporate-intel-staging-api": {
+            "image": "corporate-intel:staging-latest",
+            "status": "Up, healthy",
+            "health_check": "enabled",
+            "validation_status": "PASS"
+          },
+          "corporate-intel-staging-postgres": {
+            "image": "timescale/timescaledb:latest-pg15",
+            "status": "Up, healthy",
+            "health_check": "enabled",
+            "validation_status": "PASS"
+          },
+          "corporate-intel-staging-redis": {
+            "image": "redis:7-alpine",
+            "status": "Up, healthy",
+            "health_check": "enabled",
+            "validation_status": "PASS"
+          },
+          "corporate-intel-staging-prometheus": {
+            "image": "prom/prometheus:latest",
+            "status": "Up",
+            "health_check": "disabled",
+            "validation_status": "PASS (running)"
+          },
+          "corporate-intel-staging-grafana": {
+            "image": "grafana/grafana:latest",
+            "status": "Up",
+            "health_check": "disabled",
+            "validation_status": "PASS (running)"
+          }
+        }
+      }
+    },
+    "validation_summary": {
+      "total_checks": 18,
+      "passed": 16,
+      "warnings": 1,
+      "failed": 1,
+      "success_rate": "88%",
+      "overall_status": "HEALTHY with warnings",
+      "issues": {
+        "warnings": [
+          "Prometheus: 5 of 7 exporters not configured (cadvisor, nginx-exporter, node-exporter, postgres-exporter, redis-exporter)"
+        ],
+        "failed": [
+          "API Response Time validation logic bug (comparison error - actual response time is excellent at 0.006s)"
+        ]
+      },
+      "recommendations": [
+        "Configure missing Prometheus exporters for comprehensive monitoring",
+        "Fix response time validation logic in health check script",
+        "Consider adding /health/ready and /health/live endpoints to API for Kubernetes-style probes",
+        "Add MinIO health checks when object storage is configured"
+      ]
+    }
+  }
+}

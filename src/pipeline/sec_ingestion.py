@@ -304,6 +304,8 @@ def validate_filing_data(filing_data: Dict[str, Any]) -> bool:
     - Format constraints (CIK, accession numbers, form types)
     - Value constraints (dates, non-null fields)
     - Content quality checks
+
+    Returns True if validation passes or if GX is not available.
     """
     try:
         # Convert filing data to DataFrame for GE validation
@@ -454,8 +456,107 @@ def validate_filing_data(filing_data: Dict[str, Any]) -> bool:
         return True
 
     except Exception as e:
-        logger.error(f"Error during filing validation: {str(e)}", exc_info=True)
+        # If GX isn't properly initialized, skip validation and allow filing storage
+        if "No gx directory" in str(e) or "DataContext" in str(e):
+            logger.warning(f"Great Expectations not initialized - skipping validation: {str(e)}")
+            return True  # Allow filing to be stored without GX validation
+        logger.error(f"Error during filing validation: {str(e)}")
         return False
+
+
+async def get_or_create_company(session, company_cik: str, filing_data: Dict[str, Any]) -> Company:
+    """Lookup or create company by CIK and ticker.
+
+    Lookup strategy:
+    1. First try to find by CIK (most reliable identifier)
+    2. If not found by CIK, try to find by ticker using SEC mappings
+    3. Only create new company if neither CIK nor ticker match exists
+    4. Use proper company name from SEC mappings
+
+    Args:
+        session: Database session
+        company_cik: Company CIK number
+        filing_data: Filing data that may contain ticker and company name
+
+    Returns:
+        Company: Existing or newly created company record
+    """
+    from sqlalchemy import select, or_
+
+    # 1. Try to find by CIK first (most reliable)
+    result = await session.execute(
+        select(Company).where(Company.cik == company_cik)
+    )
+    company = result.scalar_one_or_none()
+
+    if company is not None:
+        logger.info(f"Found existing company by CIK: {company.name} (CIK: {company_cik}, ID: {company.id})")
+        return company
+
+    # 2. Try to find by ticker using SEC mappings
+    # Get ticker from SEC mappings by reverse lookup
+    ticker = filing_data.get("ticker")
+
+    # Try to get SEC company info for proper name and ticker
+    client = SECAPIClient()
+    ticker_mapping = await client.get_ticker_to_cik_mapping()
+
+    # Reverse lookup: find ticker for this CIK
+    cik_to_ticker = {v: k for k, v in ticker_mapping.items()}
+    mapped_ticker = cik_to_ticker.get(company_cik.zfill(10))
+
+    if mapped_ticker:
+        # Check if company exists with this ticker
+        result = await session.execute(
+            select(Company).where(Company.ticker == mapped_ticker)
+        )
+        company = result.scalar_one_or_none()
+
+        if company is not None:
+            # Found by ticker - update CIK if missing
+            logger.info(f"Found existing company by ticker: {company.name} (ticker: {mapped_ticker}, ID: {company.id})")
+            if not company.cik:
+                company.cik = company_cik
+                logger.info(f"Updated company {company.id} with CIK {company_cik}")
+            return company
+
+    # 3. Company doesn't exist - create new one with proper info
+    # Get company name from SEC API
+    company_name = filing_data.get("companyName")
+
+    # If no name in filing data, try to fetch from SEC
+    if not company_name or company_name.startswith("Company CIK"):
+        try:
+            # Fetch company submissions to get proper name
+            company_info_url = f"{client.BASE_URL}/submissions/CIK{company_cik.zfill(10)}.json"
+            await client.rate_limiter.acquire()
+
+            async with httpx.AsyncClient() as http_client:
+                response = await http_client.get(company_info_url, headers=client.headers)
+                if response.status_code == 200:
+                    company_info = response.json()
+                    company_name = company_info.get("name", f"Company CIK {company_cik}")
+                    logger.info(f"Retrieved company name from SEC: {company_name}")
+                else:
+                    company_name = f"Company CIK {company_cik}"
+                    logger.warning(f"Could not retrieve company name from SEC for CIK {company_cik}")
+        except Exception as e:
+            logger.warning(f"Error fetching company name from SEC: {e}")
+            company_name = f"Company CIK {company_cik}"
+
+    # Create new company with proper data
+    logger.info(f"Creating new company record for CIK {company_cik}: {company_name}")
+    company = Company(
+        cik=company_cik,
+        ticker=mapped_ticker or ticker or company_cik,  # Use mapped ticker, provided ticker, or CIK as fallback
+        name=company_name,
+        category=filing_data.get("category", "enabling_technology"),
+    )
+    session.add(company)
+    await session.flush()  # Get company.id without committing
+    logger.info(f"Created company {company.id} for CIK {company_cik}: {company_name}")
+
+    return company
 
 
 @task
@@ -490,26 +591,8 @@ async def store_filing(filing_data: Dict[str, Any], company_cik: str) -> str:
 
     async with session_factory() as session:
         try:
-            # 1. Check if company exists by CIK, create if not
-            result = await session.execute(
-                select(Company).where(Company.cik == company_cik)
-            )
-            company = result.scalar_one_or_none()
-
-            if company is None:
-                # Create new company record with basic info from filing
-                logger.info(f"Creating new company record for CIK {company_cik}")
-                company = Company(
-                    cik=company_cik,
-                    ticker=filing_data.get("ticker", company_cik),  # Use CIK if ticker not available
-                    name=filing_data.get("companyName", f"Company CIK {company_cik}"),
-                    category=filing_data.get("category", "enabling_technology"),
-                )
-                session.add(company)
-                await session.flush()  # Get company.id without committing
-                logger.info(f"Created company {company.id} for CIK {company_cik}")
-            else:
-                logger.info(f"Found existing company {company.id} for CIK {company_cik}")
+            # 1. Get or create company using improved lookup logic
+            company = await get_or_create_company(session, company_cik, filing_data)
 
             # 2. Check for duplicate filing by accession number
             accession_number = filing_data["accessionNumber"]

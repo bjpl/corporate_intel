@@ -1,0 +1,167 @@
+# Database Alert Rules
+# Corporate Intel Production Monitoring
+
+groups:
+  - name: database_alerts
+    interval: 30s
+    rules:
+      # High Database Connection Pool Usage
+      - alert: HighDatabaseConnectionPoolUsage
+        expr: |
+          (
+            sum(pg_stat_database_numbackends) by (instance, datname)
+            /
+            pg_settings_max_connections
+          ) * 100 > 80
+        for: 5m
+        labels:
+          severity: critical
+          component: database
+          team: backend
+        annotations:
+          summary: "High database connection pool usage on {{ $labels.instance }}"
+          description: "Connection pool usage is {{ $value | humanizePercentage }} (threshold: 80%)\nDatabase: {{ $labels.datname }}\nInstance: {{ $labels.instance }}"
+          runbook_url: "https://docs.corporate-intel.com/runbooks/high-db-connections"
+
+      # Database Connection Pool Exhaustion Warning
+      - alert: DatabaseConnectionPoolWarning
+        expr: |
+          (
+            sum(pg_stat_database_numbackends) by (instance, datname)
+            /
+            pg_settings_max_connections
+          ) * 100 > 60
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "Elevated database connection usage on {{ $labels.instance }}"
+          description: "Connection pool usage is {{ $value | humanizePercentage }} (threshold: 60%)\nDatabase: {{ $labels.datname }}"
+
+      # Slow Queries
+      - alert: SlowDatabaseQueries
+        expr: |
+          rate(pg_stat_statements_mean_exec_time_seconds[5m]) > 1.0
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "Slow queries detected on {{ $labels.instance }}"
+          description: "Average query execution time is {{ $value | humanizeDuration }} (threshold: 1s)\nReview pg_stat_statements for query optimization."
+
+      # High Database CPU Usage
+      - alert: HighDatabaseCPU
+        expr: |
+          rate(process_cpu_seconds_total{job="postgresql"}[5m]) * 100 > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "High CPU usage on database {{ $labels.instance }}"
+          description: "Database CPU usage is {{ $value | humanizePercentage }} (threshold: 80%)"
+
+      # Database Replication Lag
+      - alert: DatabaseReplicationLag
+        expr: |
+          pg_replication_lag_seconds > 30
+        for: 5m
+        labels:
+          severity: critical
+          component: database
+          team: backend
+        annotations:
+          summary: "High replication lag on {{ $labels.instance }}"
+          description: "Replication lag is {{ $value | humanizeDuration }} (threshold: 30s)\nReplica may be falling behind primary."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/replication-lag"
+
+      # Database Down
+      - alert: DatabaseDown
+        expr: up{job="postgresql"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: database
+          team: backend
+          page: "true"
+        annotations:
+          summary: "Database is down on {{ $labels.instance }}"
+          description: "PostgreSQL instance {{ $labels.instance }} has been down for more than 2 minutes."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/database-down"
+
+      # High Transaction Rate
+      - alert: HighDatabaseTransactionRate
+        expr: |
+          rate(pg_stat_database_xact_commit[5m]) + rate(pg_stat_database_xact_rollback[5m]) > 10000
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "High transaction rate on {{ $labels.instance }}"
+          description: "Transaction rate is {{ $value | humanize }} tx/s (threshold: 10000 tx/s)\nDatabase: {{ $labels.datname }}"
+
+      # High Rollback Rate
+      - alert: HighDatabaseRollbackRate
+        expr: |
+          (
+            rate(pg_stat_database_xact_rollback[5m])
+            /
+            (rate(pg_stat_database_xact_commit[5m]) + rate(pg_stat_database_xact_rollback[5m]))
+          ) * 100 > 5
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "High rollback rate on {{ $labels.instance }}"
+          description: "Rollback rate is {{ $value | humanizePercentage }} (threshold: 5%)\nDatabase: {{ $labels.datname }}\nInvestigate application errors."
+
+      # Database Deadlocks
+      - alert: DatabaseDeadlocks
+        expr: |
+          increase(pg_stat_database_deadlocks[10m]) > 5
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "Database deadlocks detected on {{ $labels.instance }}"
+          description: "{{ $value }} deadlocks in last 10 minutes (threshold: 5)\nDatabase: {{ $labels.datname }}\nReview transaction isolation and locking."
+
+      # Low Cache Hit Ratio
+      - alert: LowDatabaseCacheHitRatio
+        expr: |
+          (
+            sum(pg_stat_database_blks_hit) by (instance, datname)
+            /
+            (sum(pg_stat_database_blks_hit) by (instance, datname) + sum(pg_stat_database_blks_read) by (instance, datname))
+          ) * 100 < 90
+        for: 15m
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "Low cache hit ratio on {{ $labels.instance }}"
+          description: "Cache hit ratio is {{ $value | humanizePercentage }} (threshold: 90%)\nDatabase: {{ $labels.datname }}\nConsider increasing shared_buffers."
+
+      # Database Storage Usage
+      - alert: HighDatabaseStorageUsage
+        expr: |
+          (pg_database_size_bytes / 1024 / 1024 / 1024) > 50
+        for: 1h
+        labels:
+          severity: warning
+          component: database
+          team: backend
+        annotations:
+          summary: "High database storage usage"
+          description: "Database size is {{ $value | humanize }}GB (threshold: 50GB)\nDatabase: {{ $labels.datname }}\nPlan for storage expansion."

@@ -1,0 +1,156 @@
+# Traefik Dynamic Configuration
+# Middlewares, Routes, and Services
+
+http:
+  # Middlewares
+  middlewares:
+    security-headers:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 63072000
+        customFrameOptionsValue: "DENY"
+        customResponseHeaders:
+          X-Robots-Tag: "noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex"
+          server: ""
+          X-Powered-By: ""
+        contentSecurityPolicy: "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';"
+        referrerPolicy: "strict-origin-when-cross-origin"
+        permissionsPolicy: "geolocation=(), microphone=(), camera=()"
+
+    rate-limit:
+      rateLimit:
+        average: 100
+        period: 1m
+        burst: 50
+
+    api-rate-limit:
+      rateLimit:
+        average: 10
+        period: 1s
+        burst: 20
+
+    metrics-auth:
+      basicAuth:
+        users:
+          - "admin:$apr1$xxx$xxxxxxxxxxxxxxxxx"  # Generate with htpasswd
+
+    compress:
+      compress: {}
+
+    retry:
+      retry:
+        attempts: 3
+        initialInterval: 100ms
+
+  # Routers
+  routers:
+    # API Router
+    api-router:
+      rule: "Host(`api.corporate-intel.com`)"
+      entryPoints:
+        - websecure
+      middlewares:
+        - security-headers
+        - api-rate-limit
+        - compress
+        - retry
+      service: api-service
+      tls:
+        certResolver: letsencrypt
+
+    # Metrics Router
+    metrics-router:
+      rule: "Host(`metrics.corporate-intel.com`)"
+      entryPoints:
+        - websecure
+      middlewares:
+        - security-headers
+        - metrics-auth
+        - rate-limit
+      service: metrics-service
+      tls:
+        certResolver: letsencrypt
+
+    # Documentation Router
+    docs-router:
+      rule: "Host(`docs.corporate-intel.com`)"
+      entryPoints:
+        - websecure
+      middlewares:
+        - security-headers
+        - compress
+      service: docs-service
+      tls:
+        certResolver: letsencrypt
+
+    # Traefik Dashboard (secured)
+    dashboard-router:
+      rule: "Host(`traefik.corporate-intel.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      entryPoints:
+        - websecure
+      middlewares:
+        - metrics-auth
+        - security-headers
+      service: api@internal
+      tls:
+        certResolver: letsencrypt
+
+  # Services
+  services:
+    api-service:
+      loadBalancer:
+        servers:
+          - url: "http://localhost:8000"
+          - url: "http://localhost:8001"
+        healthCheck:
+          path: /health
+          interval: 10s
+          timeout: 3s
+          scheme: http
+        sticky:
+          cookie:
+            name: corporate_intel_lb
+            secure: true
+            httpOnly: true
+
+    metrics-service:
+      loadBalancer:
+        servers:
+          - url: "http://localhost:3000"
+        healthCheck:
+          path: /
+          interval: 30s
+          timeout: 5s
+
+    docs-service:
+      loadBalancer:
+        servers:
+          - url: "http://localhost:8080"
+
+# TCP Configuration (if needed for databases, etc.)
+tcp:
+  routers: {}
+  services: {}
+
+# TLS Options
+tls:
+  options:
+    modern:
+      minVersion: VersionTLS12
+      maxVersion: VersionTLS13
+      cipherSuites:
+        - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+        - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+      curvePreferences:
+        - CurveP521
+        - CurveP384
+      sniStrict: true

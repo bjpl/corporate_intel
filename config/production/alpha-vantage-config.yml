@@ -1,0 +1,448 @@
+# Alpha Vantage Production Configuration
+# Corporate Intelligence Platform - Plan A Day 4
+# Created: 2025-10-17
+
+# API Configuration
+api:
+  base_url: "https://www.alphavantage.co/query"
+  version: "v4"
+  timeout_seconds: 30
+  retry_attempts: 3
+  retry_backoff_base: 2  # Exponential: 2s, 4s, 8s
+
+  # API Key Management
+  # Production: Use premium tier for higher rate limits
+  # Set via environment variable: ALPHA_VANTAGE_API_KEY
+  key_source: "environment"
+  key_env_var: "ALPHA_VANTAGE_API_KEY"
+
+  # Tier Detection
+  # Free tier: 5 API calls/minute, 500/day
+  # Premium: 75 calls/minute, 1200/day
+  tier: "free"  # Options: free, premium
+  auto_detect_tier: true  # Detect tier from API response headers
+
+# Rate Limiting Configuration
+rate_limits:
+  # Free Tier Limits (default)
+  free:
+    calls_per_minute: 5
+    calls_per_day: 500
+    min_delay_seconds: 12  # 60s / 5 = 12s between calls
+    burst_allowance: 0  # No burst for free tier
+
+  # Premium Tier Limits
+  premium:
+    calls_per_minute: 75
+    calls_per_day: 1200
+    min_delay_seconds: 1  # 60s / 75 = ~0.8s, use 1s for safety
+    burst_allowance: 5  # Allow 5 burst calls
+
+  # Rate limit enforcement
+  enforcement:
+    enabled: true
+    mode: "strict"  # Options: strict, flexible, disabled
+    adaptive: true  # Adjust based on 429 responses
+    backoff_on_429: true
+    backoff_multiplier: 2
+    max_backoff_seconds: 300
+
+# API Endpoints Configuration
+endpoints:
+  # Core Data Functions
+  time_series_daily:
+    function: "TIME_SERIES_DAILY"
+    outputsize: "compact"  # Options: compact (100 days), full (20+ years)
+    datatype: "json"  # Options: json, csv
+    cache_ttl_hours: 1
+
+  time_series_intraday:
+    function: "TIME_SERIES_INTRADAY"
+    interval: "5min"  # Options: 1min, 5min, 15min, 30min, 60min
+    outputsize: "compact"
+    datatype: "json"
+    cache_ttl_minutes: 5
+
+  company_overview:
+    function: "OVERVIEW"
+    datatype: "json"
+    cache_ttl_hours: 24
+
+  income_statement:
+    function: "INCOME_STATEMENT"
+    datatype: "json"
+    cache_ttl_hours: 168  # 1 week (quarterly data)
+
+  balance_sheet:
+    function: "BALANCE_SHEET"
+    datatype: "json"
+    cache_ttl_hours: 168
+
+  cash_flow:
+    function: "CASH_FLOW"
+    datatype: "json"
+    cache_ttl_hours: 168
+
+  earnings:
+    function: "EARNINGS"
+    datatype: "json"
+    cache_ttl_hours: 168
+
+  # Technical Indicators
+  sma:
+    function: "SMA"
+    interval: "daily"
+    time_period: 20
+    series_type: "close"
+    cache_ttl_hours: 1
+
+  ema:
+    function: "EMA"
+    interval: "daily"
+    time_period: 20
+    series_type: "close"
+    cache_ttl_hours: 1
+
+  rsi:
+    function: "RSI"
+    interval: "daily"
+    time_period: 14
+    series_type: "close"
+    cache_ttl_hours: 1
+
+  macd:
+    function: "MACD"
+    interval: "daily"
+    series_type: "close"
+    cache_ttl_hours: 1
+
+# Data Ingestion Workflows
+ingestion:
+  # Stock Price Ingestion
+  stock_prices:
+    enabled: true
+    schedule: "0 17 * * 1-5"  # 5 PM daily, weekdays only
+    endpoint: "time_series_daily"
+    batch_size: 10
+    delay_between_batches: 60  # seconds
+    target_companies: "all"  # Options: all, edtech_only, custom_list
+    store_to_table: "stock_prices"
+
+  # Fundamental Data Ingestion
+  fundamentals:
+    enabled: true
+    schedule: "0 18 * * 6"  # 6 PM Saturday (weekly)
+    endpoints:
+      - "company_overview"
+      - "income_statement"
+      - "balance_sheet"
+      - "cash_flow"
+      - "earnings"
+    batch_size: 5  # Smaller batch for multiple endpoints
+    delay_between_companies: 12  # seconds
+    delay_between_endpoints: 2  # seconds
+    target_companies: "edtech_only"
+    store_to_table: "financial_metrics"
+
+  # Technical Indicators
+  technical_indicators:
+    enabled: false  # Disable for initial production deployment
+    schedule: "0 19 * * 1-5"  # 7 PM daily, weekdays
+    indicators:
+      - "sma"
+      - "ema"
+      - "rsi"
+      - "macd"
+    batch_size: 10
+    delay_between_companies: 12
+    target_companies: "edtech_only"
+    store_to_table: "technical_indicators"
+
+# Data Quality & Validation
+data_quality:
+  validation:
+    enabled: true
+    strict_mode: false  # Don't fail on validation errors, log only
+
+  checks:
+    # Company Overview Validation
+    company_overview:
+      required_fields:
+        - "Symbol"
+        - "MarketCapitalization"
+        - "PERatio"
+      numeric_ranges:
+        MarketCapitalization: [0, null]  # Min 0, no max
+        PERatio: [-100, 1000]  # Allow negative (losses), max 1000
+
+    # Financial Statement Validation
+    financials:
+      required_fields:
+        - "fiscalDateEnding"
+        - "reportedCurrency"
+      date_format: "%Y-%m-%d"
+      currency_codes: ["USD", "GBP", "BRL", "CNY"]
+
+  # Data Normalization
+  normalization:
+    enabled: true
+    convert_percentages: true  # 0.15 -> 15.0
+    standardize_dates: true
+    handle_none_values: "default_zero"  # Options: default_zero, skip, null
+
+  # Outlier Detection
+  outliers:
+    enabled: true
+    method: "iqr"  # Interquartile range
+    iqr_multiplier: 1.5
+    action: "flag"  # Options: flag, remove, cap
+
+# Caching Strategy
+caching:
+  enabled: true
+  backend: "redis"  # Options: redis, memory, file
+
+  # Redis Configuration (if backend=redis)
+  redis:
+    host: "${REDIS_HOST:localhost}"
+    port: 6379
+    db: 2  # Separate DB for Alpha Vantage cache
+    password: "${REDIS_PASSWORD:}"
+    key_prefix: "alpha_vantage:"
+
+  # Cache Policies
+  policies:
+    # Time-based expiration (TTL)
+    ttl:
+      real_time_data: 300  # 5 minutes (stock prices)
+      daily_data: 3600  # 1 hour (daily OHLC)
+      fundamental_data: 86400  # 24 hours (company overview)
+      quarterly_data: 604800  # 1 week (financial statements)
+
+    # Size limits
+    limits:
+      max_cache_size_mb: 500
+      max_item_size_kb: 100
+      eviction_policy: "lru"  # Least Recently Used
+
+    # Invalidation
+    invalidation:
+      manual_enabled: true
+      auto_on_error: false
+      clear_on_restart: false
+
+# Error Handling
+error_handling:
+  retry_logic:
+    enabled: true
+    max_attempts: 3
+
+    # Retry on these error types
+    retryable_errors:
+      - "ClientError"
+      - "TimeoutError"
+      - "ConnectionError"
+      - "HTTPStatus.429"  # Rate limit exceeded
+      - "HTTPStatus.500"  # Server error
+      - "HTTPStatus.502"  # Bad gateway
+      - "HTTPStatus.503"  # Service unavailable
+
+    # Don't retry on these
+    non_retryable_errors:
+      - "ValueError"  # Data quality issues
+      - "HTTPStatus.400"  # Bad request
+      - "HTTPStatus.401"  # Unauthorized (bad API key)
+      - "HTTPStatus.403"  # Forbidden
+      - "HTTPStatus.404"  # Not found
+
+    # Backoff strategy
+    backoff:
+      type: "exponential"  # Options: exponential, linear, fixed
+      initial_delay: 4
+      multiplier: 2
+      max_delay: 60
+      jitter: true  # Add randomness to prevent thundering herd
+
+  # Fallback behavior
+  fallback:
+    use_cached_data: true
+    cache_stale_threshold_hours: 48
+    return_partial_results: true
+
+  # Alerting
+  alerts:
+    enabled: true
+    channels:
+      - "logs"
+      - "prometheus"  # Export error metrics
+
+    thresholds:
+      error_rate_percent: 10  # Alert if >10% requests fail
+      consecutive_failures: 5  # Alert after 5 consecutive failures
+      daily_quota_percent: 90  # Alert at 90% of daily quota
+
+# Logging & Monitoring
+logging:
+  level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR
+  format: "structured"  # Options: structured, text
+
+  destinations:
+    console:
+      enabled: true
+      level: "INFO"
+
+    file:
+      enabled: true
+      path: "/var/log/corporate_intel/alpha_vantage.log"
+      level: "DEBUG"
+      rotation: "1 day"
+      retention: "30 days"
+
+    prometheus:
+      enabled: true
+      port: 9091
+      metrics_prefix: "alpha_vantage_"
+
+# Monitoring Metrics
+metrics:
+  # API Metrics
+  api_calls:
+    - "total_requests"
+    - "successful_requests"
+    - "failed_requests"
+    - "rate_limited_requests"
+    - "cached_requests"
+
+  # Performance Metrics
+  performance:
+    - "request_duration_seconds"
+    - "cache_hit_rate"
+    - "data_freshness_hours"
+
+  # Business Metrics
+  business:
+    - "companies_processed_daily"
+    - "metrics_collected_daily"
+    - "data_coverage_percent"
+
+  # Cost Metrics
+  cost:
+    - "api_calls_used_daily"
+    - "api_quota_remaining"
+    - "cost_per_company"  # Based on tier pricing
+
+# PostgreSQL Schema Mapping
+database:
+  # Financial Metrics Table
+  financial_metrics:
+    table_name: "financial_metrics"
+
+    # Alpha Vantage field -> database column mappings
+    field_mappings:
+      # Valuation Metrics
+      PERatio: {column: "pe_ratio", category: "valuation", unit: "ratio"}
+      PEGRatio: {column: "peg_ratio", category: "valuation", unit: "ratio"}
+      TrailingPE: {column: "trailing_pe", category: "valuation", unit: "ratio"}
+      ForwardPE: {column: "forward_pe", category: "valuation", unit: "ratio"}
+      PriceToBookRatio: {column: "price_to_book", category: "valuation", unit: "ratio"}
+      PriceToSalesRatioTTM: {column: "price_to_sales", category: "valuation", unit: "ratio"}
+      EVToRevenue: {column: "ev_to_revenue", category: "valuation", unit: "ratio"}
+      EVToEBITDA: {column: "ev_to_ebitda", category: "valuation", unit: "ratio"}
+
+      # Profitability Metrics
+      EPS: {column: "eps", category: "profitability", unit: "USD"}
+      ReturnOnEquityTTM: {column: "roe", category: "profitability", unit: "percent"}
+      ProfitMargin: {column: "profit_margin", category: "profitability", unit: "percent"}
+      OperatingMarginTTM: {column: "operating_margin", category: "profitability", unit: "percent"}
+      ReturnOnAssetsTTM: {column: "return_on_assets", category: "profitability", unit: "percent"}
+
+      # Growth Metrics
+      QuarterlyRevenueGrowthYOY: {column: "revenue_growth_yoy", category: "growth", unit: "percent"}
+      QuarterlyEarningsGrowthYOY: {column: "earnings_growth_yoy", category: "growth", unit: "percent"}
+
+      # Size Metrics
+      MarketCapitalization: {column: "market_cap", category: "size", unit: "USD"}
+
+      # Income Metrics
+      DividendYield: {column: "dividend_yield", category: "income", unit: "percent"}
+
+    # Metadata
+    metadata_fields:
+      source: "alpha_vantage"
+      confidence_score: 0.95
+      period_type: "quarterly"  # For TTM metrics
+
+  # Stock Prices Table
+  stock_prices:
+    table_name: "stock_prices"
+
+    # Time series field mappings
+    field_mappings:
+      "1. open": {column: "open_price", type: "decimal"}
+      "2. high": {column: "high_price", type: "decimal"}
+      "3. low": {column: "low_price", type: "decimal"}
+      "4. close": {column: "close_price", type: "decimal"}
+      "5. volume": {column: "volume", type: "bigint"}
+
+    metadata_fields:
+      source: "alpha_vantage"
+
+# Cost Optimization
+cost_optimization:
+  # Caching
+  aggressive_caching:
+    enabled: true
+    cache_duration_multiplier: 1.5  # Extend cache TTL by 50%
+
+  # Batching
+  batch_processing:
+    enabled: true
+    optimal_batch_size: 10  # Balance between speed and rate limits
+
+  # Request deduplication
+  deduplication:
+    enabled: true
+    window_minutes: 5  # Dedupe requests within 5-minute window
+
+  # Incremental updates
+  incremental:
+    enabled: true
+    only_fetch_changed: true
+    change_detection: "last_modified"
+
+  # Tier management
+  tier_management:
+    auto_upgrade_recommendation: true
+    cost_benefit_analysis: true
+    usage_forecasting: true
+
+# Security
+security:
+  # API Key Protection
+  api_key:
+    store_encrypted: true
+    rotate_reminder_days: 90
+    mask_in_logs: true
+
+  # TLS/SSL
+  tls:
+    verify_ssl: true
+    min_version: "TLSv1.2"
+
+  # Request signing (if applicable)
+  signing:
+    enabled: false
+
+  # Data encryption at rest
+  encryption:
+    enabled: true
+    algorithm: "AES-256"
+
+# Production Environment Variables
+# Set these in your .env.production file:
+#
+# ALPHA_VANTAGE_API_KEY=your_production_key_here
+# ALPHA_VANTAGE_TIER=premium  # or 'free'
+# REDIS_HOST=redis.production.internal
+# REDIS_PASSWORD=your_redis_password
+# DATABASE_URL=postgresql://user:pass@host/corporate_intel

@@ -1,0 +1,157 @@
+# Redis Alert Rules
+# Corporate Intel Production Monitoring
+
+groups:
+  - name: redis_alerts
+    interval: 30s
+    rules:
+      # High Redis Memory Usage
+      - alert: HighRedisMemoryUsage
+        expr: |
+          (redis_memory_used_bytes / redis_memory_max_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+          component: cache
+          team: backend
+        annotations:
+          summary: "High Redis memory usage on {{ $labels.instance }}"
+          description: "Redis memory usage is {{ $value | humanizePercentage }} (threshold: 90%)\nInstance: {{ $labels.instance }}\nRole: {{ $labels.role }}"
+          runbook_url: "https://docs.corporate-intel.com/runbooks/high-redis-memory"
+
+      # Redis Memory Usage Warning
+      - alert: RedisMemoryWarning
+        expr: |
+          (redis_memory_used_bytes / redis_memory_max_bytes) * 100 > 75
+        for: 10m
+        labels:
+          severity: warning
+          component: cache
+          team: backend
+        annotations:
+          summary: "Elevated Redis memory usage on {{ $labels.instance }}"
+          description: "Redis memory usage is {{ $value | humanizePercentage }} (threshold: 75%)\nInstance: {{ $labels.instance }}"
+
+      # Low Cache Hit Ratio
+      - alert: LowRedisCacheHitRatio
+        expr: |
+          (
+            rate(redis_keyspace_hits_total[5m])
+            /
+            (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m]))
+          ) * 100 < 80
+        for: 15m
+        labels:
+          severity: warning
+          component: cache
+          team: backend
+        annotations:
+          summary: "Low Redis cache hit ratio on {{ $labels.instance }}"
+          description: "Cache hit ratio is {{ $value | humanizePercentage }} (threshold: 80%)\nInstance: {{ $labels.instance }}\nReview cache strategy and TTL settings."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/low-cache-hit-ratio"
+
+      # Redis Down
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: cache
+          team: backend
+          page: "true"
+        annotations:
+          summary: "Redis is down on {{ $labels.instance }}"
+          description: "Redis instance {{ $labels.instance }} has been down for more than 2 minutes.\nRole: {{ $labels.role }}"
+          runbook_url: "https://docs.corporate-intel.com/runbooks/redis-down"
+
+      # High Redis Connection Usage
+      - alert: HighRedisConnections
+        expr: |
+          redis_connected_clients > 1000
+        for: 10m
+        labels:
+          severity: warning
+          component: cache
+          team: backend
+        annotations:
+          summary: "High number of Redis connections on {{ $labels.instance }}"
+          description: "Redis has {{ $value }} connected clients (threshold: 1000)\nInstance: {{ $labels.instance }}"
+
+      # Redis Evictions
+      - alert: RedisEvictions
+        expr: |
+          increase(redis_evicted_keys_total[10m]) > 100
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+          team: backend
+        annotations:
+          summary: "Redis evicting keys on {{ $labels.instance }}"
+          description: "{{ $value }} keys evicted in last 10 minutes (threshold: 100)\nInstance: {{ $labels.instance }}\nIncrease memory or review maxmemory-policy."
+
+      # Redis Replication Broken
+      - alert: RedisReplicationBroken
+        expr: |
+          redis_connected_slaves == 0 and redis_instance_info{role="master"} == 1
+        for: 5m
+        labels:
+          severity: critical
+          component: cache
+          team: backend
+        annotations:
+          summary: "Redis master has no connected replicas"
+          description: "Redis master {{ $labels.instance }} has no connected replicas.\nReplication is broken."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/redis-replication"
+
+      # Redis Replication Lag
+      - alert: RedisReplicationLag
+        expr: |
+          redis_replica_lag_seconds > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+          team: backend
+        annotations:
+          summary: "Redis replication lag on {{ $labels.instance }}"
+          description: "Replication lag is {{ $value | humanizeDuration }} (threshold: 10s)\nReplica may be falling behind master."
+
+      # High Redis CPU Usage
+      - alert: HighRedisCPU
+        expr: |
+          rate(redis_cpu_sys_seconds_total[5m]) + rate(redis_cpu_user_seconds_total[5m]) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          component: cache
+          team: backend
+        annotations:
+          summary: "High CPU usage on Redis {{ $labels.instance }}"
+          description: "Redis CPU usage is high (threshold: 80%)\nInstance: {{ $labels.instance }}"
+
+      # Blocked Clients
+      - alert: RedisBlockedClients
+        expr: |
+          redis_blocked_clients > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+          team: backend
+        annotations:
+          summary: "Redis has blocked clients on {{ $labels.instance }}"
+          description: "{{ $value }} clients are blocked (threshold: 10)\nInstance: {{ $labels.instance }}\nReview slow operations."
+
+      # Redis Persistence Failures (RDB)
+      - alert: RedisPersistenceFailure
+        expr: |
+          redis_rdb_last_save_timestamp_seconds < (time() - 3600)
+        for: 10m
+        labels:
+          severity: critical
+          component: cache
+          team: backend
+        annotations:
+          summary: "Redis RDB save failed on {{ $labels.instance }}"
+          description: "Last successful RDB save was {{ $value | humanizeDuration }} ago (threshold: 1h)\nInstance: {{ $labels.instance }}\nCheck disk space and permissions."

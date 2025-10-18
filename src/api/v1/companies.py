@@ -6,6 +6,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from loguru import logger
 from pydantic import BaseModel, Field, ConfigDict
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from src.core.cache import cache_key_wrapper, get_cache

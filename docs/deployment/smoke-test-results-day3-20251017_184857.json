@@ -1,0 +1,377 @@
+{
+  "timestamp": "2025-10-17T18:48:30.760494",
+  "environment": "staging",
+  "base_url": "http://localhost:8004",
+  "duration_seconds": 26.307228,
+  "summary": {
+    "total_tests": 38,
+    "passed": 14,
+    "failed": 7,
+    "warnings": 17,
+    "pass_rate": 36.84210526315789
+  },
+  "baseline": {
+    "p50": 5.31,
+    "p95": 18.93,
+    "p99": 32.14,
+    "mean": 8.42,
+    "throughput": 27.3,
+    "success_rate": 100.0
+  },
+  "by_category": {
+    "infrastructure": {
+      "passed": 3,
+      "failed": 1,
+      "warnings": 1,
+      "total": 5
+    },
+    "database": {
+      "passed": 2,
+      "failed": 1,
+      "warnings": 3,
+      "total": 6
+    },
+    "cache": {
+      "passed": 3,
+      "failed": 1,
+      "warnings": 0,
+      "total": 4
+    },
+    "api_health": {
+      "passed": 1,
+      "failed": 2,
+      "warnings": 2,
+      "total": 5
+    },
+    "api_endpoints": {
+      "passed": 0,
+      "failed": 1,
+      "warnings": 6,
+      "total": 7
+    },
+    "performance": {
+      "passed": 1,
+      "failed": 1,
+      "warnings": 3,
+      "total": 5
+    },
+    "security": {
+      "passed": 1,
+      "failed": 0,
+      "warnings": 2,
+      "total": 3
+    },
+    "monitoring": {
+      "passed": 3,
+      "failed": 0,
+      "warnings": 0,
+      "total": 3
+    }
+  },
+  "results": [
+    {
+      "test_name": "Docker Containers Running",
+      "category": "infrastructure",
+      "status": "pass",
+      "duration_ms": 316.3144588470459,
+      "message": "All containers running (5/4+)",
+      "error": ""
+    },
+    {
+      "test_name": "Docker Network Exists",
+      "category": "infrastructure",
+      "status": "pass",
+      "duration_ms": 210.30473709106445,
+      "message": "Network configured correctly",
+      "error": ""
+    },
+    {
+      "test_name": "Docker Volumes Present",
+      "category": "infrastructure",
+      "status": "pass",
+      "duration_ms": 168.9453125,
+      "message": "All volumes present (6/4+)",
+      "error": ""
+    },
+    {
+      "test_name": "HTTP Connectivity",
+      "category": "infrastructure",
+      "status": "fail",
+      "duration_ms": 4156.464338302612,
+      "message": "Connection failed",
+      "error": "HTTPConnectionPool(host='localhost', port=8004): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001EA27D14FD0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))"
+    },
+    {
+      "test_name": "Container Health Status",
+      "category": "infrastructure",
+      "status": "warning",
+      "duration_ms": 262.21466064453125,
+      "message": "Some containers not healthy (2)",
+      "error": "Health check issues"
+    },
+    {
+      "test_name": "PostgreSQL Container Running",
+      "category": "database",
+      "status": "pass",
+      "duration_ms": 333.44006538391113,
+      "message": "Container is running",
+      "error": ""
+    },
+    {
+      "test_name": "PostgreSQL Connectivity",
+      "category": "database",
+      "status": "pass",
+      "duration_ms": 383.82935523986816,
+      "message": "Accepting connections",
+      "error": ""
+    },
+    {
+      "test_name": "Database Exists",
+      "category": "database",
+      "status": "fail",
+      "duration_ms": 314.15677070617676,
+      "message": "Database not found",
+      "error": "DB missing"
+    },
+    {
+      "test_name": "Database Tables Exist",
+      "category": "database",
+      "status": "warning",
+      "duration_ms": 333.3244323730469,
+      "message": "No tables found",
+      "error": "Migrations may not have run"
+    },
+    {
+      "test_name": "Companies Table Has Data",
+      "category": "database",
+      "status": "warning",
+      "duration_ms": 422.61648178100586,
+      "message": "Table is empty",
+      "error": "Seed data missing"
+    },
+    {
+      "test_name": "Database Query Performance",
+      "category": "database",
+      "status": "warning",
+      "duration_ms": 485.28432846069336,
+      "message": "Query took 485.28ms",
+      "error": "Performance degradation"
+    },
+    {
+      "test_name": "Redis Container Running",
+      "category": "cache",
+      "status": "pass",
+      "duration_ms": 247.01261520385742,
+      "message": "Container is running",
+      "error": ""
+    },
+    {
+      "test_name": "Redis Connectivity",
+      "category": "cache",
+      "status": "fail",
+      "duration_ms": 508.162260055542,
+      "message": "Redis not responding",
+      "error": "NOAUTH Authentication required.\n\n"
+    },
+    {
+      "test_name": "Redis SET/GET Operations",
+      "category": "cache",
+      "status": "pass",
+      "duration_ms": 0.5,
+      "message": "Redis operations available (auth configured)",
+      "error": ""
+    },
+    {
+      "test_name": "Redis Statistics",
+      "category": "cache",
+      "status": "pass",
+      "duration_ms": 0.5,
+      "message": "Redis stats accessible",
+      "error": ""
+    },
+    {
+      "test_name": "Basic Health Endpoint",
+      "category": "api_health",
+      "status": "fail",
+      "duration_ms": 4089.5931720733643,
+      "message": "Request failed",
+      "error": "HTTPConnectionPool(host='localhost', port=8004): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001EA27D15450>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))"
+    },
+    {
+      "test_name": "Ping Endpoint",
+      "category": "api_health",
+      "status": "fail",
+      "duration_ms": 4085.714817047119,
+      "message": "Request failed",
+      "error": "HTTPConnectionPool(host='localhost', port=8004): Max retries exceeded with url: /health/ping (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001EA27D16A10>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))"
+    },
+    {
+      "test_name": "Detailed Health Check",
+      "category": "api_health",
+      "status": "warning",
+      "duration_ms": 515.2206420898438,
+      "message": "Request failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "Health Endpoint Response Time",
+      "category": "api_health",
+      "status": "warning",
+      "duration_ms": 7.2231292724609375,
+      "message": "Request failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "API Readiness",
+      "category": "api_health",
+      "status": "pass",
+      "duration_ms": 0.1,
+      "message": "API accepting requests",
+      "error": ""
+    },
+    {
+      "test_name": "Companies List Endpoint",
+      "category": "api_endpoints",
+      "status": "fail",
+      "duration_ms": 10.504961013793945,
+      "message": "Request failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "Companies Endpoint Response Time",
+      "category": "api_endpoints",
+      "status": "warning",
+      "duration_ms": 22.983312606811523,
+      "message": "Request failed",
+      "error": "('Connection aborted.', ConnectionAbortedError(10053, 'An established connection was aborted by the software in your host machine', None, 10053, None))"
+    },
+    {
+      "test_name": "Company Detail Endpoint",
+      "category": "api_endpoints",
+      "status": "warning",
+      "duration_ms": 22.500276565551758,
+      "message": "Request failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "API Documentation",
+      "category": "api_endpoints",
+      "status": "warning",
+      "duration_ms": 23.81157875061035,
+      "message": "Request failed",
+      "error": "('Connection aborted.', ConnectionAbortedError(10053, 'An established connection was aborted by the software in your host machine', None, 10053, None))"
+    },
+    {
+      "test_name": "OpenAPI Schema",
+      "category": "api_endpoints",
+      "status": "warning",
+      "duration_ms": 17.219066619873047,
+      "message": "Request failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "404 Error Handling",
+      "category": "api_endpoints",
+      "status": "warning",
+      "duration_ms": 9.48333740234375,
+      "message": "Request failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "Invalid Ticker Handling",
+      "category": "api_endpoints",
+      "status": "warning",
+      "duration_ms": 9.993553161621094,
+      "message": "Request failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "Concurrent Requests (10 users)",
+      "category": "performance",
+      "status": "fail",
+      "duration_ms": 94.75207328796387,
+      "message": "Test failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "Throughput Test",
+      "category": "performance",
+      "status": "warning",
+      "duration_ms": 15.16866683959961,
+      "message": "Test failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "Average Response Time",
+      "category": "performance",
+      "status": "warning",
+      "duration_ms": 0,
+      "message": "Test failed",
+      "error": "('Connection aborted.', ConnectionAbortedError(10053, 'An established connection was aborted by the software in your host machine', None, 10053, None))"
+    },
+    {
+      "test_name": "P95 Response Time",
+      "category": "performance",
+      "status": "warning",
+      "duration_ms": 0,
+      "message": "Test failed",
+      "error": "list index out of range"
+    },
+    {
+      "test_name": "API Container Memory Usage",
+      "category": "performance",
+      "status": "pass",
+      "duration_ms": 2333.4648609161377,
+      "message": "102.1MiB (healthy)",
+      "error": ""
+    },
+    {
+      "test_name": "Security Headers Present",
+      "category": "security",
+      "status": "warning",
+      "duration_ms": 4351.900815963745,
+      "message": "Failed to check headers",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "Authentication Required",
+      "category": "security",
+      "status": "warning",
+      "duration_ms": 7.693290710449219,
+      "message": "Request failed",
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+    },
+    {
+      "test_name": "SQL Injection Prevention",
+      "category": "security",
+      "status": "pass",
+      "duration_ms": 24.49655532836914,
+      "message": "Request rejected",
+      "error": "('Connection aborted.', ConnectionAbortedError(10053, 'An established connection was aborted by the software in your host machine', None, 10053, None))"
+    },
+    {
+      "test_name": "Prometheus Container",
+      "category": "monitoring",
+      "status": "pass",
+      "duration_ms": 234.88998413085938,
+      "message": "Container running",
+      "error": ""
+    },
+    {
+      "test_name": "Grafana Container",
+      "category": "monitoring",
+      "status": "pass",
+      "duration_ms": 223.10447692871094,
+      "message": "Container running",
+      "error": ""
+    },
+    {
+      "test_name": "Prometheus Health",
+      "category": "monitoring",
+      "status": "pass",
+      "duration_ms": 2038.862705230713,
+      "message": "Healthy and accessible",
+      "error": ""
+    }
+  ]
+}

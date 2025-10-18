@@ -1,0 +1,4615 @@
+{
+  "monitoring_session": {
+    "start_time": "2025-10-18T00:47:00Z",
+    "end_time": "2025-10-18T01:47:00Z",
+    "duration_seconds": 3600,
+    "sample_interval": 30,
+    "baseline": {
+      "p99_latency_ms": 32.14,
+      "mean_latency_ms": 8.42,
+      "success_rate": 100.0,
+      "throughput_qps": 27.3
+    }
+  },
+  "samples": [
+    {
+      "sample_number": 1,
+      "timestamp": "2025-10-18T00:47:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.52
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.37
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.64
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.85,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "29.18%,416MiB / 1651MiB,49.36%,308kB / 163kB,64MB / 11MB",
+        "database": "27.14%,521MiB / 1987MiB,54.44%,281kB / 153kB,74MB / 41MB",
+        "redis": "14.39%,538MiB / 1596MiB,26.75%,314kB / 74kB,18MB / 33MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.08,
+        "transactions_per_sec": 40.57
+      },
+      "redis_info": "instantaneous_ops_per_sec:137;keyspace_hits:1019;keyspace_misses:14;evicted_keys:0;used_memory_human:221M"
+    },
+    {
+      "sample_number": 2,
+      "timestamp": "2025-10-18T00:47:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.18
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.27
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 11.31
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.59,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "34.67%,582MiB / 1581MiB,42.05%,135kB / 192kB,71MB / 24MB",
+        "database": "32.63%,557MiB / 1868MiB,50.24%,417kB / 200kB,52MB / 28MB",
+        "redis": "16.61%,486MiB / 1662MiB,29.24%,267kB / 184kB,15MB / 40MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 10,
+        "cache_hit_ratio": 100.08,
+        "transactions_per_sec": 55.16
+      },
+      "redis_info": "instantaneous_ops_per_sec:139;keyspace_hits:1196;keyspace_misses:19;evicted_keys:0;used_memory_human:200M"
+    },
+    {
+      "sample_number": 3,
+      "timestamp": "2025-10-18T00:48:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.93
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.81
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 20.21
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.32,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "37.58%,599MiB / 1704MiB,47.91%,240kB / 135kB,52MB / 44MB",
+        "database": "25.29%,464MiB / 1852MiB,52.76%,404kB / 172kB,20MB / 46MB",
+        "redis": "11.65%,500MiB / 1898MiB,21.64%,261kB / 165kB,83MB / 9MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.26,
+        "transactions_per_sec": 44.23
+      },
+      "redis_info": "instantaneous_ops_per_sec:109;keyspace_hits:1715;keyspace_misses:46;evicted_keys:0;used_memory_human:240M"
+    },
+    {
+      "sample_number": 4,
+      "timestamp": "2025-10-18T00:48:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.19
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 14.02
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 19.85
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 12.36,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "45.59%,452MiB / 1875MiB,44.13%,189kB / 197kB,47MB / 8MB",
+        "database": "31.25%,538MiB / 1932MiB,55.38%,261kB / 189kB,54MB / 3MB",
+        "redis": "13.51%,437MiB / 1821MiB,23.07%,378kB / 122kB,74MB / 16MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 9,
+        "cache_hit_ratio": 98.36,
+        "transactions_per_sec": 59.43
+      },
+      "redis_info": "instantaneous_ops_per_sec:141;keyspace_hits:1498;keyspace_misses:10;evicted_keys:0;used_memory_human:232M"
+    },
+    {
+      "sample_number": 5,
+      "timestamp": "2025-10-18T00:49:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.34
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.34
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.23
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.97,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.39%,546MiB / 1906MiB,44.06%,246kB / 193kB,49MB / 14MB",
+        "database": "21.67%,579MiB / 1866MiB,55.60%,113kB / 143kB,50MB / 19MB",
+        "redis": "14.30%,447MiB / 1603MiB,24.05%,262kB / 148kB,72MB / 25MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 12,
+        "cache_hit_ratio": 99.2,
+        "transactions_per_sec": 38.51
+      },
+      "redis_info": "instantaneous_ops_per_sec:97;keyspace_hits:1493;keyspace_misses:35;evicted_keys:0;used_memory_human:222M"
+    },
+    {
+      "sample_number": 6,
+      "timestamp": "2025-10-18T00:49:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.29
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.11
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 10.08
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 7.83,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "24.99%,516MiB / 1855MiB,48.38%,489kB / 110kB,18MB / 17MB",
+        "database": "29.57%,458MiB / 1643MiB,54.40%,421kB / 105kB,18MB / 15MB",
+        "redis": "8.84%,474MiB / 1788MiB,22.92%,420kB / 59kB,48MB / 25MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 9,
+        "cache_hit_ratio": 98.66,
+        "transactions_per_sec": 43.61
+      },
+      "redis_info": "instantaneous_ops_per_sec:90;keyspace_hits:1146;keyspace_misses:32;evicted_keys:0;used_memory_human:239M"
+    },
+    {
+      "sample_number": 7,
+      "timestamp": "2025-10-18T00:50:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.85
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.93
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 11.26
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.35,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "31.19%,460MiB / 1871MiB,40.28%,223kB / 69kB,82MB / 46MB",
+        "database": "36.11%,506MiB / 1778MiB,56.63%,116kB / 86kB,87MB / 49MB",
+        "redis": "5.00%,503MiB / 1591MiB,25.56%,366kB / 169kB,86MB / 17MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.15,
+        "transactions_per_sec": 64.34
+      },
+      "redis_info": "instantaneous_ops_per_sec:116;keyspace_hits:1438;keyspace_misses:27;evicted_keys:0;used_memory_human:233M"
+    },
+    {
+      "sample_number": 8,
+      "timestamp": "2025-10-18T00:50:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.43
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 14.09
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 10.72
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.08,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "44.29%,435MiB / 1775MiB,47.40%,489kB / 140kB,3MB / 49MB",
+        "database": "26.49%,584MiB / 1896MiB,51.09%,299kB / 87kB,92MB / 31MB",
+        "redis": "13.78%,536MiB / 1997MiB,23.70%,342kB / 52kB,58MB / 25MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 8,
+        "cache_hit_ratio": 98.32,
+        "transactions_per_sec": 40.75
+      },
+      "redis_info": "instantaneous_ops_per_sec:135;keyspace_hits:1987;keyspace_misses:25;evicted_keys:0;used_memory_human:237M"
+    },
+    {
+      "sample_number": 9,
+      "timestamp": "2025-10-18T00:51:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.53
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 14.17
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.43
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.38,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "31.14%,561MiB / 1729MiB,42.98%,221kB / 77kB,48MB / 6MB",
+        "database": "34.85%,466MiB / 1549MiB,56.92%,470kB / 121kB,21MB / 10MB",
+        "redis": "15.38%,569MiB / 1684MiB,23.37%,495kB / 69kB,19MB / 24MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 12,
+        "cache_hit_ratio": 98.67,
+        "transactions_per_sec": 64.19
+      },
+      "redis_info": "instantaneous_ops_per_sec:94;keyspace_hits:1283;keyspace_misses:36;evicted_keys:0;used_memory_human:247M"
+    },
+    {
+      "sample_number": 10,
+      "timestamp": "2025-10-18T00:51:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.41
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.7
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.87
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.66,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "40.26%,496MiB / 1842MiB,42.42%,477kB / 98kB,63MB / 10MB",
+        "database": "21.12%,500MiB / 1639MiB,52.76%,158kB / 93kB,50MB / 31MB",
+        "redis": "12.04%,595MiB / 1696MiB,20.32%,444kB / 98kB,8MB / 12MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 12,
+        "cache_hit_ratio": 98.17,
+        "transactions_per_sec": 48.64
+      },
+      "redis_info": "instantaneous_ops_per_sec:150;keyspace_hits:1865;keyspace_misses:25;evicted_keys:0;used_memory_human:246M"
+    },
+    {
+      "sample_number": 11,
+      "timestamp": "2025-10-18T00:52:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 1.71
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.83
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.36
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.97,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "30.33%,451MiB / 1719MiB,42.57%,466kB / 97kB,38MB / 48MB",
+        "database": "23.90%,576MiB / 1638MiB,59.75%,199kB / 129kB,94MB / 15MB",
+        "redis": "6.42%,600MiB / 1704MiB,29.58%,103kB / 166kB,6MB / 2MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 8,
+        "cache_hit_ratio": 98.87,
+        "transactions_per_sec": 48.82
+      },
+      "redis_info": "instantaneous_ops_per_sec:107;keyspace_hits:1239;keyspace_misses:10;evicted_keys:0;used_memory_human:215M"
+    },
+    {
+      "sample_number": 12,
+      "timestamp": "2025-10-18T00:52:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.47
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.22
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.91
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.2,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "24.23%,560MiB / 1872MiB,41.27%,463kB / 50kB,13MB / 47MB",
+        "database": "31.20%,492MiB / 1934MiB,56.29%,352kB / 192kB,23MB / 22MB",
+        "redis": "11.26%,521MiB / 1585MiB,24.70%,482kB / 175kB,47MB / 38MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.13,
+        "transactions_per_sec": 48.44
+      },
+      "redis_info": "instantaneous_ops_per_sec:115;keyspace_hits:1696;keyspace_misses:28;evicted_keys:0;used_memory_human:248M"
+    },
+    {
+      "sample_number": 13,
+      "timestamp": "2025-10-18T00:53:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.76
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.62
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.58
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.65,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.86%,529MiB / 1767MiB,43.45%,250kB / 163kB,23MB / 8MB",
+        "database": "24.35%,580MiB / 1503MiB,57.59%,386kB / 165kB,66MB / 40MB",
+        "redis": "11.03%,565MiB / 1579MiB,26.24%,122kB / 181kB,81MB / 5MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.56,
+        "transactions_per_sec": 57.84
+      },
+      "redis_info": "instantaneous_ops_per_sec:112;keyspace_hits:1804;keyspace_misses:13;evicted_keys:0;used_memory_human:246M"
+    },
+    {
+      "sample_number": 14,
+      "timestamp": "2025-10-18T00:53:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.53
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.76
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.21
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.83,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.71%,502MiB / 1928MiB,40.99%,135kB / 197kB,77MB / 43MB",
+        "database": "30.11%,525MiB / 1956MiB,57.24%,104kB / 97kB,91MB / 0MB",
+        "redis": "14.72%,452MiB / 1905MiB,31.80%,291kB / 134kB,20MB / 14MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 15,
+        "cache_hit_ratio": 98.15,
+        "transactions_per_sec": 63.33
+      },
+      "redis_info": "instantaneous_ops_per_sec:140;keyspace_hits:1945;keyspace_misses:37;evicted_keys:0;used_memory_human:212M"
+    },
+    {
+      "sample_number": 15,
+      "timestamp": "2025-10-18T00:54:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.04
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 16.83
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 8.93
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.93,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.58%,598MiB / 1601MiB,44.66%,199kB / 64kB,46MB / 41MB",
+        "database": "27.60%,573MiB / 1830MiB,58.90%,310kB / 157kB,70MB / 33MB",
+        "redis": "5.12%,520MiB / 1687MiB,25.21%,168kB / 157kB,27MB / 19MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 12,
+        "cache_hit_ratio": 99.42,
+        "transactions_per_sec": 37.88
+      },
+      "redis_info": "instantaneous_ops_per_sec:98;keyspace_hits:1713;keyspace_misses:11;evicted_keys:0;used_memory_human:221M"
+    },
+    {
+      "sample_number": 16,
+      "timestamp": "2025-10-18T00:54:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.54
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.0
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.74
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.43,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "32.63%,597MiB / 1655MiB,46.04%,449kB / 198kB,85MB / 10MB",
+        "database": "35.10%,542MiB / 1716MiB,57.02%,346kB / 94kB,12MB / 42MB",
+        "redis": "8.24%,403MiB / 1695MiB,25.97%,163kB / 200kB,64MB / 32MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.13,
+        "transactions_per_sec": 34.58
+      },
+      "redis_info": "instantaneous_ops_per_sec:127;keyspace_hits:1366;keyspace_misses:19;evicted_keys:0;used_memory_human:211M"
+    },
+    {
+      "sample_number": 17,
+      "timestamp": "2025-10-18T00:55:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.87
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.62
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.6
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.36,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.31%,585MiB / 1527MiB,44.91%,378kB / 51kB,47MB / 50MB",
+        "database": "26.08%,464MiB / 1725MiB,55.96%,400kB / 108kB,50MB / 2MB",
+        "redis": "7.72%,435MiB / 1798MiB,22.40%,228kB / 82kB,68MB / 14MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.36,
+        "transactions_per_sec": 58.14
+      },
+      "redis_info": "instantaneous_ops_per_sec:121;keyspace_hits:1683;keyspace_misses:34;evicted_keys:0;used_memory_human:210M"
+    },
+    {
+      "sample_number": 18,
+      "timestamp": "2025-10-18T00:55:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.46
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.04
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.41
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.97,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "25.88%,560MiB / 1524MiB,44.26%,456kB / 55kB,32MB / 17MB",
+        "database": "32.43%,490MiB / 1963MiB,51.96%,264kB / 180kB,96MB / 10MB",
+        "redis": "15.96%,431MiB / 1839MiB,22.44%,227kB / 165kB,45MB / 13MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.77,
+        "transactions_per_sec": 36.05
+      },
+      "redis_info": "instantaneous_ops_per_sec:100;keyspace_hits:1846;keyspace_misses:14;evicted_keys:0;used_memory_human:246M"
+    },
+    {
+      "sample_number": 19,
+      "timestamp": "2025-10-18T00:56:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.59
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 15.41
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.37
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.46,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "25.57%,597MiB / 1522MiB,43.69%,297kB / 162kB,62MB / 31MB",
+        "database": "17.60%,409MiB / 1564MiB,55.01%,162kB / 200kB,53MB / 31MB",
+        "redis": "5.00%,514MiB / 1510MiB,22.31%,435kB / 89kB,46MB / 39MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 9,
+        "cache_hit_ratio": 98.64,
+        "transactions_per_sec": 33.74
+      },
+      "redis_info": "instantaneous_ops_per_sec:103;keyspace_hits:1880;keyspace_misses:14;evicted_keys:0;used_memory_human:245M"
+    },
+    {
+      "sample_number": 20,
+      "timestamp": "2025-10-18T00:56:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.15
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.03
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.15
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.44,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.87%,434MiB / 1890MiB,44.64%,193kB / 75kB,69MB / 21MB",
+        "database": "35.43%,455MiB / 1781MiB,53.06%,293kB / 82kB,47MB / 6MB",
+        "redis": "11.50%,491MiB / 1885MiB,28.80%,291kB / 103kB,100MB / 40MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.01,
+        "transactions_per_sec": 41.36
+      },
+      "redis_info": "instantaneous_ops_per_sec:150;keyspace_hits:1813;keyspace_misses:29;evicted_keys:0;used_memory_human:221M"
+    },
+    {
+      "sample_number": 21,
+      "timestamp": "2025-10-18T00:57:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 1.04
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.61
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.83
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.49,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.47%,465MiB / 1899MiB,43.73%,365kB / 134kB,49MB / 2MB",
+        "database": "30.26%,467MiB / 1718MiB,53.96%,437kB / 108kB,25MB / 33MB",
+        "redis": "14.08%,429MiB / 1675MiB,24.83%,404kB / 166kB,28MB / 19MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.19,
+        "transactions_per_sec": 44.18
+      },
+      "redis_info": "instantaneous_ops_per_sec:134;keyspace_hits:1947;keyspace_misses:36;evicted_keys:0;used_memory_human:248M"
+    },
+    {
+      "sample_number": 22,
+      "timestamp": "2025-10-18T00:57:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.37
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.39
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 20.2
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.32,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.14%,406MiB / 1818MiB,47.60%,365kB / 157kB,19MB / 21MB",
+        "database": "25.62%,556MiB / 1596MiB,55.07%,316kB / 179kB,52MB / 25MB",
+        "redis": "16.04%,566MiB / 1775MiB,31.26%,128kB / 125kB,31MB / 34MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 14,
+        "cache_hit_ratio": 99.57,
+        "transactions_per_sec": 49.64
+      },
+      "redis_info": "instantaneous_ops_per_sec:112;keyspace_hits:1987;keyspace_misses:38;evicted_keys:0;used_memory_human:220M"
+    },
+    {
+      "sample_number": 23,
+      "timestamp": "2025-10-18T00:58:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.68
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.05
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 9.48
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 7.74,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "30.53%,481MiB / 1784MiB,44.99%,351kB / 126kB,81MB / 24MB",
+        "database": "22.64%,444MiB / 1619MiB,58.17%,360kB / 178kB,7MB / 29MB",
+        "redis": "20.15%,581MiB / 1676MiB,28.16%,294kB / 189kB,70MB / 1MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 8,
+        "cache_hit_ratio": 98.3,
+        "transactions_per_sec": 56.24
+      },
+      "redis_info": "instantaneous_ops_per_sec:102;keyspace_hits:1661;keyspace_misses:30;evicted_keys:0;used_memory_human:206M"
+    },
+    {
+      "sample_number": 24,
+      "timestamp": "2025-10-18T00:58:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.64
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.38
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.77
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.93,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "42.37%,576MiB / 1755MiB,48.13%,461kB / 180kB,74MB / 7MB",
+        "database": "30.53%,525MiB / 1743MiB,55.59%,321kB / 192kB,71MB / 37MB",
+        "redis": "10.27%,468MiB / 1882MiB,22.62%,390kB / 123kB,7MB / 1MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 15,
+        "cache_hit_ratio": 98.99,
+        "transactions_per_sec": 49.34
+      },
+      "redis_info": "instantaneous_ops_per_sec:93;keyspace_hits:1910;keyspace_misses:30;evicted_keys:0;used_memory_human:234M"
+    },
+    {
+      "sample_number": 25,
+      "timestamp": "2025-10-18T00:59:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.0
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.71
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 18.62
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.78,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "34.91%,500MiB / 1846MiB,47.41%,330kB / 187kB,25MB / 38MB",
+        "database": "28.43%,574MiB / 1503MiB,49.61%,235kB / 133kB,33MB / 38MB",
+        "redis": "16.42%,536MiB / 1880MiB,23.57%,154kB / 165kB,92MB / 19MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 12,
+        "cache_hit_ratio": 98.96,
+        "transactions_per_sec": 57.45
+      },
+      "redis_info": "instantaneous_ops_per_sec:85;keyspace_hits:1035;keyspace_misses:17;evicted_keys:0;used_memory_human:214M"
+    },
+    {
+      "sample_number": 26,
+      "timestamp": "2025-10-18T00:59:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.15
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.86
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 17.95
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.32,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "31.36%,569MiB / 1532MiB,49.81%,112kB / 162kB,19MB / 13MB",
+        "database": "22.43%,469MiB / 1870MiB,53.62%,380kB / 73kB,22MB / 46MB",
+        "redis": "8.78%,515MiB / 1990MiB,24.70%,200kB / 80kB,81MB / 12MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 14,
+        "cache_hit_ratio": 99.09,
+        "transactions_per_sec": 47.09
+      },
+      "redis_info": "instantaneous_ops_per_sec:88;keyspace_hits:1991;keyspace_misses:43;evicted_keys:0;used_memory_human:225M"
+    },
+    {
+      "sample_number": 27,
+      "timestamp": "2025-10-18T01:00:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.26
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.46
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 20.07
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.6,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "37.38%,429MiB / 1655MiB,43.10%,400kB / 154kB,51MB / 36MB",
+        "database": "24.72%,433MiB / 1627MiB,54.34%,246kB / 143kB,67MB / 49MB",
+        "redis": "25.08%,555MiB / 1698MiB,24.09%,430kB / 139kB,24MB / 20MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 14,
+        "cache_hit_ratio": 99.55,
+        "transactions_per_sec": 51.62
+      },
+      "redis_info": "instantaneous_ops_per_sec:106;keyspace_hits:1488;keyspace_misses:11;evicted_keys:0;used_memory_human:229M"
+    },
+    {
+      "sample_number": 28,
+      "timestamp": "2025-10-18T01:00:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.92
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.46
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.37
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.25,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "40.40%,567MiB / 1633MiB,48.74%,379kB / 174kB,98MB / 33MB",
+        "database": "28.67%,511MiB / 1730MiB,57.18%,430kB / 190kB,54MB / 43MB",
+        "redis": "7.36%,542MiB / 1945MiB,22.57%,364kB / 178kB,69MB / 43MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.62,
+        "transactions_per_sec": 52.48
+      },
+      "redis_info": "instantaneous_ops_per_sec:101;keyspace_hits:1502;keyspace_misses:37;evicted_keys:0;used_memory_human:250M"
+    },
+    {
+      "sample_number": 29,
+      "timestamp": "2025-10-18T01:01:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.17
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.8
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.37
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.11,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "26.41%,488MiB / 1856MiB,41.60%,439kB / 56kB,12MB / 46MB",
+        "database": "28.83%,568MiB / 1675MiB,55.12%,499kB / 156kB,71MB / 33MB",
+        "redis": "9.51%,403MiB / 1607MiB,19.64%,440kB / 150kB,36MB / 40MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 15,
+        "cache_hit_ratio": 99.2,
+        "transactions_per_sec": 28.59
+      },
+      "redis_info": "instantaneous_ops_per_sec:80;keyspace_hits:1553;keyspace_misses:14;evicted_keys:0;used_memory_human:233M"
+    },
+    {
+      "sample_number": 30,
+      "timestamp": "2025-10-18T01:01:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.21
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.65
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 10.78
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.21,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "29.55%,493MiB / 1721MiB,42.16%,410kB / 135kB,18MB / 9MB",
+        "database": "23.57%,566MiB / 1893MiB,51.05%,317kB / 175kB,91MB / 12MB",
+        "redis": "7.38%,544MiB / 1802MiB,24.03%,250kB / 105kB,89MB / 16MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.97,
+        "transactions_per_sec": 52.8
+      },
+      "redis_info": "instantaneous_ops_per_sec:123;keyspace_hits:1075;keyspace_misses:36;evicted_keys:0;used_memory_human:204M"
+    },
+    {
+      "sample_number": 31,
+      "timestamp": "2025-10-18T01:02:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.27
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.46
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.37
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.04,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "26.31%,577MiB / 1611MiB,42.56%,133kB / 60kB,23MB / 2MB",
+        "database": "29.05%,550MiB / 1943MiB,53.72%,227kB / 88kB,1MB / 30MB",
+        "redis": "5.70%,418MiB / 1751MiB,18.96%,368kB / 99kB,7MB / 28MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 13,
+        "cache_hit_ratio": 98.74,
+        "transactions_per_sec": 42.48
+      },
+      "redis_info": "instantaneous_ops_per_sec:117;keyspace_hits:1264;keyspace_misses:17;evicted_keys:0;used_memory_human:237M"
+    },
+    {
+      "sample_number": 32,
+      "timestamp": "2025-10-18T01:02:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.79
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.91
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.57
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.09,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "27.08%,433MiB / 1734MiB,51.15%,493kB / 157kB,57MB / 33MB",
+        "database": "41.89%,484MiB / 1983MiB,53.50%,359kB / 60kB,1MB / 13MB",
+        "redis": "7.14%,421MiB / 1534MiB,20.06%,127kB / 185kB,94MB / 16MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 15,
+        "cache_hit_ratio": 99.13,
+        "transactions_per_sec": 47.43
+      },
+      "redis_info": "instantaneous_ops_per_sec:108;keyspace_hits:1060;keyspace_misses:40;evicted_keys:0;used_memory_human:244M"
+    },
+    {
+      "sample_number": 33,
+      "timestamp": "2025-10-18T01:03:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.41
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 15.55
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.93
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.63,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "36.15%,588MiB / 1697MiB,49.23%,402kB / 90kB,58MB / 39MB",
+        "database": "26.77%,512MiB / 1895MiB,49.70%,180kB / 198kB,15MB / 23MB",
+        "redis": "17.54%,483MiB / 1722MiB,22.82%,130kB / 100kB,22MB / 18MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.24,
+        "transactions_per_sec": 49.01
+      },
+      "redis_info": "instantaneous_ops_per_sec:91;keyspace_hits:1567;keyspace_misses:46;evicted_keys:0;used_memory_human:223M"
+    },
+    {
+      "sample_number": 34,
+      "timestamp": "2025-10-18T01:03:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.61
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.15
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.86
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.87,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "28.45%,510MiB / 1760MiB,47.08%,166kB / 142kB,72MB / 9MB",
+        "database": "32.67%,599MiB / 1866MiB,52.44%,111kB / 85kB,15MB / 45MB",
+        "redis": "13.29%,576MiB / 1670MiB,25.61%,279kB / 131kB,6MB / 34MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 12,
+        "cache_hit_ratio": 99.37,
+        "transactions_per_sec": 48.53
+      },
+      "redis_info": "instantaneous_ops_per_sec:111;keyspace_hits:1493;keyspace_misses:23;evicted_keys:0;used_memory_human:233M"
+    },
+    {
+      "sample_number": 35,
+      "timestamp": "2025-10-18T01:04:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.06
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.88
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 11.76
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.57,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "30.98%,417MiB / 1657MiB,45.67%,490kB / 83kB,44MB / 29MB",
+        "database": "32.46%,590MiB / 1515MiB,54.54%,239kB / 121kB,98MB / 16MB",
+        "redis": "9.96%,554MiB / 1887MiB,24.45%,108kB / 126kB,81MB / 14MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.04,
+        "transactions_per_sec": 55.81
+      },
+      "redis_info": "instantaneous_ops_per_sec:136;keyspace_hits:1213;keyspace_misses:31;evicted_keys:0;used_memory_human:205M"
+    },
+    {
+      "sample_number": 36,
+      "timestamp": "2025-10-18T01:04:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.77
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.21
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.95
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.98,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "34.99%,514MiB / 1617MiB,43.01%,139kB / 94kB,66MB / 40MB",
+        "database": "28.77%,411MiB / 1941MiB,55.96%,325kB / 187kB,98MB / 34MB",
+        "redis": "11.84%,570MiB / 1793MiB,22.38%,110kB / 157kB,33MB / 21MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.8,
+        "transactions_per_sec": 46.98
+      },
+      "redis_info": "instantaneous_ops_per_sec:83;keyspace_hits:1547;keyspace_misses:36;evicted_keys:0;used_memory_human:213M"
+    },
+    {
+      "sample_number": 37,
+      "timestamp": "2025-10-18T01:05:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.86
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.58
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.77
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.4,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "36.30%,549MiB / 1668MiB,40.01%,310kB / 67kB,84MB / 50MB",
+        "database": "33.57%,446MiB / 1943MiB,51.93%,441kB / 160kB,37MB / 30MB",
+        "redis": "11.28%,573MiB / 1737MiB,16.34%,319kB / 162kB,59MB / 11MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.48,
+        "transactions_per_sec": 43.51
+      },
+      "redis_info": "instantaneous_ops_per_sec:122;keyspace_hits:1760;keyspace_misses:40;evicted_keys:0;used_memory_human:219M"
+    },
+    {
+      "sample_number": 38,
+      "timestamp": "2025-10-18T01:05:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.15
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.7
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 11.45
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.43,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "40.48%,487MiB / 1845MiB,46.51%,121kB / 130kB,31MB / 18MB",
+        "database": "28.18%,536MiB / 1502MiB,60.38%,308kB / 86kB,98MB / 48MB",
+        "redis": "16.72%,417MiB / 1755MiB,27.40%,392kB / 70kB,10MB / 27MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.67,
+        "transactions_per_sec": 44.38
+      },
+      "redis_info": "instantaneous_ops_per_sec:132;keyspace_hits:1624;keyspace_misses:20;evicted_keys:0;used_memory_human:224M"
+    },
+    {
+      "sample_number": 39,
+      "timestamp": "2025-10-18T01:06:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.93
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.22
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 11.62
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.92,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.68%,547MiB / 1667MiB,47.73%,490kB / 147kB,67MB / 16MB",
+        "database": "24.83%,438MiB / 1765MiB,57.91%,174kB / 155kB,24MB / 2MB",
+        "redis": "10.75%,511MiB / 1809MiB,25.73%,304kB / 159kB,81MB / 32MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.55,
+        "transactions_per_sec": 44.81
+      },
+      "redis_info": "instantaneous_ops_per_sec:86;keyspace_hits:1513;keyspace_misses:28;evicted_keys:0;used_memory_human:236M"
+    },
+    {
+      "sample_number": 40,
+      "timestamp": "2025-10-18T01:06:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.44
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.1
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.4
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.65,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "32.13%,465MiB / 1845MiB,45.25%,152kB / 131kB,10MB / 11MB",
+        "database": "32.57%,490MiB / 1961MiB,50.61%,142kB / 65kB,48MB / 10MB",
+        "redis": "5.73%,514MiB / 1560MiB,26.22%,473kB / 168kB,9MB / 19MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 11,
+        "cache_hit_ratio": 100.59,
+        "transactions_per_sec": 44.42
+      },
+      "redis_info": "instantaneous_ops_per_sec:118;keyspace_hits:1671;keyspace_misses:36;evicted_keys:0;used_memory_human:241M"
+    },
+    {
+      "sample_number": 41,
+      "timestamp": "2025-10-18T01:07:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.93
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 15.2
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.2
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.11,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "30.99%,473MiB / 1776MiB,48.25%,342kB / 76kB,37MB / 23MB",
+        "database": "32.86%,482MiB / 1956MiB,59.97%,114kB / 93kB,32MB / 32MB",
+        "redis": "5.85%,417MiB / 1565MiB,21.46%,318kB / 85kB,99MB / 16MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 15,
+        "cache_hit_ratio": 99.34,
+        "transactions_per_sec": 51.9
+      },
+      "redis_info": "instantaneous_ops_per_sec:133;keyspace_hits:1193;keyspace_misses:28;evicted_keys:0;used_memory_human:247M"
+    },
+    {
+      "sample_number": 42,
+      "timestamp": "2025-10-18T01:07:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.91
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.42
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.73
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.02,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "34.85%,455MiB / 1808MiB,46.18%,494kB / 96kB,35MB / 12MB",
+        "database": "23.77%,418MiB / 1901MiB,58.94%,349kB / 68kB,41MB / 4MB",
+        "redis": "13.83%,597MiB / 1610MiB,20.37%,211kB / 150kB,36MB / 6MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.49,
+        "transactions_per_sec": 33.16
+      },
+      "redis_info": "instantaneous_ops_per_sec:87;keyspace_hits:1162;keyspace_misses:16;evicted_keys:0;used_memory_human:227M"
+    },
+    {
+      "sample_number": 43,
+      "timestamp": "2025-10-18T01:08:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.11
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.47
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.38
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.32,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "29.94%,457MiB / 1733MiB,38.93%,177kB / 156kB,62MB / 46MB",
+        "database": "25.67%,503MiB / 1675MiB,50.95%,378kB / 74kB,39MB / 46MB",
+        "redis": "6.21%,553MiB / 1555MiB,26.08%,113kB / 132kB,92MB / 29MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 14,
+        "cache_hit_ratio": 99.25,
+        "transactions_per_sec": 37.73
+      },
+      "redis_info": "instantaneous_ops_per_sec:142;keyspace_hits:1671;keyspace_misses:32;evicted_keys:0;used_memory_human:239M"
+    },
+    {
+      "sample_number": 44,
+      "timestamp": "2025-10-18T01:08:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.41
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 7.09
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.49
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 7.33,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "36.37%,421MiB / 1522MiB,48.06%,246kB / 160kB,39MB / 21MB",
+        "database": "31.11%,449MiB / 1887MiB,54.06%,478kB / 135kB,39MB / 26MB",
+        "redis": "17.22%,421MiB / 1929MiB,26.74%,263kB / 141kB,98MB / 1MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.32,
+        "transactions_per_sec": 42.58
+      },
+      "redis_info": "instantaneous_ops_per_sec:90;keyspace_hits:1601;keyspace_misses:49;evicted_keys:0;used_memory_human:202M"
+    },
+    {
+      "sample_number": 45,
+      "timestamp": "2025-10-18T01:09:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.52
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.52
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.97
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.0,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "36.30%,570MiB / 1803MiB,49.09%,138kB / 178kB,68MB / 29MB",
+        "database": "36.28%,452MiB / 1893MiB,58.27%,348kB / 124kB,71MB / 47MB",
+        "redis": "5.84%,462MiB / 1723MiB,25.46%,312kB / 150kB,100MB / 43MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.23,
+        "transactions_per_sec": 39.66
+      },
+      "redis_info": "instantaneous_ops_per_sec:142;keyspace_hits:1796;keyspace_misses:20;evicted_keys:0;used_memory_human:205M"
+    },
+    {
+      "sample_number": 46,
+      "timestamp": "2025-10-18T01:09:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 1.99
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 15.04
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 10.58
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.2,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "29.82%,531MiB / 1722MiB,43.59%,495kB / 116kB,54MB / 2MB",
+        "database": "31.89%,513MiB / 1829MiB,56.76%,488kB / 155kB,6MB / 50MB",
+        "redis": "17.30%,588MiB / 1974MiB,26.36%,148kB / 199kB,5MB / 30MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 11,
+        "cache_hit_ratio": 98.64,
+        "transactions_per_sec": 48.43
+      },
+      "redis_info": "instantaneous_ops_per_sec:95;keyspace_hits:1689;keyspace_misses:24;evicted_keys:0;used_memory_human:236M"
+    },
+    {
+      "sample_number": 47,
+      "timestamp": "2025-10-18T01:10:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.82
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 7.83
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.72
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.12,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "28.54%,573MiB / 1697MiB,40.55%,183kB / 197kB,70MB / 50MB",
+        "database": "24.96%,588MiB / 1767MiB,57.46%,222kB / 100kB,95MB / 41MB",
+        "redis": "6.53%,562MiB / 1518MiB,27.40%,451kB / 56kB,83MB / 28MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 10,
+        "cache_hit_ratio": 98.79,
+        "transactions_per_sec": 37.34
+      },
+      "redis_info": "instantaneous_ops_per_sec:127;keyspace_hits:1300;keyspace_misses:40;evicted_keys:0;used_memory_human:207M"
+    },
+    {
+      "sample_number": 48,
+      "timestamp": "2025-10-18T01:10:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.61
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.69
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.43
+          }
+        },
+        "aggregate": {
+          "success_rate": 99.67,
+          "avg_response_time_ms": 9.58,
+          "total_requests": 3,
+          "successful_requests": 2
+        }
+      },
+      "container_stats": {
+        "api": "36.34%,418MiB / 1795MiB,39.05%,189kB / 96kB,83MB / 26MB",
+        "database": "28.19%,434MiB / 1504MiB,55.26%,485kB / 161kB,65MB / 16MB",
+        "redis": "17.92%,499MiB / 1832MiB,24.61%,458kB / 52kB,32MB / 35MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.84,
+        "transactions_per_sec": 34.36
+      },
+      "redis_info": "instantaneous_ops_per_sec:126;keyspace_hits:1236;keyspace_misses:24;evicted_keys:0;used_memory_human:203M"
+    },
+    {
+      "sample_number": 49,
+      "timestamp": "2025-10-18T01:11:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.28
+          },
+          "companies_list": {
+            "http_code": "500",
+            "response_time_ms": 13.33
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 20.15
+          }
+        },
+        "aggregate": {
+          "success_rate": 99.67,
+          "avg_response_time_ms": 12.26,
+          "total_requests": 3,
+          "successful_requests": 2
+        }
+      },
+      "container_stats": {
+        "api": "32.98%,432MiB / 1701MiB,46.53%,410kB / 114kB,47MB / 42MB",
+        "database": "26.78%,535MiB / 1952MiB,58.55%,450kB / 101kB,89MB / 17MB",
+        "redis": "14.95%,420MiB / 1792MiB,21.88%,408kB / 145kB,39MB / 3MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 10,
+        "cache_hit_ratio": 98.94,
+        "transactions_per_sec": 43.52
+      },
+      "redis_info": "instantaneous_ops_per_sec:118;keyspace_hits:1405;keyspace_misses:25;evicted_keys:0;used_memory_human:220M"
+    },
+    {
+      "sample_number": 50,
+      "timestamp": "2025-10-18T01:11:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.24
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.85
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 20.14
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.08,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "31.64%,547MiB / 1759MiB,41.97%,455kB / 135kB,6MB / 31MB",
+        "database": "31.09%,409MiB / 1925MiB,58.35%,272kB / 166kB,11MB / 20MB",
+        "redis": "8.77%,532MiB / 1910MiB,27.86%,477kB / 56kB,54MB / 11MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 13,
+        "cache_hit_ratio": 98.8,
+        "transactions_per_sec": 51.94
+      },
+      "redis_info": "instantaneous_ops_per_sec:117;keyspace_hits:1896;keyspace_misses:27;evicted_keys:0;used_memory_human:229M"
+    },
+    {
+      "sample_number": 51,
+      "timestamp": "2025-10-18T01:12:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.52
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.1
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.43
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.68,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "39.07%,510MiB / 1609MiB,47.67%,219kB / 84kB,77MB / 25MB",
+        "database": "33.12%,407MiB / 1927MiB,54.23%,478kB / 120kB,25MB / 26MB",
+        "redis": "5.00%,578MiB / 1915MiB,22.94%,387kB / 86kB,32MB / 4MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.31,
+        "transactions_per_sec": 50.64
+      },
+      "redis_info": "instantaneous_ops_per_sec:92;keyspace_hits:1843;keyspace_misses:13;evicted_keys:0;used_memory_human:209M"
+    },
+    {
+      "sample_number": 52,
+      "timestamp": "2025-10-18T01:12:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.01
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.33
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.91
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.75,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "34.97%,425MiB / 1945MiB,41.83%,155kB / 174kB,50MB / 10MB",
+        "database": "26.79%,524MiB / 1746MiB,50.41%,187kB / 71kB,18MB / 23MB",
+        "redis": "10.23%,438MiB / 1747MiB,26.24%,262kB / 130kB,50MB / 1MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.15,
+        "transactions_per_sec": 51.26
+      },
+      "redis_info": "instantaneous_ops_per_sec:112;keyspace_hits:1564;keyspace_misses:35;evicted_keys:0;used_memory_human:225M"
+    },
+    {
+      "sample_number": 53,
+      "timestamp": "2025-10-18T01:13:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.87
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 14.28
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.9
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.02,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.23%,412MiB / 1590MiB,50.31%,107kB / 57kB,64MB / 1MB",
+        "database": "31.74%,443MiB / 1871MiB,56.35%,231kB / 172kB,65MB / 14MB",
+        "redis": "6.71%,581MiB / 1900MiB,22.67%,327kB / 168kB,65MB / 16MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 14,
+        "cache_hit_ratio": 99.53,
+        "transactions_per_sec": 35.88
+      },
+      "redis_info": "instantaneous_ops_per_sec:111;keyspace_hits:1356;keyspace_misses:19;evicted_keys:0;used_memory_human:223M"
+    },
+    {
+      "sample_number": 54,
+      "timestamp": "2025-10-18T01:13:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 1.89
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.14
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 11.33
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 7.79,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "31.42%,422MiB / 1982MiB,41.68%,402kB / 59kB,100MB / 41MB",
+        "database": "25.00%,458MiB / 1928MiB,53.52%,498kB / 184kB,86MB / 43MB",
+        "redis": "10.67%,480MiB / 1503MiB,25.77%,296kB / 157kB,100MB / 12MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 14,
+        "cache_hit_ratio": 98.23,
+        "transactions_per_sec": 60.04
+      },
+      "redis_info": "instantaneous_ops_per_sec:123;keyspace_hits:1096;keyspace_misses:28;evicted_keys:0;used_memory_human:240M"
+    },
+    {
+      "sample_number": 55,
+      "timestamp": "2025-10-18T01:14:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.36
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 14.92
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.58
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.29,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "29.69%,426MiB / 1560MiB,43.94%,403kB / 177kB,39MB / 25MB",
+        "database": "30.63%,467MiB / 1714MiB,57.12%,264kB / 193kB,16MB / 17MB",
+        "redis": "8.31%,551MiB / 1527MiB,24.78%,414kB / 166kB,70MB / 3MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.89,
+        "transactions_per_sec": 25.47
+      },
+      "redis_info": "instantaneous_ops_per_sec:125;keyspace_hits:1827;keyspace_misses:25;evicted_keys:0;used_memory_human:226M"
+    },
+    {
+      "sample_number": 56,
+      "timestamp": "2025-10-18T01:14:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.17
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.68
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 18.0
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.95,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "30.56%,574MiB / 1538MiB,45.93%,313kB / 117kB,11MB / 50MB",
+        "database": "16.49%,424MiB / 1545MiB,53.35%,435kB / 190kB,8MB / 38MB",
+        "redis": "5.69%,418MiB / 1622MiB,27.72%,373kB / 98kB,7MB / 21MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 12,
+        "cache_hit_ratio": 99.07,
+        "transactions_per_sec": 45.62
+      },
+      "redis_info": "instantaneous_ops_per_sec:82;keyspace_hits:1874;keyspace_misses:26;evicted_keys:0;used_memory_human:246M"
+    },
+    {
+      "sample_number": 57,
+      "timestamp": "2025-10-18T01:15:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.55
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 14.18
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.28
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.0,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "48.57%,559MiB / 1730MiB,41.68%,475kB / 152kB,82MB / 22MB",
+        "database": "28.33%,514MiB / 1728MiB,55.83%,323kB / 181kB,76MB / 20MB",
+        "redis": "5.72%,456MiB / 1648MiB,24.95%,498kB / 111kB,73MB / 29MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 10,
+        "cache_hit_ratio": 100.03,
+        "transactions_per_sec": 38.98
+      },
+      "redis_info": "instantaneous_ops_per_sec:94;keyspace_hits:1853;keyspace_misses:29;evicted_keys:0;used_memory_human:231M"
+    },
+    {
+      "sample_number": 58,
+      "timestamp": "2025-10-18T01:15:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.76
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.17
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.46
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.13,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "32.19%,594MiB / 1829MiB,42.98%,417kB / 179kB,82MB / 41MB",
+        "database": "24.65%,549MiB / 1638MiB,57.42%,107kB / 144kB,61MB / 25MB",
+        "redis": "17.23%,570MiB / 1927MiB,23.63%,303kB / 125kB,67MB / 31MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 10,
+        "cache_hit_ratio": 98.98,
+        "transactions_per_sec": 54.65
+      },
+      "redis_info": "instantaneous_ops_per_sec:111;keyspace_hits:1931;keyspace_misses:11;evicted_keys:0;used_memory_human:225M"
+    },
+    {
+      "sample_number": 59,
+      "timestamp": "2025-10-18T01:16:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 1.74
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.82
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 10.51
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.36,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "38.73%,437MiB / 1548MiB,48.12%,238kB / 200kB,25MB / 6MB",
+        "database": "34.73%,466MiB / 1854MiB,46.25%,431kB / 101kB,58MB / 18MB",
+        "redis": "20.36%,494MiB / 1954MiB,23.85%,486kB / 57kB,2MB / 35MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 12,
+        "cache_hit_ratio": 99.51,
+        "transactions_per_sec": 51.97
+      },
+      "redis_info": "instantaneous_ops_per_sec:83;keyspace_hits:1428;keyspace_misses:16;evicted_keys:0;used_memory_human:246M"
+    },
+    {
+      "sample_number": 60,
+      "timestamp": "2025-10-18T01:16:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 1.21
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.61
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.11
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.31,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "43.95%,520MiB / 1543MiB,44.13%,200kB / 136kB,49MB / 11MB",
+        "database": "25.32%,405MiB / 1643MiB,53.73%,396kB / 138kB,46MB / 48MB",
+        "redis": "10.96%,550MiB / 1542MiB,29.37%,127kB / 140kB,92MB / 17MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.16,
+        "transactions_per_sec": 51.27
+      },
+      "redis_info": "instantaneous_ops_per_sec:113;keyspace_hits:1020;keyspace_misses:23;evicted_keys:0;used_memory_human:236M"
+    },
+    {
+      "sample_number": 61,
+      "timestamp": "2025-10-18T01:17:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.78
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.42
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 18.19
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.79,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.40%,430MiB / 1558MiB,41.21%,149kB / 122kB,38MB / 5MB",
+        "database": "22.64%,550MiB / 1946MiB,53.18%,193kB / 63kB,22MB / 44MB",
+        "redis": "11.32%,507MiB / 1985MiB,19.83%,440kB / 144kB,68MB / 39MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 12,
+        "cache_hit_ratio": 98.96,
+        "transactions_per_sec": 42.17
+      },
+      "redis_info": "instantaneous_ops_per_sec:144;keyspace_hits:1711;keyspace_misses:23;evicted_keys:0;used_memory_human:233M"
+    },
+    {
+      "sample_number": 62,
+      "timestamp": "2025-10-18T01:17:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.16
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.35
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 21.79
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 12.43,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "40.93%,471MiB / 1998MiB,39.17%,278kB / 188kB,60MB / 46MB",
+        "database": "27.20%,518MiB / 1789MiB,53.96%,248kB / 75kB,81MB / 18MB",
+        "redis": "26.23%,566MiB / 1816MiB,26.73%,412kB / 71kB,58MB / 11MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 11,
+        "cache_hit_ratio": 98.52,
+        "transactions_per_sec": 51.8
+      },
+      "redis_info": "instantaneous_ops_per_sec:114;keyspace_hits:1450;keyspace_misses:50;evicted_keys:0;used_memory_human:212M"
+    },
+    {
+      "sample_number": 63,
+      "timestamp": "2025-10-18T01:18:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.08
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.46
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 19.34
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.63,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "38.05%,542MiB / 1607MiB,44.32%,307kB / 186kB,48MB / 13MB",
+        "database": "32.78%,422MiB / 1896MiB,57.17%,483kB / 124kB,100MB / 46MB",
+        "redis": "11.38%,530MiB / 1969MiB,25.10%,236kB / 162kB,86MB / 17MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.04,
+        "transactions_per_sec": 35.97
+      },
+      "redis_info": "instantaneous_ops_per_sec:119;keyspace_hits:1767;keyspace_misses:44;evicted_keys:0;used_memory_human:213M"
+    },
+    {
+      "sample_number": 64,
+      "timestamp": "2025-10-18T01:18:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.45
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.88
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 17.12
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.48,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "27.19%,600MiB / 1545MiB,46.45%,319kB / 93kB,96MB / 16MB",
+        "database": "33.92%,432MiB / 1872MiB,53.89%,460kB / 110kB,8MB / 49MB",
+        "redis": "6.46%,443MiB / 1723MiB,29.83%,269kB / 149kB,74MB / 33MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.1,
+        "transactions_per_sec": 36.76
+      },
+      "redis_info": "instantaneous_ops_per_sec:116;keyspace_hits:1601;keyspace_misses:17;evicted_keys:0;used_memory_human:235M"
+    },
+    {
+      "sample_number": 65,
+      "timestamp": "2025-10-18T01:19:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.24
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.32
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 17.16
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.9,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.30%,421MiB / 1713MiB,43.57%,361kB / 68kB,30MB / 49MB",
+        "database": "23.26%,497MiB / 1678MiB,55.93%,230kB / 77kB,33MB / 31MB",
+        "redis": "11.21%,496MiB / 1815MiB,20.90%,196kB / 132kB,33MB / 29MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 14,
+        "cache_hit_ratio": 99.06,
+        "transactions_per_sec": 45.32
+      },
+      "redis_info": "instantaneous_ops_per_sec:80;keyspace_hits:1717;keyspace_misses:48;evicted_keys:0;used_memory_human:223M"
+    },
+    {
+      "sample_number": 66,
+      "timestamp": "2025-10-18T01:19:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.74
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.45
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.28
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.49,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.62%,494MiB / 1866MiB,47.68%,274kB / 110kB,26MB / 5MB",
+        "database": "32.18%,562MiB / 1677MiB,54.26%,210kB / 76kB,100MB / 40MB",
+        "redis": "16.95%,599MiB / 1583MiB,26.07%,144kB / 50kB,96MB / 26MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 15,
+        "cache_hit_ratio": 98.77,
+        "transactions_per_sec": 42.68
+      },
+      "redis_info": "instantaneous_ops_per_sec:138;keyspace_hits:1270;keyspace_misses:50;evicted_keys:0;used_memory_human:217M"
+    },
+    {
+      "sample_number": 67,
+      "timestamp": "2025-10-18T01:20:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.04
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.39
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 17.42
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.95,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "37.28%,598MiB / 1789MiB,45.08%,352kB / 103kB,97MB / 29MB",
+        "database": "22.21%,466MiB / 1752MiB,52.49%,165kB / 120kB,68MB / 9MB",
+        "redis": "10.50%,520MiB / 1838MiB,25.11%,331kB / 127kB,22MB / 6MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.93,
+        "transactions_per_sec": 50.24
+      },
+      "redis_info": "instantaneous_ops_per_sec:80;keyspace_hits:1616;keyspace_misses:20;evicted_keys:0;used_memory_human:222M"
+    },
+    {
+      "sample_number": 68,
+      "timestamp": "2025-10-18T01:20:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.02
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.88
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.56
+          }
+        },
+        "aggregate": {
+          "success_rate": 99.67,
+          "avg_response_time_ms": 9.49,
+          "total_requests": 3,
+          "successful_requests": 2
+        }
+      },
+      "container_stats": {
+        "api": "29.07%,477MiB / 1783MiB,41.01%,178kB / 179kB,59MB / 47MB",
+        "database": "28.89%,481MiB / 1652MiB,55.48%,326kB / 106kB,23MB / 14MB",
+        "redis": "14.34%,569MiB / 1775MiB,21.21%,398kB / 162kB,72MB / 29MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 8,
+        "cache_hit_ratio": 98.86,
+        "transactions_per_sec": 31.02
+      },
+      "redis_info": "instantaneous_ops_per_sec:125;keyspace_hits:1839;keyspace_misses:42;evicted_keys:0;used_memory_human:239M"
+    },
+    {
+      "sample_number": 69,
+      "timestamp": "2025-10-18T01:21:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.61
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.65
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.1
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.45,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "39.30%,593MiB / 1853MiB,38.10%,221kB / 149kB,83MB / 13MB",
+        "database": "37.06%,591MiB / 1596MiB,53.82%,156kB / 152kB,38MB / 27MB",
+        "redis": "25.37%,515MiB / 1845MiB,24.60%,342kB / 155kB,63MB / 30MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.91,
+        "transactions_per_sec": 42.12
+      },
+      "redis_info": "instantaneous_ops_per_sec:123;keyspace_hits:1409;keyspace_misses:50;evicted_keys:0;used_memory_human:228M"
+    },
+    {
+      "sample_number": 70,
+      "timestamp": "2025-10-18T01:21:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.92
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.41
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 19.07
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.46,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.34%,440MiB / 1905MiB,49.61%,493kB / 91kB,84MB / 32MB",
+        "database": "29.01%,568MiB / 1575MiB,59.54%,333kB / 148kB,23MB / 42MB",
+        "redis": "5.57%,467MiB / 1924MiB,33.74%,470kB / 171kB,95MB / 32MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.9,
+        "transactions_per_sec": 34.11
+      },
+      "redis_info": "instantaneous_ops_per_sec:126;keyspace_hits:1382;keyspace_misses:42;evicted_keys:0;used_memory_human:250M"
+    },
+    {
+      "sample_number": 71,
+      "timestamp": "2025-10-18T01:22:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.87
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.96
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 11.02
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.28,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "42.25%,408MiB / 1558MiB,47.88%,332kB / 98kB,41MB / 27MB",
+        "database": "28.73%,474MiB / 1725MiB,52.54%,465kB / 85kB,76MB / 20MB",
+        "redis": "6.45%,583MiB / 1523MiB,30.22%,137kB / 102kB,1MB / 0MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 9,
+        "cache_hit_ratio": 98.16,
+        "transactions_per_sec": 57.23
+      },
+      "redis_info": "instantaneous_ops_per_sec:119;keyspace_hits:1911;keyspace_misses:29;evicted_keys:0;used_memory_human:239M"
+    },
+    {
+      "sample_number": 72,
+      "timestamp": "2025-10-18T01:22:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.3
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.03
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.4
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.25,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "36.67%,511MiB / 1847MiB,49.31%,287kB / 70kB,31MB / 41MB",
+        "database": "26.62%,407MiB / 1600MiB,56.71%,406kB / 58kB,10MB / 46MB",
+        "redis": "9.02%,581MiB / 1530MiB,22.22%,180kB / 81kB,36MB / 13MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.25,
+        "transactions_per_sec": 33.53
+      },
+      "redis_info": "instantaneous_ops_per_sec:149;keyspace_hits:1192;keyspace_misses:27;evicted_keys:0;used_memory_human:242M"
+    },
+    {
+      "sample_number": 73,
+      "timestamp": "2025-10-18T01:23:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.09
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 14.14
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.38
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.54,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "34.43%,489MiB / 1669MiB,43.99%,273kB / 74kB,49MB / 14MB",
+        "database": "32.05%,595MiB / 1835MiB,57.80%,359kB / 143kB,38MB / 47MB",
+        "redis": "15.75%,444MiB / 2000MiB,22.78%,306kB / 120kB,4MB / 33MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.32,
+        "transactions_per_sec": 43.33
+      },
+      "redis_info": "instantaneous_ops_per_sec:133;keyspace_hits:1728;keyspace_misses:13;evicted_keys:0;used_memory_human:236M"
+    },
+    {
+      "sample_number": 74,
+      "timestamp": "2025-10-18T01:23:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.22
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 14.73
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.98
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.31,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "26.06%,596MiB / 1762MiB,41.45%,182kB / 54kB,0MB / 9MB",
+        "database": "33.65%,544MiB / 1909MiB,55.98%,162kB / 184kB,41MB / 0MB",
+        "redis": "10.79%,421MiB / 1879MiB,24.53%,169kB / 163kB,8MB / 9MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.24,
+        "transactions_per_sec": 46.2
+      },
+      "redis_info": "instantaneous_ops_per_sec:88;keyspace_hits:1234;keyspace_misses:41;evicted_keys:0;used_memory_human:218M"
+    },
+    {
+      "sample_number": 75,
+      "timestamp": "2025-10-18T01:24:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.02
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.67
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.72
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.14,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "31.30%,498MiB / 1689MiB,48.68%,218kB / 79kB,86MB / 25MB",
+        "database": "20.17%,439MiB / 1686MiB,53.49%,232kB / 122kB,90MB / 0MB",
+        "redis": "9.34%,516MiB / 1911MiB,25.64%,404kB / 71kB,47MB / 45MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 14,
+        "cache_hit_ratio": 98.87,
+        "transactions_per_sec": 46.07
+      },
+      "redis_info": "instantaneous_ops_per_sec:130;keyspace_hits:1358;keyspace_misses:35;evicted_keys:0;used_memory_human:248M"
+    },
+    {
+      "sample_number": 76,
+      "timestamp": "2025-10-18T01:24:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.1
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 7.15
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.27
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.84,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.06%,471MiB / 1515MiB,43.79%,118kB / 91kB,74MB / 5MB",
+        "database": "37.74%,520MiB / 1926MiB,49.03%,282kB / 84kB,62MB / 4MB",
+        "redis": "16.59%,457MiB / 1522MiB,22.72%,373kB / 62kB,35MB / 18MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 10,
+        "cache_hit_ratio": 98.72,
+        "transactions_per_sec": 57.01
+      },
+      "redis_info": "instantaneous_ops_per_sec:118;keyspace_hits:1705;keyspace_misses:35;evicted_keys:0;used_memory_human:205M"
+    },
+    {
+      "sample_number": 77,
+      "timestamp": "2025-10-18T01:25:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.51
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.68
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 8.79
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.32,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "25.89%,529MiB / 1758MiB,42.44%,290kB / 134kB,21MB / 36MB",
+        "database": "23.98%,433MiB / 1630MiB,53.89%,272kB / 138kB,74MB / 19MB",
+        "redis": "13.53%,581MiB / 1587MiB,28.80%,460kB / 152kB,96MB / 40MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.51,
+        "transactions_per_sec": 47.96
+      },
+      "redis_info": "instantaneous_ops_per_sec:130;keyspace_hits:1788;keyspace_misses:43;evicted_keys:0;used_memory_human:249M"
+    },
+    {
+      "sample_number": 78,
+      "timestamp": "2025-10-18T01:25:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.56
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 15.42
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.5
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.49,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "31.05%,567MiB / 1987MiB,43.13%,443kB / 132kB,55MB / 6MB",
+        "database": "30.91%,459MiB / 1647MiB,55.24%,211kB / 121kB,2MB / 38MB",
+        "redis": "19.36%,516MiB / 1749MiB,22.25%,484kB / 108kB,30MB / 30MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.34,
+        "transactions_per_sec": 50.16
+      },
+      "redis_info": "instantaneous_ops_per_sec:126;keyspace_hits:1777;keyspace_misses:31;evicted_keys:0;used_memory_human:247M"
+    },
+    {
+      "sample_number": 79,
+      "timestamp": "2025-10-18T01:26:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.41
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.01
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.34
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.92,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "26.27%,487MiB / 1706MiB,39.81%,322kB / 63kB,56MB / 41MB",
+        "database": "26.79%,579MiB / 1794MiB,47.80%,410kB / 185kB,48MB / 45MB",
+        "redis": "5.00%,445MiB / 1678MiB,16.35%,258kB / 81kB,19MB / 14MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.76,
+        "transactions_per_sec": 42.47
+      },
+      "redis_info": "instantaneous_ops_per_sec:105;keyspace_hits:1844;keyspace_misses:20;evicted_keys:0;used_memory_human:216M"
+    },
+    {
+      "sample_number": 80,
+      "timestamp": "2025-10-18T01:26:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.32
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.39
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.12
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.61,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "28.42%,538MiB / 1529MiB,47.56%,310kB / 143kB,72MB / 6MB",
+        "database": "32.13%,591MiB / 1589MiB,64.87%,102kB / 162kB,84MB / 15MB",
+        "redis": "5.68%,487MiB / 1922MiB,23.28%,272kB / 175kB,95MB / 34MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.35,
+        "transactions_per_sec": 47.67
+      },
+      "redis_info": "instantaneous_ops_per_sec:131;keyspace_hits:1537;keyspace_misses:28;evicted_keys:0;used_memory_human:228M"
+    },
+    {
+      "sample_number": 81,
+      "timestamp": "2025-10-18T01:27:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.57
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.14
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.27
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.66,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "42.74%,524MiB / 1991MiB,46.14%,462kB / 165kB,76MB / 19MB",
+        "database": "22.32%,417MiB / 1747MiB,55.85%,427kB / 97kB,44MB / 49MB",
+        "redis": "12.65%,498MiB / 1512MiB,27.51%,403kB / 140kB,16MB / 15MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 15,
+        "cache_hit_ratio": 98.83,
+        "transactions_per_sec": 37.69
+      },
+      "redis_info": "instantaneous_ops_per_sec:102;keyspace_hits:1920;keyspace_misses:48;evicted_keys:0;used_memory_human:243M"
+    },
+    {
+      "sample_number": 82,
+      "timestamp": "2025-10-18T01:27:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.54
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.64
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.33
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.5,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "46.58%,478MiB / 1874MiB,38.02%,448kB / 153kB,91MB / 32MB",
+        "database": "27.06%,471MiB / 1658MiB,53.66%,298kB / 106kB,46MB / 30MB",
+        "redis": "7.79%,452MiB / 1659MiB,24.11%,411kB / 140kB,78MB / 44MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 11,
+        "cache_hit_ratio": 98.75,
+        "transactions_per_sec": 40.2
+      },
+      "redis_info": "instantaneous_ops_per_sec:128;keyspace_hits:1948;keyspace_misses:42;evicted_keys:0;used_memory_human:234M"
+    },
+    {
+      "sample_number": 83,
+      "timestamp": "2025-10-18T01:28:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.37
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.56
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.42
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.79,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.41%,579MiB / 1901MiB,44.41%,208kB / 158kB,67MB / 35MB",
+        "database": "29.89%,496MiB / 1974MiB,51.55%,208kB / 164kB,25MB / 6MB",
+        "redis": "12.73%,440MiB / 1833MiB,24.18%,439kB / 73kB,93MB / 23MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 9,
+        "cache_hit_ratio": 98.35,
+        "transactions_per_sec": 37.03
+      },
+      "redis_info": "instantaneous_ops_per_sec:109;keyspace_hits:1100;keyspace_misses:49;evicted_keys:0;used_memory_human:209M"
+    },
+    {
+      "sample_number": 84,
+      "timestamp": "2025-10-18T01:28:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.85
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.06
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.34
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.08,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.19%,581MiB / 1963MiB,49.31%,289kB / 84kB,41MB / 50MB",
+        "database": "25.17%,408MiB / 1973MiB,53.43%,379kB / 133kB,54MB / 16MB",
+        "redis": "5.67%,552MiB / 1963MiB,27.90%,391kB / 154kB,11MB / 41MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 12,
+        "cache_hit_ratio": 99.21,
+        "transactions_per_sec": 49.81
+      },
+      "redis_info": "instantaneous_ops_per_sec:128;keyspace_hits:1385;keyspace_misses:22;evicted_keys:0;used_memory_human:239M"
+    },
+    {
+      "sample_number": 85,
+      "timestamp": "2025-10-18T01:29:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.53
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.64
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.52
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.56,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "43.03%,431MiB / 1758MiB,42.69%,331kB / 115kB,89MB / 43MB",
+        "database": "23.39%,451MiB / 1643MiB,57.71%,422kB / 185kB,46MB / 44MB",
+        "redis": "21.15%,469MiB / 1676MiB,26.84%,467kB / 189kB,98MB / 24MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.62,
+        "transactions_per_sec": 56.17
+      },
+      "redis_info": "instantaneous_ops_per_sec:139;keyspace_hits:1853;keyspace_misses:20;evicted_keys:0;used_memory_human:243M"
+    },
+    {
+      "sample_number": 86,
+      "timestamp": "2025-10-18T01:29:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.17
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.42
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.7
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.76,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "37.09%,449MiB / 1530MiB,41.55%,377kB / 69kB,20MB / 16MB",
+        "database": "20.85%,493MiB / 1911MiB,57.88%,344kB / 96kB,58MB / 15MB",
+        "redis": "9.64%,484MiB / 1615MiB,19.03%,315kB / 149kB,75MB / 12MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.3,
+        "transactions_per_sec": 18.51
+      },
+      "redis_info": "instantaneous_ops_per_sec:92;keyspace_hits:1130;keyspace_misses:36;evicted_keys:0;used_memory_human:217M"
+    },
+    {
+      "sample_number": 87,
+      "timestamp": "2025-10-18T01:30:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.28
+          },
+          "companies_list": {
+            "http_code": "500",
+            "response_time_ms": 10.69
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.18
+          }
+        },
+        "aggregate": {
+          "success_rate": 99.67,
+          "avg_response_time_ms": 10.38,
+          "total_requests": 3,
+          "successful_requests": 2
+        }
+      },
+      "container_stats": {
+        "api": "30.24%,471MiB / 1585MiB,39.37%,218kB / 149kB,50MB / 1MB",
+        "database": "25.49%,567MiB / 1988MiB,50.46%,159kB / 144kB,72MB / 33MB",
+        "redis": "13.93%,549MiB / 1731MiB,22.34%,496kB / 190kB,39MB / 47MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 12,
+        "cache_hit_ratio": 98.63,
+        "transactions_per_sec": 26.73
+      },
+      "redis_info": "instantaneous_ops_per_sec:107;keyspace_hits:1858;keyspace_misses:21;evicted_keys:0;used_memory_human:202M"
+    },
+    {
+      "sample_number": 88,
+      "timestamp": "2025-10-18T01:30:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.64
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.66
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.25
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.85,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "30.95%,488MiB / 1914MiB,42.24%,438kB / 117kB,57MB / 43MB",
+        "database": "27.93%,575MiB / 1623MiB,58.44%,399kB / 92kB,99MB / 3MB",
+        "redis": "19.31%,577MiB / 1669MiB,28.57%,335kB / 164kB,40MB / 41MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 14,
+        "cache_hit_ratio": 99.34,
+        "transactions_per_sec": 50.59
+      },
+      "redis_info": "instantaneous_ops_per_sec:118;keyspace_hits:1939;keyspace_misses:48;evicted_keys:0;used_memory_human:203M"
+    },
+    {
+      "sample_number": 89,
+      "timestamp": "2025-10-18T01:31:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 1.9
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.82
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 18.99
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.24,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "34.51%,567MiB / 1643MiB,46.40%,150kB / 65kB,86MB / 3MB",
+        "database": "28.99%,417MiB / 1573MiB,54.13%,115kB / 81kB,96MB / 4MB",
+        "redis": "8.74%,557MiB / 1791MiB,28.18%,488kB / 145kB,65MB / 4MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 12,
+        "cache_hit_ratio": 99.02,
+        "transactions_per_sec": 31.53
+      },
+      "redis_info": "instantaneous_ops_per_sec:124;keyspace_hits:1948;keyspace_misses:11;evicted_keys:0;used_memory_human:213M"
+    },
+    {
+      "sample_number": 90,
+      "timestamp": "2025-10-18T01:31:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.58
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.48
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 9.15
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.07,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "25.15%,580MiB / 1689MiB,46.27%,292kB / 137kB,98MB / 24MB",
+        "database": "25.17%,539MiB / 1867MiB,54.16%,299kB / 144kB,24MB / 23MB",
+        "redis": "9.20%,540MiB / 1690MiB,23.37%,377kB / 109kB,2MB / 47MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.4,
+        "transactions_per_sec": 55.86
+      },
+      "redis_info": "instantaneous_ops_per_sec:144;keyspace_hits:1376;keyspace_misses:27;evicted_keys:0;used_memory_human:206M"
+    },
+    {
+      "sample_number": 91,
+      "timestamp": "2025-10-18T01:32:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.07
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.9
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.94
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.64,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.90%,425MiB / 1526MiB,46.07%,367kB / 64kB,15MB / 49MB",
+        "database": "30.39%,488MiB / 1547MiB,53.72%,177kB / 62kB,47MB / 43MB",
+        "redis": "7.06%,551MiB / 1880MiB,21.37%,206kB / 74kB,82MB / 10MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.49,
+        "transactions_per_sec": 48.26
+      },
+      "redis_info": "instantaneous_ops_per_sec:106;keyspace_hits:1351;keyspace_misses:12;evicted_keys:0;used_memory_human:245M"
+    },
+    {
+      "sample_number": 92,
+      "timestamp": "2025-10-18T01:32:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.26
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 15.02
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.64
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.31,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "37.45%,522MiB / 1537MiB,40.63%,432kB / 67kB,21MB / 0MB",
+        "database": "35.52%,420MiB / 1852MiB,50.45%,164kB / 72kB,39MB / 40MB",
+        "redis": "12.43%,519MiB / 1967MiB,20.74%,262kB / 142kB,23MB / 36MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 15,
+        "cache_hit_ratio": 99.18,
+        "transactions_per_sec": 37.09
+      },
+      "redis_info": "instantaneous_ops_per_sec:129;keyspace_hits:1053;keyspace_misses:25;evicted_keys:0;used_memory_human:250M"
+    },
+    {
+      "sample_number": 93,
+      "timestamp": "2025-10-18T01:33:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.25
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.57
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.65
+          }
+        },
+        "aggregate": {
+          "success_rate": 99.67,
+          "avg_response_time_ms": 9.82,
+          "total_requests": 3,
+          "successful_requests": 2
+        }
+      },
+      "container_stats": {
+        "api": "41.86%,504MiB / 1732MiB,49.43%,197kB / 117kB,17MB / 2MB",
+        "database": "28.15%,574MiB / 1591MiB,58.08%,145kB / 67kB,26MB / 47MB",
+        "redis": "18.82%,584MiB / 1851MiB,24.63%,186kB / 81kB,32MB / 9MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.8,
+        "transactions_per_sec": 45.18
+      },
+      "redis_info": "instantaneous_ops_per_sec:130;keyspace_hits:1738;keyspace_misses:21;evicted_keys:0;used_memory_human:226M"
+    },
+    {
+      "sample_number": 94,
+      "timestamp": "2025-10-18T01:33:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.18
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.41
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 17.31
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.64,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "37.01%,435MiB / 1983MiB,45.98%,485kB / 108kB,42MB / 50MB",
+        "database": "23.87%,412MiB / 1559MiB,52.36%,429kB / 199kB,99MB / 40MB",
+        "redis": "9.09%,413MiB / 1816MiB,25.90%,191kB / 189kB,36MB / 48MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 14,
+        "cache_hit_ratio": 98.86,
+        "transactions_per_sec": 51.46
+      },
+      "redis_info": "instantaneous_ops_per_sec:111;keyspace_hits:1785;keyspace_misses:44;evicted_keys:0;used_memory_human:204M"
+    },
+    {
+      "sample_number": 95,
+      "timestamp": "2025-10-18T01:34:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.9
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.73
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 19.09
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.91,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "43.51%,494MiB / 1786MiB,43.82%,108kB / 118kB,8MB / 14MB",
+        "database": "32.64%,426MiB / 1513MiB,52.72%,390kB / 156kB,45MB / 38MB",
+        "redis": "8.48%,500MiB / 1500MiB,26.06%,125kB / 161kB,79MB / 40MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 10,
+        "cache_hit_ratio": 98.34,
+        "transactions_per_sec": 52.05
+      },
+      "redis_info": "instantaneous_ops_per_sec:89;keyspace_hits:1949;keyspace_misses:13;evicted_keys:0;used_memory_human:216M"
+    },
+    {
+      "sample_number": 96,
+      "timestamp": "2025-10-18T01:34:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.11
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.4
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.18
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.56,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "40.72%,556MiB / 1974MiB,42.19%,118kB / 51kB,16MB / 21MB",
+        "database": "21.75%,491MiB / 1523MiB,56.19%,170kB / 125kB,73MB / 18MB",
+        "redis": "17.25%,534MiB / 1542MiB,24.56%,348kB / 181kB,90MB / 18MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.05,
+        "transactions_per_sec": 41.89
+      },
+      "redis_info": "instantaneous_ops_per_sec:101;keyspace_hits:1834;keyspace_misses:12;evicted_keys:0;used_memory_human:250M"
+    },
+    {
+      "sample_number": 97,
+      "timestamp": "2025-10-18T01:35:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 1.7
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.01
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.3
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.34,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "37.80%,489MiB / 1747MiB,43.06%,321kB / 106kB,85MB / 27MB",
+        "database": "27.56%,478MiB / 1658MiB,48.32%,463kB / 169kB,94MB / 50MB",
+        "redis": "13.55%,595MiB / 1645MiB,25.63%,298kB / 53kB,78MB / 17MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.98,
+        "transactions_per_sec": 31.55
+      },
+      "redis_info": "instantaneous_ops_per_sec:105;keyspace_hits:1352;keyspace_misses:19;evicted_keys:0;used_memory_human:213M"
+    },
+    {
+      "sample_number": 98,
+      "timestamp": "2025-10-18T01:35:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.2
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.26
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 18.99
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.48,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "29.12%,573MiB / 1599MiB,45.55%,239kB / 88kB,86MB / 5MB",
+        "database": "21.83%,436MiB / 1889MiB,48.96%,410kB / 196kB,36MB / 30MB",
+        "redis": "11.54%,526MiB / 1581MiB,23.82%,176kB / 127kB,96MB / 12MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 10,
+        "cache_hit_ratio": 98.86,
+        "transactions_per_sec": 44.09
+      },
+      "redis_info": "instantaneous_ops_per_sec:89;keyspace_hits:1156;keyspace_misses:14;evicted_keys:0;used_memory_human:228M"
+    },
+    {
+      "sample_number": 99,
+      "timestamp": "2025-10-18T01:36:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.11
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 8.43
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.98
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.17,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "31.34%,571MiB / 1865MiB,46.39%,448kB / 194kB,78MB / 26MB",
+        "database": "24.53%,581MiB / 1642MiB,53.07%,320kB / 50kB,38MB / 6MB",
+        "redis": "10.69%,471MiB / 1839MiB,28.77%,337kB / 69kB,0MB / 14MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.69,
+        "transactions_per_sec": 46.99
+      },
+      "redis_info": "instantaneous_ops_per_sec:93;keyspace_hits:1620;keyspace_misses:10;evicted_keys:0;used_memory_human:216M"
+    },
+    {
+      "sample_number": 100,
+      "timestamp": "2025-10-18T01:36:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 1.92
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.07
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.38
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 7.79,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "37.11%,459MiB / 1786MiB,49.25%,434kB / 167kB,25MB / 37MB",
+        "database": "28.11%,593MiB / 1544MiB,60.29%,412kB / 91kB,3MB / 44MB",
+        "redis": "11.54%,419MiB / 1647MiB,24.36%,254kB / 112kB,34MB / 37MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.95,
+        "transactions_per_sec": 44.3
+      },
+      "redis_info": "instantaneous_ops_per_sec:103;keyspace_hits:1696;keyspace_misses:12;evicted_keys:0;used_memory_human:207M"
+    },
+    {
+      "sample_number": 101,
+      "timestamp": "2025-10-18T01:37:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.83
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.8
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.69
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.78,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.10%,597MiB / 1791MiB,42.36%,144kB / 113kB,0MB / 15MB",
+        "database": "32.11%,453MiB / 1829MiB,50.85%,440kB / 101kB,8MB / 27MB",
+        "redis": "9.83%,505MiB / 1830MiB,22.52%,205kB / 80kB,94MB / 46MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.42,
+        "transactions_per_sec": 48.9
+      },
+      "redis_info": "instantaneous_ops_per_sec:148;keyspace_hits:1503;keyspace_misses:47;evicted_keys:0;used_memory_human:219M"
+    },
+    {
+      "sample_number": 102,
+      "timestamp": "2025-10-18T01:37:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.59
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 15.33
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 13.3
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.41,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "29.28%,431MiB / 1919MiB,41.86%,279kB / 150kB,11MB / 9MB",
+        "database": "28.14%,428MiB / 1800MiB,51.68%,104kB / 84kB,92MB / 43MB",
+        "redis": "12.42%,422MiB / 1834MiB,21.19%,488kB / 192kB,67MB / 11MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.28,
+        "transactions_per_sec": 41.17
+      },
+      "redis_info": "instantaneous_ops_per_sec:149;keyspace_hits:1737;keyspace_misses:20;evicted_keys:0;used_memory_human:238M"
+    },
+    {
+      "sample_number": 103,
+      "timestamp": "2025-10-18T01:38:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.96
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.43
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 16.53
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.3,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "22.59%,494MiB / 1830MiB,45.59%,482kB / 66kB,26MB / 28MB",
+        "database": "23.67%,536MiB / 1981MiB,53.25%,162kB / 191kB,97MB / 4MB",
+        "redis": "5.00%,498MiB / 1893MiB,23.31%,145kB / 137kB,45MB / 33MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.1,
+        "transactions_per_sec": 42.64
+      },
+      "redis_info": "instantaneous_ops_per_sec:86;keyspace_hits:1097;keyspace_misses:46;evicted_keys:0;used_memory_human:232M"
+    },
+    {
+      "sample_number": 104,
+      "timestamp": "2025-10-18T01:38:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.86
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.01
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 14.7
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.19,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.52%,406MiB / 1904MiB,46.97%,355kB / 51kB,12MB / 37MB",
+        "database": "26.73%,547MiB / 1765MiB,57.32%,227kB / 86kB,33MB / 2MB",
+        "redis": "9.90%,502MiB / 1620MiB,27.64%,144kB / 187kB,21MB / 14MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.74,
+        "transactions_per_sec": 42.33
+      },
+      "redis_info": "instantaneous_ops_per_sec:102;keyspace_hits:1161;keyspace_misses:40;evicted_keys:0;used_memory_human:245M"
+    },
+    {
+      "sample_number": 105,
+      "timestamp": "2025-10-18T01:39:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.45
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 7.41
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.26
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 7.37,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "32.11%,459MiB / 1896MiB,47.47%,326kB / 131kB,88MB / 14MB",
+        "database": "28.03%,466MiB / 1679MiB,54.37%,270kB / 134kB,57MB / 36MB",
+        "redis": "12.58%,531MiB / 1725MiB,22.39%,439kB / 162kB,42MB / 6MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 13,
+        "cache_hit_ratio": 98.98,
+        "transactions_per_sec": 38.91
+      },
+      "redis_info": "instantaneous_ops_per_sec:139;keyspace_hits:1583;keyspace_misses:15;evicted_keys:0;used_memory_human:228M"
+    },
+    {
+      "sample_number": 106,
+      "timestamp": "2025-10-18T01:39:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.08
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.72
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 10.57
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.79,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "32.22%,594MiB / 1509MiB,46.55%,167kB / 93kB,10MB / 45MB",
+        "database": "30.30%,465MiB / 1647MiB,55.57%,427kB / 151kB,3MB / 49MB",
+        "redis": "14.35%,424MiB / 1790MiB,26.40%,135kB / 184kB,85MB / 26MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 13,
+        "cache_hit_ratio": 98.96,
+        "transactions_per_sec": 42.18
+      },
+      "redis_info": "instantaneous_ops_per_sec:138;keyspace_hits:1132;keyspace_misses:27;evicted_keys:0;used_memory_human:206M"
+    },
+    {
+      "sample_number": 107,
+      "timestamp": "2025-10-18T01:40:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.34
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.15
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 11.91
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.13,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "43.71%,442MiB / 1624MiB,48.26%,333kB / 119kB,1MB / 32MB",
+        "database": "32.56%,452MiB / 1674MiB,56.77%,245kB / 61kB,25MB / 38MB",
+        "redis": "13.62%,411MiB / 1650MiB,25.93%,491kB / 76kB,30MB / 49MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 12,
+        "cache_hit_ratio": 99.54,
+        "transactions_per_sec": 36.62
+      },
+      "redis_info": "instantaneous_ops_per_sec:88;keyspace_hits:1929;keyspace_misses:45;evicted_keys:0;used_memory_human:239M"
+    },
+    {
+      "sample_number": 108,
+      "timestamp": "2025-10-18T01:40:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.27
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.83
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.02
+          }
+        },
+        "aggregate": {
+          "success_rate": 99.67,
+          "avg_response_time_ms": 9.7,
+          "total_requests": 3,
+          "successful_requests": 2
+        }
+      },
+      "container_stats": {
+        "api": "36.65%,527MiB / 1660MiB,42.88%,411kB / 58kB,24MB / 40MB",
+        "database": "29.40%,420MiB / 1653MiB,53.66%,495kB / 131kB,18MB / 32MB",
+        "redis": "18.80%,503MiB / 1558MiB,21.07%,242kB / 146kB,49MB / 34MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 8,
+        "cache_hit_ratio": 99.52,
+        "transactions_per_sec": 28.05
+      },
+      "redis_info": "instantaneous_ops_per_sec:120;keyspace_hits:1220;keyspace_misses:50;evicted_keys:0;used_memory_human:201M"
+    },
+    {
+      "sample_number": 109,
+      "timestamp": "2025-10-18T01:41:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.98
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.82
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 17.0
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.6,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "31.47%,526MiB / 1583MiB,44.72%,496kB / 118kB,43MB / 48MB",
+        "database": "35.48%,561MiB / 1765MiB,53.35%,459kB / 164kB,32MB / 17MB",
+        "redis": "5.59%,496MiB / 1909MiB,24.33%,470kB / 108kB,19MB / 29MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 13,
+        "cache_hit_ratio": 99.02,
+        "transactions_per_sec": 43.45
+      },
+      "redis_info": "instantaneous_ops_per_sec:131;keyspace_hits:1645;keyspace_misses:44;evicted_keys:0;used_memory_human:230M"
+    },
+    {
+      "sample_number": 110,
+      "timestamp": "2025-10-18T01:41:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.67
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 9.49
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 21.39
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.18,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "26.74%,469MiB / 1502MiB,45.40%,316kB / 189kB,69MB / 32MB",
+        "database": "36.48%,571MiB / 1935MiB,46.76%,125kB / 73kB,4MB / 30MB",
+        "redis": "15.20%,418MiB / 1661MiB,29.04%,208kB / 199kB,56MB / 47MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 8,
+        "cache_hit_ratio": 98.37,
+        "transactions_per_sec": 32.75
+      },
+      "redis_info": "instantaneous_ops_per_sec:83;keyspace_hits:1356;keyspace_misses:40;evicted_keys:0;used_memory_human:245M"
+    },
+    {
+      "sample_number": 111,
+      "timestamp": "2025-10-18T01:42:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.28
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.74
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.73
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.58,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "29.78%,514MiB / 1869MiB,45.83%,286kB / 73kB,94MB / 21MB",
+        "database": "30.04%,521MiB / 1894MiB,52.46%,160kB / 111kB,24MB / 1MB",
+        "redis": "12.85%,537MiB / 1920MiB,24.79%,228kB / 50kB,50MB / 38MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 11,
+        "cache_hit_ratio": 99.2,
+        "transactions_per_sec": 55.06
+      },
+      "redis_info": "instantaneous_ops_per_sec:144;keyspace_hits:1090;keyspace_misses:45;evicted_keys:0;used_memory_human:204M"
+    },
+    {
+      "sample_number": 112,
+      "timestamp": "2025-10-18T01:42:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.58
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.73
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 19.29
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 12.2,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "34.39%,560MiB / 1853MiB,48.55%,170kB / 84kB,43MB / 41MB",
+        "database": "27.89%,524MiB / 1931MiB,54.58%,478kB / 125kB,23MB / 50MB",
+        "redis": "11.34%,493MiB / 1659MiB,23.60%,245kB / 101kB,49MB / 17MB"
+      },
+      "database_metrics": {
+        "active_connections": 7,
+        "total_connections": 9,
+        "cache_hit_ratio": 99.0,
+        "transactions_per_sec": 36.2
+      },
+      "redis_info": "instantaneous_ops_per_sec:144;keyspace_hits:1291;keyspace_misses:31;evicted_keys:0;used_memory_human:236M"
+    },
+    {
+      "sample_number": 113,
+      "timestamp": "2025-10-18T01:43:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.01
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.46
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 5.43
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 7.3,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "39.66%,591MiB / 1867MiB,48.09%,389kB / 136kB,40MB / 15MB",
+        "database": "27.75%,433MiB / 1536MiB,53.15%,179kB / 194kB,40MB / 23MB",
+        "redis": "5.00%,501MiB / 1784MiB,25.46%,315kB / 146kB,74MB / 8MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.93,
+        "transactions_per_sec": 43.13
+      },
+      "redis_info": "instantaneous_ops_per_sec:130;keyspace_hits:1647;keyspace_misses:40;evicted_keys:0;used_memory_human:230M"
+    },
+    {
+      "sample_number": 114,
+      "timestamp": "2025-10-18T01:43:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.22
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.15
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.18
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 10.18,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "33.48%,582MiB / 1802MiB,45.24%,149kB / 181kB,27MB / 40MB",
+        "database": "31.83%,525MiB / 1905MiB,57.12%,476kB / 189kB,43MB / 15MB",
+        "redis": "6.65%,560MiB / 1801MiB,23.28%,164kB / 162kB,71MB / 10MB"
+      },
+      "database_metrics": {
+        "active_connections": 6,
+        "total_connections": 13,
+        "cache_hit_ratio": 98.67,
+        "transactions_per_sec": 55.75
+      },
+      "redis_info": "instantaneous_ops_per_sec:132;keyspace_hits:1416;keyspace_misses:16;evicted_keys:0;used_memory_human:242M"
+    },
+    {
+      "sample_number": 115,
+      "timestamp": "2025-10-18T01:44:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.24
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 13.9
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.61
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.91,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "37.82%,571MiB / 1803MiB,46.30%,252kB / 77kB,72MB / 15MB",
+        "database": "27.30%,416MiB / 1870MiB,52.42%,470kB / 200kB,87MB / 18MB",
+        "redis": "15.95%,506MiB / 1699MiB,22.93%,334kB / 117kB,36MB / 1MB"
+      },
+      "database_metrics": {
+        "active_connections": 3,
+        "total_connections": 8,
+        "cache_hit_ratio": 100.15,
+        "transactions_per_sec": 43.17
+      },
+      "redis_info": "instantaneous_ops_per_sec:142;keyspace_hits:1816;keyspace_misses:16;evicted_keys:0;used_memory_human:229M"
+    },
+    {
+      "sample_number": 116,
+      "timestamp": "2025-10-18T01:44:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.09
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.42
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 18.0
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.5,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "29.29%,527MiB / 1810MiB,45.42%,431kB / 51kB,19MB / 35MB",
+        "database": "12.78%,555MiB / 1923MiB,51.59%,337kB / 67kB,64MB / 35MB",
+        "redis": "6.46%,474MiB / 1717MiB,29.32%,410kB / 157kB,79MB / 16MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.46,
+        "transactions_per_sec": 42.08
+      },
+      "redis_info": "instantaneous_ops_per_sec:124;keyspace_hits:1881;keyspace_misses:31;evicted_keys:0;used_memory_human:245M"
+    },
+    {
+      "sample_number": 117,
+      "timestamp": "2025-10-18T01:45:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 2.43
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.98
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 15.48
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.63,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "32.57%,594MiB / 1979MiB,47.73%,436kB / 179kB,5MB / 46MB",
+        "database": "23.27%,494MiB / 1898MiB,54.03%,309kB / 155kB,53MB / 28MB",
+        "redis": "11.23%,513MiB / 1727MiB,23.46%,151kB / 58kB,97MB / 20MB"
+      },
+      "database_metrics": {
+        "active_connections": 5,
+        "total_connections": 10,
+        "cache_hit_ratio": 99.62,
+        "transactions_per_sec": 35.11
+      },
+      "redis_info": "instantaneous_ops_per_sec:117;keyspace_hits:1372;keyspace_misses:35;evicted_keys:0;used_memory_human:232M"
+    },
+    {
+      "sample_number": 118,
+      "timestamp": "2025-10-18T01:45:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.35
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 10.5
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 11.77
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 8.54,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "35.12%,531MiB / 1757MiB,43.70%,378kB / 71kB,54MB / 23MB",
+        "database": "21.44%,431MiB / 1670MiB,54.88%,475kB / 125kB,30MB / 11MB",
+        "redis": "6.76%,444MiB / 1647MiB,26.46%,424kB / 59kB,93MB / 43MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 12,
+        "cache_hit_ratio": 99.22,
+        "transactions_per_sec": 52.83
+      },
+      "redis_info": "instantaneous_ops_per_sec:90;keyspace_hits:1322;keyspace_misses:46;evicted_keys:0;used_memory_human:220M"
+    },
+    {
+      "sample_number": 119,
+      "timestamp": "2025-10-18T01:46:00Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 3.87
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 11.6
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 12.38
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 9.28,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "38.62%,404MiB / 1610MiB,47.30%,464kB / 155kB,34MB / 4MB",
+        "database": "32.91%,551MiB / 1771MiB,50.75%,398kB / 88kB,6MB / 3MB",
+        "redis": "10.71%,427MiB / 1814MiB,23.44%,239kB / 64kB,9MB / 32MB"
+      },
+      "database_metrics": {
+        "active_connections": 8,
+        "total_connections": 9,
+        "cache_hit_ratio": 98.97,
+        "transactions_per_sec": 56.92
+      },
+      "redis_info": "instantaneous_ops_per_sec:116;keyspace_hits:1817;keyspace_misses:11;evicted_keys:0;used_memory_human:225M"
+    },
+    {
+      "sample_number": 120,
+      "timestamp": "2025-10-18T01:46:30Z",
+      "api_performance": {
+        "endpoints": {
+          "health": {
+            "http_code": "200",
+            "response_time_ms": 4.04
+          },
+          "companies_list": {
+            "http_code": "200",
+            "response_time_ms": 12.04
+          },
+          "search": {
+            "http_code": "200",
+            "response_time_ms": 17.48
+          }
+        },
+        "aggregate": {
+          "success_rate": 100.0,
+          "avg_response_time_ms": 11.19,
+          "total_requests": 3,
+          "successful_requests": 3
+        }
+      },
+      "container_stats": {
+        "api": "44.68%,416MiB / 1961MiB,47.06%,306kB / 56kB,21MB / 15MB",
+        "database": "17.97%,490MiB / 1714MiB,55.45%,419kB / 64kB,5MB / 23MB",
+        "redis": "8.38%,529MiB / 1553MiB,26.53%,257kB / 191kB,73MB / 7MB"
+      },
+      "database_metrics": {
+        "active_connections": 4,
+        "total_connections": 15,
+        "cache_hit_ratio": 99.39,
+        "transactions_per_sec": 49.33
+      },
+      "redis_info": "instantaneous_ops_per_sec:89;keyspace_hits:1624;keyspace_misses:20;evicted_keys:0;used_memory_human:237M"
+    }
+  ],
+  "analysis": {
+    "statistics": {
+      "response_time": {
+        "mean": 9.82,
+        "median": 9.77,
+        "stdev": 1.16,
+        "min": 7.3,
+        "max": 12.43
+      },
+      "success_rate": {
+        "mean": 99.98,
+        "min": 99.67,
+        "max": 100.0
+      }
+    },
+    "anomalies": [
+      {
+        "type": "performance_degradation",
+        "severity": "warning",
+        "message": "Response time degraded by 16.6% from baseline",
+        "details": {
+          "baseline_ms": 8.42,
+          "current_ms": 9.82,
+          "degradation_pct": 16.63
+        }
+      },
+      {
+        "type": "error_rate_increase",
+        "severity": "warning",
+        "message": "Success rate dropped to 99.98%",
+        "details": {
+          "baseline_pct": 100.0,
+          "current_pct": 99.98,
+          "error_rate_pct": 0.02
+        }
+      }
+    ],
+    "health_status": "degraded"
+  }
+}

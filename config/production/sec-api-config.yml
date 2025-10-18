@@ -1,0 +1,296 @@
+# SEC EDGAR API Production Configuration
+# =======================================================
+# Configuration for SEC EDGAR data ingestion pipeline
+# Last Updated: 2025-10-17
+# Environment: Production
+
+# API Endpoints
+api:
+  base_url: "https://data.sec.gov"
+  archives_url: "https://www.sec.gov/Archives/edgar/data"
+  ticker_mapping_url: "https://www.sec.gov/files/company_tickers.json"
+  submissions_endpoint: "/submissions/CIK{cik}.json"
+
+  # User-Agent configuration (REQUIRED by SEC)
+  # Format: Company Name/Version (contact@email.com)
+  user_agent: "${SEC_USER_AGENT}"  # From environment variable
+
+# Rate Limiting Configuration
+rate_limiting:
+  # SEC enforces 10 requests per second maximum
+  requests_per_second: 10
+
+  # Burst allowance (maximum concurrent requests)
+  burst_size: 1
+
+  # Backoff strategy for 503 responses
+  backoff:
+    initial_delay_seconds: 60
+    max_delay_seconds: 600
+    exponential_base: 2
+    max_retries: 3
+
+  # Request timeout configuration
+  timeout:
+    connect_seconds: 10
+    read_seconds: 30
+    total_seconds: 60
+
+# Retry Logic
+retry:
+  # HTTP status codes to retry
+  retry_on_status: [429, 500, 502, 503, 504]
+
+  # Maximum retry attempts per request
+  max_attempts: 3
+
+  # Retry delay configuration
+  retry_delay_seconds: 60
+
+  # Exponential backoff multiplier
+  backoff_factor: 2
+
+  # Jitter to prevent thundering herd
+  jitter: true
+  jitter_max_seconds: 10
+
+# Caching Strategy
+caching:
+  # Cache ticker-to-CIK mapping (changes infrequently)
+  ticker_mapping:
+    enabled: true
+    ttl_hours: 24
+    refresh_on_startup: true
+
+  # Cache company submissions (updated periodically)
+  company_info:
+    enabled: true
+    ttl_hours: 6
+    max_entries: 1000
+
+  # Cache filing metadata (immutable once filed)
+  filing_metadata:
+    enabled: true
+    ttl_days: 30
+    max_entries: 10000
+
+  # Do NOT cache filing content (large, stored in database)
+  filing_content:
+    enabled: false
+
+# Data Ingestion Configuration
+ingestion:
+  # Filing types to collect
+  filing_types:
+    - "10-K"      # Annual reports
+    - "10-Q"      # Quarterly reports
+    - "8-K"       # Current reports
+    - "10-K/A"    # Annual report amendments
+    - "10-Q/A"    # Quarterly report amendments
+    - "S-1"       # IPO registration
+    - "S-4"       # Merger/acquisition registration
+    - "DEF 14A"   # Proxy statements
+    - "SC 13D"    # Beneficial ownership
+    - "SC 13G"    # Passive beneficial ownership
+
+  # Date range for historical data collection
+  lookback_days: 730  # 2 years of historical data
+
+  # Batch processing configuration
+  batch_size: 10  # Process 10 companies per batch
+  concurrent_downloads: 5  # Download 5 filings concurrently
+
+  # Duplicate detection
+  deduplication:
+    enabled: true
+    check_by_accession_number: true
+    check_by_content_hash: true
+
+# Data Quality & Validation
+validation:
+  # Required fields for filing data
+  required_fields:
+    - "accessionNumber"
+    - "form"
+    - "filingDate"
+    - "cik"
+    - "content"
+    - "content_hash"
+    - "downloaded_at"
+
+  # Format validation patterns
+  formats:
+    cik: "^\\d{1,10}$"
+    accession_number: "^\\d{10}-\\d{2}-\\d{6}$"
+    filing_date: "^\\d{4}-\\d{2}-\\d{2}$"
+    content_hash: "^[a-f0-9]{64}$"
+
+  # Content quality checks
+  content:
+    min_length_chars: 100
+    require_financial_keywords: true
+    financial_keywords:
+      - "revenue"
+      - "income"
+      - "assets"
+      - "liabilities"
+      - "cash flow"
+      - "stockholders equity"
+
+  # Date range validation
+  date_validation:
+    allow_future_dates: false
+    earliest_date: "1994-01-01"  # EDGAR electronic filing system launch
+
+# Error Handling
+error_handling:
+  # Log failed requests
+  log_errors: true
+  log_level: "ERROR"
+
+  # Store failed filing attempts for retry
+  persist_failures: true
+  failure_queue_max_size: 1000
+
+  # Alert thresholds
+  alerts:
+    consecutive_failures_threshold: 5
+    error_rate_threshold_percent: 10
+
+  # Circuit breaker configuration
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 10
+    timeout_seconds: 300
+    half_open_attempts: 3
+
+# Monitoring & Metrics
+monitoring:
+  # Track API performance metrics
+  metrics:
+    - "request_count"
+    - "request_duration_seconds"
+    - "error_count"
+    - "rate_limit_hits"
+    - "cache_hit_rate"
+    - "filings_downloaded"
+    - "filings_validated"
+    - "filings_stored"
+
+  # Prometheus metrics endpoint
+  prometheus:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+
+  # Logging configuration
+  logging:
+    level: "INFO"
+    format: "json"
+    output: "stdout"
+    include_trace_id: true
+
+# Storage Configuration
+storage:
+  # Database storage for filings
+  database:
+    table: "sec_filings"
+    batch_insert_size: 100
+    use_upsert: true
+
+  # MinIO/S3 storage for raw filing content
+  object_storage:
+    enabled: false  # Store in PostgreSQL initially
+    bucket: "sec-filings-raw"
+    prefix: "filings/{year}/{cik}/{accession_number}"
+
+  # Compression for large filings
+  compression:
+    enabled: true
+    algorithm: "gzip"
+    min_size_kb: 100
+
+# Schedule Configuration (for automated ingestion)
+schedule:
+  # Run daily after market close
+  daily_update:
+    enabled: true
+    cron: "0 18 * * 1-5"  # 6 PM weekdays
+    timezone: "America/New_York"
+
+  # Full refresh weekly
+  weekly_refresh:
+    enabled: true
+    cron: "0 2 * * 0"  # 2 AM Sunday
+    lookback_days: 7
+
+  # Monthly historical backfill
+  monthly_backfill:
+    enabled: false
+    cron: "0 3 1 * *"  # 3 AM first of month
+    lookback_days: 90
+
+# Company Discovery Configuration
+company_discovery:
+  # Use EdTech watchlist from application config
+  use_watchlist: true
+
+  # SIC codes for EdTech companies
+  edtech_sic_codes:
+    k12:
+      - "8211"  # Elementary and secondary schools
+    higher_education:
+      - "8221"  # Colleges and universities
+      - "8222"  # Junior colleges and technical institutes
+    corporate_learning:
+      - "8243"  # Data processing schools
+      - "8249"  # Vocational schools
+    enabling_technology:
+      - "7372"  # Prepackaged software
+      - "7373"  # Computer integrated systems design
+    direct_to_consumer:
+      - "8299"  # Other educational services
+
+  # Auto-discovery of new companies
+  auto_discovery:
+    enabled: false
+    scan_interval_days: 30
+
+# Feature Flags
+features:
+  # Enable XBRL financial data parsing
+  parse_xbrl: true
+
+  # Extract text sections from filings
+  extract_sections: true
+  sections_to_extract:
+    - "Business"
+    - "Risk Factors"
+    - "Management Discussion and Analysis"
+    - "Financial Statements"
+
+  # Generate embeddings for semantic search
+  generate_embeddings: false  # Implement in Phase 2
+
+  # Extract financial metrics
+  extract_metrics: true
+
+  # Natural language processing
+  nlp_processing:
+    enabled: false  # Implement in Phase 2
+    sentiment_analysis: false
+    entity_extraction: false
+
+# Development & Testing
+development:
+  # Use smaller dataset for testing
+  test_mode: false
+  test_companies: ["DUOL", "CHGG"]
+  test_filing_limit: 5
+
+  # Mock API responses
+  mock_api:
+    enabled: false
+
+  # Verbose logging
+  debug_logging: false

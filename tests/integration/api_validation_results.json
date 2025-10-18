@@ -1,0 +1,154 @@
+{
+  "summary": {
+    "total_tests": 17,
+    "passed_tests": 0,
+    "failed_tests": 17,
+    "success_rate": "0.00%",
+    "total_duration_ms": 0
+  },
+  "performance": {
+    "p50_latency_ms": 0,
+    "p95_latency_ms": 0,
+    "p99_latency_ms": 0,
+    "p99_meets_target": true,
+    "p95_meets_target": true
+  },
+  "tests": [
+    {
+      "endpoint": "GET /api/v1/health",
+      "description": "Basic health check",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/health/ping",
+      "description": "Lightweight ping for load balancers",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/health/detailed",
+      "description": "Detailed health check with database",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/health/readiness",
+      "description": "Kubernetes readiness probe",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/companies",
+      "description": "List companies with pagination",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/companies",
+      "description": "Filter companies by category",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/companies/watchlist",
+      "description": "Get watchlist companies (requires auth)",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/companies/trending/top-performers",
+      "description": "Get top performers by growth",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/companies/trending/top-performers",
+      "description": "Get top performers by revenue",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/metrics",
+      "description": "List financial metrics",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/metrics",
+      "description": "Filter metrics by type",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/filings",
+      "description": "List SEC filings",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/filings",
+      "description": "Filter filings by type",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/intelligence",
+      "description": "List market intelligence",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/reports",
+      "description": "List analysis reports",
+      "passed": false,
+      "expected_status": 200,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/companies/00000000-0000-0000-0000-000000000000",
+      "description": "Handle non-existent company (404)",
+      "passed": false,
+      "expected_status": 404,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    {
+      "endpoint": "GET /api/v1/companies/invalid-uuid",
+      "description": "Handle invalid UUID format (422)",
+      "passed": false,
+      "expected_status": 422,
+      "avg_response_time_ms": 0,
+      "error": "Request failed: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    }
+  ]
+}

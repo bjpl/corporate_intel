@@ -1,0 +1,5596 @@
+{
+  "timestamp": "2025-10-17T18:00:39.618285",
+  "environment": "staging",
+  "api_performance": {
+    "total_requests": 607,
+    "successful_requests": 0,
+    "failed_requests": 607,
+    "min_ms": 0,
+    "max_ms": 0,
+    "mean_ms": 0,
+    "median_ms": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "p99_ms": 0
+  },
+  "database_performance": {
+    "total_queries": 0,
+    "mean_ms": 0,
+    "median_ms": 0,
+    "index_usage_pct": 0,
+    "cache_hit_pct": 0
+  },
+  "resource_utilization": {
+    "avg_cpu_percent": 35.26,
+    "avg_memory_percent": 24.64,
+    "avg_memory_mb": 7838.127734375
+  },
+  "detailed_api_metrics": [
+    {
+      "timestamp": "2025-10-17T18:00:15.894686",
+      "endpoint": "/health",
+      "method": "GET",
+      "response_time_ms": 33.0815315246582,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.897853",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.0527114868164062,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.900710",
+      "endpoint": "/health/detailed",
+      "method": "GET",
+      "response_time_ms": 2.791166305541992,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.905359",
+      "endpoint": "/api/v1/companies",
+      "method": "GET",
+      "response_time_ms": 4.578113555908203,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.916902",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 11.410951614379883,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.926822",
+      "endpoint": "/api/v1/financial/metrics",
+      "method": "GET",
+      "response_time_ms": 9.52005386352539,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.930964",
+      "endpoint": "/api/v1/intelligence/competitive",
+      "method": "GET",
+      "response_time_ms": 3.8776397705078125,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.934482",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.397703170776367,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.939027",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.467487335205078,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.954045",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 14.962434768676758,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.957530",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.4265518188476562,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.960245",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.6590824127197266,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.963189",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.891063690185547,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.968252",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.9991607666015625,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.975919",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 7.6007843017578125,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.986514",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 10.340452194213867,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.989466",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.904653549194336,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.992837",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.312349319458008,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.996003",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.124713897705078,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:15.998248",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.197742462158203,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.000092",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 1.8048286437988281,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.002839",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.7015209197998047,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.008890",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.980968475341797,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.022065",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 12.932062149047852,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.028661",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 6.366252899169922,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.033065",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.278898239135742,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.035510",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.391815185546875,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.042974",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 7.384777069091797,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.054837",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 11.653423309326172,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.062555",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 7.415056228637695,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.065590",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.948284149169922,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.069144",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.4914016723632812,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.074154",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.948139190673828,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.081844",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 7.6084136962890625,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.097152",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 15.189647674560547,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.103139",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.690336227416992,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.107268",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.9663314819335938,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.110249",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.935171127319336,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.115421",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.087137222290039,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.129667",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 14.188528060913086,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.135888",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 6.115913391113281,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.138461",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.504110336303711,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.140891",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.3899078369140625,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.143931",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.9876232147216797,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.152691",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 8.523702621459961,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.169999",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 17.17853546142578,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.174700",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.628419876098633,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.184243",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 9.456634521484375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.193741",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 9.429693222045898,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.202082",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 7.998466491699219,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.206444",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.252433776855469,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.211776",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.272865295410156,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.215448",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.598451614379883,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.220098",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.568815231323242,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.231468",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 11.261701583862305,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.239349",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 7.720708847045898,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.243366",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.8971900939941406,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.247798",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.352807998657227,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.254171",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 6.294727325439453,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.265271",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 10.953903198242188,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.271407",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.951404571533203,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.274919",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.342866897583008,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.276886",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 1.9292831420898438,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.281908",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.979372024536133,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.286840",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.870176315307617,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.293885",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 6.917476654052734,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.303099",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 8.976221084594727,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.307215",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.044294357299805,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.311391",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.119396209716797,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.317009",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.481719970703125,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.322666",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.587577819824219,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.336915",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 14.076709747314453,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.341223",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.19926643371582,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.348930",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 7.637739181518555,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.352804",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.7631988525390625,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.356276",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.414630889892578,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.362754",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 6.424903869628906,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.370314",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 7.327795028686523,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.374858",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.444360733032227,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.377452",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.5386810302734375,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.380927",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.4258365631103516,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.385571",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.591464996337891,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.390530",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.888296127319336,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.403051",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 12.459516525268555,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.412724",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 9.466171264648438,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.415839",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.0319690704345703,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.418752",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.8591156005859375,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.422009",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.2029151916503906,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.425735",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.675222396850586,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.435499",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 9.63282585144043,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.452146",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 16.396522521972656,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.455366",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.1490325927734375,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.458395",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 2.976655960083008,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.462335",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.7970542907714844,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.467740",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.334377288818359,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.480982",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 13.185262680053711,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.486603",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.476713180541992,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.490509",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.774404525756836,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.495494",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.935264587402344,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.501568",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 5.6056976318359375,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.517593",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 15.897274017333984,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.521358",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.682851791381836,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.524788",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 3.3538341522216797,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.530847",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 6.004095077514648,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.545078",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 14.03045654296875,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.556682",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 11.259317398071289,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:16.561532",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 4.779815673828125,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.755663",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 22.481203079223633,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.758639",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 25.020599365234375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.761429",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 26.60822868347168,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.766497",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 29.940128326416016,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.767301",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 30.468463897705078,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.768889",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 31.6312313079834,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.770123",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 31.953096389770508,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.771680",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 32.141685485839844,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.771963",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 31.81147575378418,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.772135",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 32.28116035461426,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.790387",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.66629981994629,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.790803",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 31.578540802001953,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.791660",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 29.154539108276367,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.794979",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 28.417348861694336,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.803179",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 35.83788871765137,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.804971",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 36.03553771972656,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.807840",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.67561912536621,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.809456",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.72139549255371,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.809865",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.86468505859375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.810254",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 38.09475898742676,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.826869",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 36.411285400390625,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.837429",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 46.57793045043945,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.841258",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 49.55744743347168,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.842441",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 47.12414741516113,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.842695",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.43634033203125,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.842829",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.69731521606445,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.844249",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 36.34476661682129,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.845542",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 36.0260009765625,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.845831",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 35.483360290527344,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.846190",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 36.27824783325195,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.867523",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.428876876831055,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.867952",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 30.344486236572266,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.876375",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 35.04753112792969,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.876916",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 34.40737724304199,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.877210",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 34.35778617858887,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.880067",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 37.336111068725586,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.880616",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 36.315202713012695,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.882569",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 36.97490692138672,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.882849",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 36.85140609741211,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.884093",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 37.862539291381836,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.898336",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 30.7462215423584,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.899058",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 31.05759620666504,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.921067",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 44.542789459228516,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.921539",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 44.564247131347656,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.921994",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 44.731855392456055,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.922325",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.18602180480957,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.926314",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 45.64976692199707,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.928642",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 46.0202693939209,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.929850",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 46.964406967163086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.930990",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 46.77081108093262,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.952102",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 53.70831489562988,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.952518",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 53.397417068481445,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.959779",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.15197944641113,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.960170",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.114309310913086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.961780",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.62771797180176,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.962135",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.764404296875,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.963654",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.29414939880371,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.965641",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 36.943912506103516,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.968920",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.01529312133789,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.969983",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.84148597717285,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.977785",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 25.599002838134766,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.978302",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 25.739192962646484,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.993634",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 33.788204193115234,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.996976",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 36.756277084350586,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.997466",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 35.627126693725586,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:36.999024",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 36.85116767883301,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.001829",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.12384605407715,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.003775",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.07878494262695,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.014383",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 45.388221740722656,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.015763",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 45.72033882141113,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.026881",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 49.03697967529297,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.028729",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 50.34446716308594,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.034302",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.59553146362305,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.040245",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 43.201446533203125,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.040615",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.532278060913086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.040817",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 43.313026428222656,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.043230",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.99535942077637,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.044070",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.06218910217285,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.047466",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 32.29784965515137,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.047981",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 32.16409683227539,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.070312",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 43.35188865661621,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.072929",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 44.11673545837402,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.078555",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 44.191598892211914,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.091406",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 51.10287666320801,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.092099",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 51.4371395111084,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.093030",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 52.1848201751709,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.102891",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 59.59296226501465,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.103394",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 59.26823616027832,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.107248",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 59.70430374145508,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.113600",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 65.21892547607422,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.122801",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 52.391767501831055,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.129590",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 51.691293716430664,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.141134",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 62.52908706665039,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.147753",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 56.282997131347656,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.148595",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 55.509328842163086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.150001",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 57.78098106384277,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.151992",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 49.018144607543945,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.152255",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 48.801422119140625,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.160614",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 53.310394287109375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.162007",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 48.16389083862305,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.172022",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 48.96688461303711,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.175865",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 44.85607147216797,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.181547",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.35067558288574,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.188562",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.746212005615234,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.188882",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.97611999511719,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.193084",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 43.03598403930664,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.193814",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.77522659301758,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.195481",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 43.19119453430176,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.212298",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 50.24075508117676,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.216685",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 56.01048469543457,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.225385",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 53.290605545043945,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.226714",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 50.77552795410156,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.230870",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 49.23558235168457,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.243343",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 54.42190170288086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.243841",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 55.22418022155762,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.251690",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 58.537960052490234,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.252031",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 58.1362247467041,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.252212",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 56.65850639343262,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.258210",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 45.76516151428223,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.260375",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 43.56646537780762,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.263625",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.11311721801758,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.263941",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 37.161827087402344,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.269828",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.91110420227051,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.277197",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 33.768653869628906,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.283125",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.14046287536621,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.289774",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 37.45722770690918,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.290150",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.08283805847168,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.290331",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.58518600463867,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.294494",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 36.22770309448242,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.295037",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 34.612417221069336,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.295217",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 31.54158592224121,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.295410",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 31.434059143066406,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.308744",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 38.86294364929199,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.317388",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 35.8123779296875,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.317706",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.32464599609375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.323555",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 33.357858657836914,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.324093",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.24334526062012,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.327809",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.322044372558594,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.330402",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 35.16030311584473,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.330682",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 35.61139106750488,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.330852",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 35.401105880737305,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.331617",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.075042724609375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.591385",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 282.41825103759766,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.591709",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 274.2576599121094,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.591979",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 274.2340564727783,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.607610",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 283.89692306518555,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.608137",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 283.998966217041,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.609443",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 281.5704345703125,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.612167",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 281.45313262939453,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.612460",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 281.57901763916016,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.613283",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 282.83166885375977,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.622112",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 290.4551029205322,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.644517",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 53.079843521118164,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.644878",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 53.122758865356445,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.645076",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 53.063154220581055,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.654455",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 46.76079750061035,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.654868",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 46.671390533447266,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.657803",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 48.29907417297363,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.668694",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 56.471824645996094,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.674741",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 62.23320960998535,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.675442",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 62.11376190185547,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.681233",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 59.030771255493164,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.686916",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.3426628112793,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.687269",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.350053787231445,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.687510",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.4041748046875,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.692142",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.618160247802734,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.692562",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.641048431396484,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.706395",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 48.18391799926758,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.711801",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.53695297241211,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.716851",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 41.953086853027344,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.717266",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 41.748762130737305,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.721889",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.60673713684082,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.728434",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 41.46099090576172,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.729833",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.517662048339844,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:37.730250",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.69099235534668,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.283888",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 591.6805267333984,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.284843",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 592.2231674194336,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.287577",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 580.925703048706,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.290379",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 578.2411098480225,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.293522",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 576.5774250030518,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.295324",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 577.9955387115479,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.306459",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 584.326982498169,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.327071",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 598.5636711120605,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.327478",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 597.5801944732666,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.327838",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 597.5356101989746,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.339914",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 55.62019348144531,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.343588",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 58.63809585571289,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.346322",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 58.63475799560547,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.354971",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 64.53919410705566,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.355301",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 61.52606010437012,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.359961",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 64.41688537597656,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.362152",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 55.41276931762695,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.368465",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.341543197631836,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.369655",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.116641998291016,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.369942",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.0536994934082,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.386443",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 46.411991119384766,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.391721",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 48.074960708618164,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.393775",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 47.254323959350586,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.395471",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.43698310852051,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.397975",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.56248474121094,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.398278",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.1622314453125,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.405001",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 36.47589683532715,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.405699",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 43.489694595336914,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.408569",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.86556625366211,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.412904",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.92774200439453,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.426008",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.344072341918945,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.426359",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 34.572601318359375,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.426549",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 32.71913528442383,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.427148",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 31.568050384521484,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.430437",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 32.40847587585449,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.434219",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 35.901546478271484,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.438200",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 32.43899345397949,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.439360",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 34.31272506713867,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.443826",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 35.19773483276367,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.447540",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 34.57951545715332,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.459665",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 33.26129913330078,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.467135",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.55452346801758,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.467708",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.52329063415527,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.468074",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 42.012929916381836,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.473192",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.69742965698242,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.474234",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.95251655578613,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.480306",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 42.044639587402344,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.480874",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.30291938781738,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.499755",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 55.867671966552734,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.500574",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 52.973031997680664,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.509751",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 50.00138282775879,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.511848",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 44.626712799072266,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.513874",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 45.74990272521973,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.514424",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 46.64969444274902,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.520439",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 47.165632247924805,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.520909",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 46.452999114990234,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.533085",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 52.680015563964844,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.535611",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 54.66604232788086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.538494",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.67363929748535,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.539451",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.78498077392578,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.547431",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.6286506652832,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.550144",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.24496269226074,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.566108",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 52.060604095458984,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.567031",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 52.553415298461914,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.567686",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 47.179460525512695,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.568159",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 47.20258712768555,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.574042",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.84157943725586,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.574456",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.794755935668945,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.580477",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.89777374267578,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.580899",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.30959510803223,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.592311",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 44.82269287109375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.599647",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 49.40319061279297,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.607497",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.21112823486328,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.607929",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.80629348754883,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.608273",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.04836082458496,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.608614",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.84658622741699,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.615598",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.49508476257324,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.615894",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.38779640197754,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.619562",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 38.954973220825195,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.621852",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.903568267822266,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.645300",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 52.931785583496094,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.645727",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 45.9895133972168,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.649365",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.79644584655762,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.650853",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.867422103881836,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.651291",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.632102966308594,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.651551",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 43.23101043701172,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.655337",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.6885871887207,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.655631",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.699554443359375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.662466",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.85025596618652,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.662909",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.9853458404541,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.680416",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 35.02011299133301,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.682866",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.09602355957031,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.686068",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 36.65328025817871,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.689068",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.13791275024414,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.689518",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 37.930965423583984,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.689773",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.431644439697266,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.693125",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.735939025878906,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.693546",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 37.878990173339844,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.702486",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.93868827819824,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.704447",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.42618179321289,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.721511",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.03541374206543,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.722448",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.51120376586914,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.725250",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.13235664367676,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.727680",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.5432243347168,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.729231",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.66259956359863,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.729536",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.72673416137695,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.732947",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.77179527282715,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.733601",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.98112678527832,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.743355",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.64321517944336,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.743765",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.232492446899414,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.755211",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 33.60295295715332,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.755482",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 32.99689292907715,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.758451",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 33.16354751586914,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.761845",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.102678298950195,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.766325",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 36.7581844329834,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.766649",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.371158599853516,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.768981",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 35.985469818115234,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.772613",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.9249324798584,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.788947",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 45.52578926086426,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.789803",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 45.98832130432129,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.797519",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 41.99981689453125,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.798306",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 43.039560317993164,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.804253",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 45.71247100830078,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.807833",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 45.728445053100586,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.809167",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 42.79375076293945,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.809697",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 43.007612228393555,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.826764",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 57.724714279174805,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.827327",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 54.59284782409668,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.833727",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 44.67415809631348,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.834011",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 44.123172760009766,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.838428",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.863037109375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.838720",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.24219512939453,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.843552",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.139747619628906,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.852067",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.833805084228516,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.854368",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 44.61860656738281,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.855920",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 48.02083969116211,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.863047",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 36.20409965515137,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.863511",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 36.07988357543945,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.868546",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.76715087890625,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.868895",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.850358963012695,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.875412",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 36.92936897277832,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.878380",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.62206840515137,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.884849",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.18633270263672,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.895177",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.73724555969238,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.895704",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 41.14031791687012,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.896175",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.071964263916016,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.898944",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 35.79258918762207,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.902904",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.33095932006836,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.907428",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.48862648010254,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.907753",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.14809226989746,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.923692",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 48.23112487792969,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.927476",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 48.87866973876953,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.927803",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.76418685913086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.931664",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 35.887956619262695,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.932047",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 35.819053649902344,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.932255",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 36.99350357055664,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.940630",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 41.639089584350586,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.943309",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.16566276550293,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.945754",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 37.958383560180664,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.946523",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.03675079345703,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.967009",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 43.25056076049805,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.968333",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.80796241760254,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.969821",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.980743408203125,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.972078",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.343284606933594,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.973687",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.59975051879883,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.974185",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.777849197387695,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.979581",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.884878158569336,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.980936",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.54401206970215,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.992458",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 46.605825424194336,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:38.995361",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 48.69794845581055,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.009404",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.3431396484375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.009858",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.47815704345703,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.010083",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.21096229553223,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.014231",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.099952697753906,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.014508",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.74239730834961,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.014690",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.44222831726074,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.029011",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 48.01321029663086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.029861",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 50.173044204711914,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.032898",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.132999420166016,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.033423",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.9488468170166,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.044035",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 34.525394439697266,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.052859",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 42.93489456176758,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.063213",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 53.075551986694336,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.069983",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 55.435895919799805,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.070477",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 56.198835372924805,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.071399",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 56.67924880981445,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.072998",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 43.88570785522461,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.079329",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 49.37934875488281,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.080162",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 47.20282554626465,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.080634",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 47.13082313537598,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.100074",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 55.90558052062988,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.100462",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 47.3785400390625,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.102480",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.183616638183594,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.131779",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 61.73062324523926,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.132348",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 60.89019775390625,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.132653",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 59.57961082458496,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.133375",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 62.853097915649414,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.133598",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 53.83658409118652,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.133752",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 53.36737632751465,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.134277",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 53.504228591918945,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.141694",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.562557220458984,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.143622",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 43.10798645019531,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.149169",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 46.59891128540039,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.172270",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.42792320251465,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.172565",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.168046951293945,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.172713",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.01975059509277,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.172834",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.418697357177734,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.172960",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 39.33000564575195,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.173111",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.33095932006836,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.173489",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.155006408691406,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.181986",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.17496109008789,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.182281",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.41447830200195,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.182448",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 33.00189971923828,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.213158",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.83752632141113,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.213581",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.9846305847168,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.213801",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.065216064453125,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.214188",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.330814361572266,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.214774",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 41.76759719848633,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.215012",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.875600814819336,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.215166",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.649580001831055,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.235623",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 53.57766151428223,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.239101",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 56.78200721740723,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.239657",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 57.183027267456055,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.253105",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.87002372741699,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.253892",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.26460647583008,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.256224",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 41.999101638793945,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.256483",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.62232780456543,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.256790",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.9769287109375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.257672",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.48332977294922,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.259276",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 44.22879219055176,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.273042",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.23311424255371,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.273396",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.177541732788086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.273583",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 33.87284278869629,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.287471",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.21616554260254,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.288939",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 34.96408462524414,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.289512",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 33.223628997802734,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.293500",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 36.98158264160156,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.303473",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 46.62799835205078,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.307597",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 48.24256896972656,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.311425",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 53.47704887390137,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.311995",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.558006286621094,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.314550",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 40.94076156616211,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.317630",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 44.5249080657959,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.327184",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.66403007507324,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.336791",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 47.79362678527832,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.348982",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 59.43703651428223,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.352477",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 58.91776084899902,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.353140",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 48.378705978393555,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.353569",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 45.908451080322266,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.355354",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 43.282270431518555,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.357058",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 45.51434516906738,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.358728",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 44.05808448791504,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.359253",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 41.524410247802734,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.385486",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 58.22110176086426,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.388673",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 51.66196823120117,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.393518",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 44.480323791503906,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.395624",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 43.055057525634766,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.395867",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.263031005859375,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.397392",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 44.19732093811035,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.399489",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 44.08764839172363,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.399770",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.91382026672363,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.399997",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.875051498413086,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.400137",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 40.369510650634766,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.407069",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 21.530628204345703,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.420752",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 32.01651573181152,
+      "status_code": 0,
+      "success": false,
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.425749",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 32.179832458496094,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.427913",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 32.01413154602051,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.428542",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 32.875776290893555,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.429580",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 32.13214874267578,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.432824",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 33.28824043273926,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.433973",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 34.169673919677734,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.434275",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 34.24859046936035,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.434491",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 34.33036804199219,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.439167",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 32.04059600830078,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.449590",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 28.774738311767578,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.468070",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 42.24228858947754,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.468410",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.44318199157715,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.468892",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 40.30561447143555,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.469224",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 39.53671455383301,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.472098",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.206504821777344,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.477418",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 43.3659553527832,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.477756",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 43.236732482910156,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.477945",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 43.612003326416016,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.482479",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 43.25389862060547,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.498882",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 49.22652244567871,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.504770",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 36.650657653808594,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.505075",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 35.71724891662598,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.505303",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 36.33260726928711,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.505548",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 37.012338638305664,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.508319",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 36.17286682128906,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.511344",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 33.54620933532715,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.511644",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.17205810546875,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.511832",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 33.86259078979492,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.524648",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 42.11235046386719,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.532780",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 33.686161041259766,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.542740",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.9180908203125,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.543274",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 38.16509246826172,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.543559",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.18511962890625,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.543859",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 38.27810287475586,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.546011",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.61863708496094,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.548820",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.42527961730957,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.549131",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.44840621948242,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.549429",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 37.57166862487793,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.560603",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 35.736799240112305,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.571487",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 38.65861892700195,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.577039",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 34.169673919677734,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.577511",
+      "endpoint": "/api/v1/financial/metrics?ticker=CHGG",
+      "method": "GET",
+      "response_time_ms": 34.180641174316406,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.577704",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 34.10696983337402,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.577835",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 31.757354736328125,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.577943",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 34.04116630554199,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.582209",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 33.33115577697754,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.582843",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 33.3709716796875,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.586093",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 36.917686462402344,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.600212",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 39.53814506530762,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.604818",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 33.188581466674805,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.611901",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.758567810058594,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.612309",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.577369689941406,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.612335",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.37376022338867,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.612351",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 34.49535369873047,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.612362",
+      "endpoint": "/health/ping",
+      "method": "GET",
+      "response_time_ms": 34.80887413024902,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.614135",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 31.85415267944336,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.614189",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 31.290054321289062,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.614450",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 28.26547622680664,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.615333",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 15.024662017822266,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    },
+    {
+      "timestamp": "2025-10-17T18:00:39.617860",
+      "endpoint": "/api/v1/companies/CHGG",
+      "method": "GET",
+      "response_time_ms": 5.48553466796875,
+      "status_code": 0,
+      "success": false,
+      "error": "Server disconnected"
+    }
+  ],
+  "detailed_db_metrics": [],
+  "detailed_resource_metrics": [
+    {
+      "timestamp": "2025-10-17T18:00:17.669097",
+      "cpu_percent": 41.8,
+      "memory_percent": 24.4,
+      "memory_mb": 7770.77734375,
+      "disk_io_read_mb": 3093.8505859375,
+      "disk_io_write_mb": 18682.96484375,
+      "network_sent_mb": 115.48541927337646,
+      "network_recv_mb": 83.54733467102051
+    },
+    {
+      "timestamp": "2025-10-17T18:00:19.672912",
+      "cpu_percent": 32.0,
+      "memory_percent": 24.5,
+      "memory_mb": 7784.5625,
+      "disk_io_read_mb": 3093.8505859375,
+      "disk_io_write_mb": 18684.11328125,
+      "network_sent_mb": 116.70588207244873,
+      "network_recv_mb": 83.81020069122314
+    },
+    {
+      "timestamp": "2025-10-17T18:00:21.680907",
+      "cpu_percent": 31.3,
+      "memory_percent": 24.8,
+      "memory_mb": 7886.01953125,
+      "disk_io_read_mb": 3093.8583984375,
+      "disk_io_write_mb": 18685.24609375,
+      "network_sent_mb": 117.01735973358154,
+      "network_recv_mb": 83.97620677947998
+    },
+    {
+      "timestamp": "2025-10-17T18:00:23.689656",
+      "cpu_percent": 38.7,
+      "memory_percent": 24.5,
+      "memory_mb": 7787.55078125,
+      "disk_io_read_mb": 3093.9833984375,
+      "disk_io_write_mb": 18686.39453125,
+      "network_sent_mb": 117.27714347839355,
+      "network_recv_mb": 84.12112617492676
+    },
+    {
+      "timestamp": "2025-10-17T18:00:25.695374",
+      "cpu_percent": 33.3,
+      "memory_percent": 24.6,
+      "memory_mb": 7821.75,
+      "disk_io_read_mb": 3093.9833984375,
+      "disk_io_write_mb": 18687.68359375,
+      "network_sent_mb": 117.8674373626709,
+      "network_recv_mb": 84.31949138641357
+    },
+    {
+      "timestamp": "2025-10-17T18:00:27.700309",
+      "cpu_percent": 26.1,
+      "memory_percent": 24.6,
+      "memory_mb": 7841.078125,
+      "disk_io_read_mb": 3093.9833984375,
+      "disk_io_write_mb": 18689.10546875,
+      "network_sent_mb": 118.2377290725708,
+      "network_recv_mb": 84.51821327209473
+    },
+    {
+      "timestamp": "2025-10-17T18:00:29.710832",
+      "cpu_percent": 25.5,
+      "memory_percent": 24.7,
+      "memory_mb": 7852.7265625,
+      "disk_io_read_mb": 3093.9833984375,
+      "disk_io_write_mb": 18690.30859375,
+      "network_sent_mb": 118.90732288360596,
+      "network_recv_mb": 84.71804428100586
+    },
+    {
+      "timestamp": "2025-10-17T18:00:31.719859",
+      "cpu_percent": 37.4,
+      "memory_percent": 24.7,
+      "memory_mb": 7873.359375,
+      "disk_io_read_mb": 3093.9833984375,
+      "disk_io_write_mb": 18692.09765625,
+      "network_sent_mb": 119.43867683410645,
+      "network_recv_mb": 85.0287504196167
+    },
+    {
+      "timestamp": "2025-10-17T18:00:33.724399",
+      "cpu_percent": 50.4,
+      "memory_percent": 24.7,
+      "memory_mb": 7847.90625,
+      "disk_io_read_mb": 3093.9833984375,
+      "disk_io_write_mb": 18693.29296875,
+      "network_sent_mb": 120.12126731872559,
+      "network_recv_mb": 85.22785186767578
+    },
+    {
+      "timestamp": "2025-10-17T18:00:35.731403",
+      "cpu_percent": 36.1,
+      "memory_percent": 24.9,
+      "memory_mb": 7915.546875,
+      "disk_io_read_mb": 3093.9833984375,
+      "disk_io_write_mb": 18694.94140625,
+      "network_sent_mb": 120.97769832611084,
+      "network_recv_mb": 85.52763271331787
+    }
+  ]
+}

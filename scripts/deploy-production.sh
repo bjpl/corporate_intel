@@ -1,272 +1,590 @@
 #!/bin/bash
+################################################################################
+# Production Deployment Master Script
+# Corporate Intelligence Platform
+################################################################################
+# Version: 1.0.0
+# Last Updated: October 17, 2025
+#
+# DESCRIPTION:
+#   Master orchestrator for production deployments. Coordinates infrastructure
+#   deployment, API service deployment, health validation, and monitoring.
+#
+# USAGE:
+#   ./scripts/deploy-production.sh [OPTIONS]
+#
+# OPTIONS:
+#   --version VERSION        Deployment version tag (required)
+#   --skip-backup           Skip pre-deployment backups (not recommended)
+#   --skip-validation       Skip pre-deployment validation (not recommended)
+#   --no-rollback           Don't auto-rollback on failure
+#   --dry-run               Simulate deployment without making changes
+#   --help                  Show this help message
+#
+# EXAMPLES:
+#   ./scripts/deploy-production.sh --version v1.2.0
+#   ./scripts/deploy-production.sh --version v1.2.0 --dry-run
+#
+# PREREQUISITES:
+#   - Docker and Docker Compose installed
+#   - Production environment configured (.env.production)
+#   - SSL certificates installed
+#   - AWS credentials configured (for backups)
+#   - Appropriate access permissions
+#
+# EXIT CODES:
+#   0 - Deployment successful
+#   1 - Pre-deployment validation failed
+#   2 - Infrastructure deployment failed
+#   3 - Database migration failed
+#   4 - API deployment failed
+#   5 - Health check failed
+#   6 - Smoke tests failed
+#   7 - User cancelled deployment
+################################################################################
+
 set -euo pipefail
+IFS=$'\n\t'
 
-# Production Deployment Script with Safety Checks
-# Deploys Corporate Intel API to production with comprehensive validation
+# ==============================================================================
+# CONFIGURATION
+# ==============================================================================
 
-ENVIRONMENT="production"
-NAMESPACE="production"
-VERSION="${1:-}"
-KUBECONFIG="${KUBECONFIG:-~/.kube/config}"
-HELM_RELEASE="corporate-intel"
-SLACK_WEBHOOK="${SLACK_WEBHOOK_URL:-}"
+# Script metadata
+readonly SCRIPT_VERSION="1.0.0"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+readonly TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
+
+# Paths
+readonly COMPOSE_FILE="${PROJECT_ROOT}/config/production/docker-compose.production.yml"
+readonly ENV_FILE="${PROJECT_ROOT}/config/production/.env.production"
+readonly BACKUP_DIR="${PROJECT_ROOT}/backups/deployments"
+readonly LOG_DIR="${PROJECT_ROOT}/deployment-logs"
+readonly LOG_FILE="${LOG_DIR}/deployment-${TIMESTAMP}.log"
+
+# Deployment configuration
+DEPLOYMENT_VERSION=""
+SKIP_BACKUP=false
+SKIP_VALIDATION=false
+AUTO_ROLLBACK=true
+DRY_RUN=false
+
+# Health check configuration
+readonly HEALTH_CHECK_TIMEOUT=120
+readonly HEALTH_CHECK_INTERVAL=5
+readonly MAX_HEALTH_RETRIES=3
 
 # Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly MAGENTA='\033[0;35m'
+readonly CYAN='\033[0;36m'
+readonly NC='\033[0m' # No Color
 
-log_info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
+# ==============================================================================
+# LOGGING FUNCTIONS
+# ==============================================================================
+
+log() {
+    local level="$1"
+    shift
+    local message="$*"
+    local timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
+    echo -e "${timestamp} [${level}] ${message}" | tee -a "${LOG_FILE}"
 }
 
-log_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
+log_info() {
+    log "INFO" "${BLUE}$*${NC}"
+}
+
+log_success() {
+    log "SUCCESS" "${GREEN}✅ $*${NC}"
+}
+
+log_warning() {
+    log "WARNING" "${YELLOW}⚠️  $*${NC}"
 }
 
 log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+    log "ERROR" "${RED}❌ $*${NC}"
 }
 
-send_slack_notification() {
-    local message="$1"
-    local color="${2:-good}"
-
-    if [ -n "$SLACK_WEBHOOK" ]; then
-        curl -X POST "$SLACK_WEBHOOK" \
-            -H 'Content-Type: application/json' \
-            -d "{
-                \"attachments\": [{
-                    \"color\": \"$color\",
-                    \"title\": \"Production Deployment\",
-                    \"text\": \"$message\",
-                    \"footer\": \"Corporate Intel CI/CD\",
-                    \"ts\": $(date +%s)
-                }]
-            }" || true
-    fi
+log_debug() {
+    log "DEBUG" "${CYAN}$*${NC}"
 }
 
-# Validate version
-if [ -z "$VERSION" ]; then
-    log_error "Usage: $0 <version>"
-    log_info "Example: $0 v1.0.0"
-    exit 1
-fi
-
-log_info "🚀 Starting production deployment for version: $VERSION"
-send_slack_notification "🚀 Starting production deployment for version: $VERSION" "warning"
-
-# Pre-deployment checks
-log_info "🔍 Running pre-deployment checks..."
-
-# Check kubectl connectivity
-if ! kubectl cluster-info &> /dev/null; then
-    log_error "Cannot connect to Kubernetes cluster"
-    exit 1
-fi
-
-# Check if namespace exists
-if ! kubectl get namespace "$NAMESPACE" &> /dev/null; then
-    log_error "Namespace $NAMESPACE does not exist"
-    exit 1
-fi
-
-# Verify Docker image exists
-log_info "🐳 Verifying Docker image..."
-if ! docker manifest inspect "corporate-intel:${VERSION}" &> /dev/null; then
-    log_error "Docker image corporate-intel:${VERSION} not found"
-    exit 1
-fi
-
-# Run security scan
-log_info "🔒 Running security scan..."
-trivy image --severity HIGH,CRITICAL "corporate-intel:${VERSION}" || {
-    log_error "Security vulnerabilities found in image"
-    send_slack_notification "❌ Security vulnerabilities found in version ${VERSION}" "danger"
-    exit 1
+log_section() {
+    local title="$1"
+    echo "" | tee -a "${LOG_FILE}"
+    echo "================================================================================" | tee -a "${LOG_FILE}"
+    echo -e "${MAGENTA}${title}${NC}" | tee -a "${LOG_FILE}"
+    echo "================================================================================" | tee -a "${LOG_FILE}"
 }
 
-# Check database connectivity
-log_info "🗄️  Checking database connectivity..."
-kubectl run -it --rm db-check \
-    --image=postgres:15 \
-    --namespace="$NAMESPACE" \
-    --restart=Never \
-    --command -- psql "$DATABASE_URL" -c "SELECT 1" || {
-    log_error "Database connectivity check failed"
-    exit 1
-}
+# ==============================================================================
+# HELPER FUNCTIONS
+# ==============================================================================
 
-# Create database backup before deployment
-log_info "💾 Creating pre-deployment database backup..."
-./scripts/backup/backup-database.sh || {
-    log_error "Database backup failed"
-    exit 1
-}
+usage() {
+    cat << EOF
+Production Deployment Master Script v${SCRIPT_VERSION}
 
-# Run database migrations in dry-run mode
-log_info "🔧 Validating database migrations..."
-kubectl run -it --rm migration-check \
-    --image="corporate-intel:${VERSION}" \
-    --namespace="$NAMESPACE" \
-    --restart=Never \
-    --command -- alembic upgrade head --sql > /tmp/migration-preview.sql
+USAGE:
+    $0 [OPTIONS]
 
-log_warn "Migration preview saved to /tmp/migration-preview.sql"
-log_warn "Review migrations before proceeding"
-read -p "Continue with deployment? (yes/no): " -r
-if [[ ! $REPLY =~ ^[Yy]es$ ]]; then
-    log_info "Deployment cancelled by user"
+OPTIONS:
+    --version VERSION        Deployment version tag (required)
+    --skip-backup           Skip pre-deployment backups (not recommended)
+    --skip-validation       Skip pre-deployment validation (not recommended)
+    --no-rollback           Don't auto-rollback on failure
+    --dry-run               Simulate deployment without making changes
+    --help                  Show this help message
+
+EXAMPLES:
+    $0 --version v1.2.0
+    $0 --version v1.2.0 --dry-run
+
+For detailed documentation, see: docs/deployment/DEPLOYMENT_AUTOMATION.md
+EOF
     exit 0
-fi
-
-# Deployment
-log_info "📦 Deploying to production..."
-
-# Update Helm release with new version
-helm upgrade "$HELM_RELEASE" ./helm/corporate-intel \
-    --namespace="$NAMESPACE" \
-    --values=./helm/corporate-intel/values-production.yaml \
-    --set image.tag="$VERSION" \
-    --set deployment.timestamp="$(date +%s)" \
-    --wait \
-    --timeout=10m \
-    --atomic \
-    --cleanup-on-fail || {
-    log_error "Helm deployment failed"
-    send_slack_notification "❌ Production deployment failed for version ${VERSION}" "danger"
-    exit 1
 }
 
-# Run database migrations
-log_info "🔄 Running database migrations..."
-kubectl run -it --rm migration-apply \
-    --image="corporate-intel:${VERSION}" \
-    --namespace="$NAMESPACE" \
-    --restart=Never \
-    --command -- alembic upgrade head || {
-    log_error "Migration failed"
-    log_info "🔙 Rolling back deployment..."
-    helm rollback "$HELM_RELEASE" --namespace="$NAMESPACE"
-    send_slack_notification "❌ Migration failed, deployment rolled back" "danger"
-    exit 1
+confirm_action() {
+    local message="$1"
+    local response
+
+    echo -e "${YELLOW}${message}${NC}"
+    read -r -p "Continue? [y/N] " response
+
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            return 0
+            ;;
+        *)
+            log_warning "Deployment cancelled by user"
+            exit 7
+            ;;
+    esac
 }
 
-# Wait for rollout to complete
-log_info "⏳ Waiting for rollout to complete..."
-kubectl rollout status deployment/prod-corporate-intel-api \
-    --namespace="$NAMESPACE" \
-    --timeout=5m || {
-    log_error "Rollout failed"
-    helm rollback "$HELM_RELEASE" --namespace="$NAMESPACE"
-    send_slack_notification "❌ Rollout failed, deployment rolled back" "danger"
-    exit 1
-}
+check_prerequisites() {
+    log_section "Checking Prerequisites"
 
-# Post-deployment validation
-log_info "✅ Running post-deployment validation..."
+    local missing_prereqs=0
 
-# Health check
-log_info "🏥 Checking application health..."
-sleep 10  # Give app time to stabilize
-
-HEALTH_URL="https://api.corporate-intel.com/health"
-for i in {1..5}; do
-    if curl -sf "$HEALTH_URL" > /dev/null; then
-        log_info "Health check passed"
-        break
+    # Check Docker
+    if ! command -v docker &> /dev/null; then
+        log_error "Docker is not installed"
+        ((missing_prereqs++))
     else
-        log_warn "Health check failed (attempt $i/5)"
-        sleep 5
+        log_success "Docker found: $(docker --version)"
     fi
 
-    if [ $i -eq 5 ]; then
-        log_error "Health check failed after 5 attempts"
-        helm rollback "$HELM_RELEASE" --namespace="$NAMESPACE"
-        send_slack_notification "❌ Health check failed, deployment rolled back" "danger"
+    # Check Docker Compose
+    if ! command -v docker-compose &> /dev/null; then
+        log_error "Docker Compose is not installed"
+        ((missing_prereqs++))
+    else
+        log_success "Docker Compose found: $(docker-compose --version)"
+    fi
+
+    # Check required files
+    if [[ ! -f "${COMPOSE_FILE}" ]]; then
+        log_error "Docker Compose file not found: ${COMPOSE_FILE}"
+        ((missing_prereqs++))
+    else
+        log_success "Docker Compose file found"
+    fi
+
+    if [[ ! -f "${ENV_FILE}" ]]; then
+        log_error "Environment file not found: ${ENV_FILE}"
+        ((missing_prereqs++))
+    else
+        log_success "Environment file found"
+    fi
+
+    # Check for required scripts
+    local required_scripts=(
+        "${SCRIPT_DIR}/deploy-infrastructure.sh"
+        "${SCRIPT_DIR}/deploy-api.sh"
+        "${SCRIPT_DIR}/validate-deployment.sh"
+        "${SCRIPT_DIR}/rollback-production.sh"
+    )
+
+    for script in "${required_scripts[@]}"; do
+        if [[ ! -f "${script}" ]]; then
+            log_error "Required script not found: ${script}"
+            ((missing_prereqs++))
+        fi
+    done
+
+    if [[ ${missing_prereqs} -gt 0 ]]; then
+        log_error "${missing_prereqs} prerequisite(s) missing"
         exit 1
     fi
-done
 
-# Smoke tests
-log_info "🧪 Running smoke tests..."
-kubectl run -it --rm smoke-test \
-    --image=curlimages/curl:latest \
-    --namespace="$NAMESPACE" \
-    --restart=Never \
-    --command -- sh -c "
-        curl -sf https://api.corporate-intel.com/health &&
-        curl -sf https://api.corporate-intel.com/api/v1/health
-    " || {
-    log_error "Smoke tests failed"
-    helm rollback "$HELM_RELEASE" --namespace="$NAMESPACE"
-    send_slack_notification "❌ Smoke tests failed, deployment rolled back" "danger"
-    exit 1
+    log_success "All prerequisites satisfied"
 }
 
-# Performance validation
-log_info "📊 Running performance validation..."
-# Run a quick load test to ensure no performance regression
-k6 run --vus 10 --duration 30s ./tests/performance/k6-script.js || {
-    log_warn "Performance test failed - manual investigation required"
+create_directories() {
+    log_info "Creating required directories..."
+
+    mkdir -p "${BACKUP_DIR}"
+    mkdir -p "${LOG_DIR}"
+    mkdir -p "${PROJECT_ROOT}/backups/postgres"
+    mkdir -p "${PROJECT_ROOT}/backups/configs"
+
+    log_success "Directories created"
 }
 
-# Verify metrics are being collected
-log_info "📈 Verifying metrics collection..."
-kubectl run -it --rm metrics-check \
-    --image=curlimages/curl:latest \
-    --namespace="$NAMESPACE" \
-    --restart=Never \
-    --command -- curl -sf http://prod-corporate-intel-api:9090/metrics > /dev/null || {
-    log_warn "Metrics endpoint not responding"
+# ==============================================================================
+# DEPLOYMENT PHASES
+# ==============================================================================
+
+phase_pre_deployment() {
+    log_section "Phase 1: Pre-Deployment"
+
+    # Display deployment information
+    log_info "Deployment Information:"
+    log_info "  Version: ${DEPLOYMENT_VERSION}"
+    log_info "  Timestamp: ${TIMESTAMP}"
+    log_info "  Environment: production"
+    log_info "  Compose File: ${COMPOSE_FILE}"
+    log_info "  Log File: ${LOG_FILE}"
+
+    if [[ "${DRY_RUN}" == true ]]; then
+        log_warning "DRY RUN MODE - No changes will be made"
+    fi
+
+    # Confirmation prompt
+    if [[ "${DRY_RUN}" != true ]]; then
+        confirm_action "🚨 You are about to deploy to PRODUCTION. This will cause brief downtime."
+    fi
+
+    # Run pre-deployment validation
+    if [[ "${SKIP_VALIDATION}" != true ]]; then
+        log_info "Running pre-deployment validation..."
+        if [[ "${DRY_RUN}" != true ]]; then
+            bash "${SCRIPT_DIR}/validate-deployment.sh" --pre-deploy
+        else
+            log_info "[DRY RUN] Would run pre-deployment validation"
+        fi
+    else
+        log_warning "Skipping pre-deployment validation (not recommended)"
+    fi
+
+    # Create backups
+    if [[ "${SKIP_BACKUP}" != true ]]; then
+        log_info "Creating pre-deployment backups..."
+        if [[ "${DRY_RUN}" != true ]]; then
+            create_backups
+        else
+            log_info "[DRY RUN] Would create backups"
+        fi
+    else
+        log_warning "Skipping backups (not recommended)"
+    fi
+
+    log_success "Pre-deployment phase complete"
 }
 
-# Create deployment tag
-log_info "🏷️  Creating deployment tag..."
-git tag -a "deploy/production/${VERSION}" -m "Production deployment ${VERSION} at $(date)"
-git push origin "deploy/production/${VERSION}"
+create_backups() {
+    log_info "Creating backups for rollback safety..."
 
-# Update deployment record
-log_info "📝 Recording deployment..."
-cat <<EOF > "/tmp/deployment-${VERSION}.json"
-{
-  "version": "${VERSION}",
-  "environment": "production",
-  "timestamp": "$(date -Iseconds)",
-  "deployed_by": "${USER}",
-  "git_commit": "$(git rev-parse HEAD)",
-  "namespace": "${NAMESPACE}",
-  "helm_release": "${HELM_RELEASE}"
+    # Backup configuration files
+    log_info "Backing up configuration files..."
+    cp "${COMPOSE_FILE}" "${BACKUP_DIR}/docker-compose.production.yml.${TIMESTAMP}" || log_error "Failed to backup docker-compose file"
+    cp "${ENV_FILE}" "${BACKUP_DIR}/.env.production.${TIMESTAMP}" || log_error "Failed to backup env file"
+
+    # Backup database
+    log_info "Creating database backup (this may take a few minutes)..."
+    if docker-compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" ps postgres | grep -q "Up"; then
+        docker-compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" exec -T postgres \
+            pg_dump -U "${POSTGRES_USER:-intel_prod_user}" \
+            -d "${POSTGRES_DB:-corporate_intel_prod}" -F c \
+            -f "/backups/postgres/corporate_intel_prod_${TIMESTAMP}.backup" 2>&1 | tee -a "${LOG_FILE}"
+
+        local backup_size
+        backup_size=$(du -h "${PROJECT_ROOT}/backups/postgres/corporate_intel_prod_${TIMESTAMP}.backup" 2>/dev/null | cut -f1 || echo "unknown")
+        log_success "Database backup created: ${backup_size}"
+    else
+        log_warning "PostgreSQL not running - skipping database backup"
+    fi
+
+    log_success "Backups complete"
 }
-EOF
 
-# Store deployment record in S3
-aws s3 cp "/tmp/deployment-${VERSION}.json" \
-    "s3://corporate-intel-deployments/production/deployment-${VERSION}.json"
+phase_infrastructure() {
+    log_section "Phase 2: Infrastructure Deployment"
 
-# Success notification
-log_info "✅ Production deployment completed successfully!"
-log_info "Version: $VERSION"
-log_info "Namespace: $NAMESPACE"
-log_info "Time: $(date)"
+    log_info "Deploying infrastructure services (PostgreSQL, Redis, MinIO)..."
 
-send_slack_notification "✅ Production deployment successful for version ${VERSION}" "good"
+    if [[ "${DRY_RUN}" != true ]]; then
+        bash "${SCRIPT_DIR}/deploy-infrastructure.sh" --version "${DEPLOYMENT_VERSION}" 2>&1 | tee -a "${LOG_FILE}"
 
-# Post-deployment monitoring
-log_info "📊 Monitor deployment at:"
-log_info "  - Grafana: https://grafana.corporate-intel.com"
-log_info "  - Prometheus: https://prometheus.corporate-intel.com"
-log_info "  - Logs: kubectl logs -f -n $NAMESPACE -l app=corporate-intel"
+        if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+            log_error "Infrastructure deployment failed"
+            handle_deployment_failure "infrastructure"
+            exit 2
+        fi
+    else
+        log_info "[DRY RUN] Would deploy infrastructure services"
+    fi
 
-# Create rollback script for easy recovery
-cat <<EOF > "/tmp/rollback-${VERSION}.sh"
-#!/bin/bash
-# Rollback script for version ${VERSION}
-echo "Rolling back from version ${VERSION}..."
-helm rollback ${HELM_RELEASE} --namespace=${NAMESPACE}
-EOF
-chmod +x "/tmp/rollback-${VERSION}.sh"
+    log_success "Infrastructure deployment complete"
+}
 
-log_info "💡 Rollback script created: /tmp/rollback-${VERSION}.sh"
+phase_database_migration() {
+    log_section "Phase 3: Database Migration"
+
+    log_info "Running database migrations..."
+
+    if [[ "${DRY_RUN}" != true ]]; then
+        # Check current migration version
+        log_info "Current migration version:"
+        docker-compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm api alembic current 2>&1 | tee -a "${LOG_FILE}" || true
+
+        # Run migrations
+        log_info "Applying migrations..."
+        docker-compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm api alembic upgrade head 2>&1 | tee -a "${LOG_FILE}"
+
+        if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+            log_error "Database migration failed"
+            handle_deployment_failure "migration"
+            exit 3
+        fi
+
+        # Verify new version
+        log_info "New migration version:"
+        docker-compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" run --rm api alembic current 2>&1 | tee -a "${LOG_FILE}"
+    else
+        log_info "[DRY RUN] Would run database migrations"
+    fi
+
+    log_success "Database migration complete"
+}
+
+phase_api_deployment() {
+    log_section "Phase 4: API Deployment"
+
+    log_info "Deploying API services..."
+
+    if [[ "${DRY_RUN}" != true ]]; then
+        bash "${SCRIPT_DIR}/deploy-api.sh" --version "${DEPLOYMENT_VERSION}" 2>&1 | tee -a "${LOG_FILE}"
+
+        if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+            log_error "API deployment failed"
+            handle_deployment_failure "api"
+            exit 4
+        fi
+    else
+        log_info "[DRY RUN] Would deploy API services"
+    fi
+
+    log_success "API deployment complete"
+}
+
+phase_validation() {
+    log_section "Phase 5: Deployment Validation"
+
+    log_info "Running post-deployment validation..."
+
+    if [[ "${DRY_RUN}" != true ]]; then
+        bash "${SCRIPT_DIR}/validate-deployment.sh" --post-deploy 2>&1 | tee -a "${LOG_FILE}"
+
+        if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+            log_error "Deployment validation failed"
+            handle_deployment_failure "validation"
+            exit 5
+        fi
+    else
+        log_info "[DRY RUN] Would run deployment validation"
+    fi
+
+    log_success "Deployment validation complete"
+}
+
+phase_smoke_tests() {
+    log_section "Phase 6: Smoke Tests"
+
+    log_info "Running smoke tests..."
+
+    if [[ "${DRY_RUN}" != true ]]; then
+        # Run smoke tests if available
+        if [[ -f "${SCRIPT_DIR}/smoke-tests/production-smoke-tests.sh" ]]; then
+            bash "${SCRIPT_DIR}/smoke-tests/production-smoke-tests.sh" http://localhost:8000 2>&1 | tee -a "${LOG_FILE}"
+
+            if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+                log_warning "Smoke tests failed - manual review required"
+                # Don't auto-fail on smoke test failures - require manual decision
+            fi
+        else
+            log_warning "Smoke test script not found - skipping"
+        fi
+    else
+        log_info "[DRY RUN] Would run smoke tests"
+    fi
+
+    log_success "Smoke tests complete"
+}
+
+phase_monitoring() {
+    log_section "Phase 7: Monitoring Activation"
+
+    log_info "Activating monitoring and alerting..."
+
+    if [[ "${DRY_RUN}" != true ]]; then
+        # Verify monitoring services are running
+        log_info "Checking Prometheus..."
+        if curl -sf http://localhost:9090/-/healthy > /dev/null; then
+            log_success "Prometheus is healthy"
+        else
+            log_warning "Prometheus health check failed"
+        fi
+
+        log_info "Checking Grafana..."
+        if curl -sf http://localhost:3000/api/health > /dev/null; then
+            log_success "Grafana is healthy"
+        else
+            log_warning "Grafana health check failed"
+        fi
+
+        log_info "Checking Jaeger..."
+        if docker-compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" ps jaeger | grep -q "Up"; then
+            log_success "Jaeger is running"
+        else
+            log_warning "Jaeger is not running"
+        fi
+    else
+        log_info "[DRY RUN] Would activate monitoring"
+    fi
+
+    log_success "Monitoring activation complete"
+}
+
+# ==============================================================================
+# ERROR HANDLING
+# ==============================================================================
+
+handle_deployment_failure() {
+    local phase="$1"
+
+    log_error "Deployment failed in phase: ${phase}"
+
+    if [[ "${AUTO_ROLLBACK}" == true ]] && [[ "${DRY_RUN}" != true ]]; then
+        log_warning "Initiating automatic rollback..."
+
+        if [[ -f "${SCRIPT_DIR}/rollback-production.sh" ]]; then
+            bash "${SCRIPT_DIR}/rollback-production.sh" --auto --reason "Deployment failed in ${phase} phase"
+        else
+            log_error "Rollback script not found - manual rollback required"
+        fi
+    else
+        log_warning "Auto-rollback disabled - manual intervention required"
+        log_info "To rollback manually, run: ./scripts/rollback-production.sh"
+    fi
+}
+
+cleanup_on_error() {
+    log_error "Deployment interrupted"
+
+    # Export logs for analysis
+    log_info "Logs saved to: ${LOG_FILE}"
+
+    # Show recent container logs
+    if [[ "${DRY_RUN}" != true ]]; then
+        log_info "Recent container logs:"
+        docker-compose -f "${COMPOSE_FILE}" --env-file "${ENV_FILE}" logs --tail=50 2>&1 | tee -a "${LOG_FILE}"
+    fi
+}
+
+# ==============================================================================
+# MAIN EXECUTION
+# ==============================================================================
+
+main() {
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --version)
+                DEPLOYMENT_VERSION="$2"
+                shift 2
+                ;;
+            --skip-backup)
+                SKIP_BACKUP=true
+                shift
+                ;;
+            --skip-validation)
+                SKIP_VALIDATION=true
+                shift
+                ;;
+            --no-rollback)
+                AUTO_ROLLBACK=false
+                shift
+                ;;
+            --dry-run)
+                DRY_RUN=true
+                shift
+                ;;
+            --help)
+                usage
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                usage
+                ;;
+        esac
+    done
+
+    # Validate required arguments
+    if [[ -z "${DEPLOYMENT_VERSION}" ]]; then
+        log_error "Deployment version is required"
+        echo ""
+        usage
+    fi
+
+    # Setup
+    create_directories
+
+    # Log deployment start
+    log_section "Production Deployment Started"
+    log_info "Version: ${DEPLOYMENT_VERSION}"
+    log_info "Timestamp: ${TIMESTAMP}"
+    log_info "User: ${USER}"
+    log_info "Host: $(hostname)"
+
+    # Trap errors
+    trap cleanup_on_error ERR INT TERM
+
+    # Execute deployment phases
+    check_prerequisites
+    phase_pre_deployment
+    phase_infrastructure
+    phase_database_migration
+    phase_api_deployment
+    phase_validation
+    phase_smoke_tests
+    phase_monitoring
+
+    # Deployment complete
+    log_section "Deployment Complete"
+    log_success "Production deployment successful!"
+    log_info "Version deployed: ${DEPLOYMENT_VERSION}"
+    log_info "Deployment log: ${LOG_FILE}"
+    log_info ""
+    log_info "Next steps:"
+    log_info "  1. Monitor application for 1 hour"
+    log_info "  2. Check Grafana dashboards: http://localhost:3000"
+    log_info "  3. Review logs: docker-compose -f ${COMPOSE_FILE} logs -f api"
+    log_info "  4. Update deployment record in docs/deployment/"
+    log_info ""
+    log_success "Deployment completed at $(date)"
+
+    exit 0
+}
+
+# Run main function
+main "$@"

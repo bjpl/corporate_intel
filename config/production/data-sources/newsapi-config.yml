@@ -1,0 +1,258 @@
+# NewsAPI Configuration for Corporate Intelligence Platform
+# ==========================================================
+# Production configuration for news article ingestion and sentiment analysis
+
+# API Configuration
+# -----------------
+api:
+  base_url: "https://newsapi.org/v2"
+  version: "v2"
+  timeout: 30
+  max_retries: 3
+  retry_delay: 5
+
+# Rate Limiting
+# -------------
+# Free tier: 1,000 requests/day, 100 requests/hour
+# Developer tier: 100,000 requests/day
+# Business tier: Unlimited requests
+rate_limits:
+  tier: "free"  # Options: free, developer, business
+  requests_per_day: 1000
+  requests_per_hour: 100
+  requests_per_minute: 5
+  backoff_strategy: "exponential"
+  max_backoff_seconds: 300
+
+# Query Configuration
+# -------------------
+search:
+  # Default language for news articles
+  language: "en"
+
+  # Sort order for results
+  # Options: relevancy, popularity, publishedAt
+  sort_by: "publishedAt"
+
+  # Maximum articles per request (1-100)
+  page_size: 100
+
+  # Maximum pages to fetch per query
+  max_pages: 10
+
+  # Default date range in days (how far back to search)
+  default_lookback_days: 7
+
+  # Search domains (leave empty for all sources)
+  domains:
+    - "wsj.com"
+    - "bloomberg.com"
+    - "reuters.com"
+    - "ft.com"
+    - "forbes.com"
+    - "businessinsider.com"
+    - "cnbc.com"
+    - "marketwatch.com"
+
+  # Exclude domains
+  exclude_domains: []
+
+# Keywords and Topics
+# -------------------
+keywords:
+  # Company-related keywords
+  company_events:
+    - "earnings report"
+    - "quarterly results"
+    - "merger"
+    - "acquisition"
+    - "partnership"
+    - "IPO"
+    - "stock split"
+    - "dividend"
+    - "CEO change"
+    - "layoffs"
+    - "expansion"
+    - "new product"
+
+  # EdTech specific keywords
+  edtech:
+    - "online learning"
+    - "education technology"
+    - "e-learning"
+    - "digital education"
+    - "virtual classroom"
+    - "learning platform"
+    - "educational software"
+    - "student engagement"
+
+  # Financial keywords
+  financial:
+    - "revenue growth"
+    - "profit margin"
+    - "market share"
+    - "valuation"
+    - "funding round"
+    - "venture capital"
+    - "bankruptcy"
+    - "restructuring"
+
+# Sentiment Analysis
+# ------------------
+sentiment:
+  # Enable/disable sentiment analysis
+  enabled: true
+
+  # Sentiment analysis engine
+  # Options: textblob, vader, transformers
+  engine: "textblob"
+
+  # Confidence threshold (0-1)
+  min_confidence: 0.5
+
+  # Analyze these fields
+  analyze_fields:
+    - "title"
+    - "description"
+    - "content"
+
+  # Sentiment categories
+  categories:
+    very_negative: [-1.0, -0.6]
+    negative: [-0.6, -0.2]
+    neutral: [-0.2, 0.2]
+    positive: [0.2, 0.6]
+    very_positive: [0.6, 1.0]
+
+# Data Storage
+# ------------
+storage:
+  # Store raw articles
+  store_raw: true
+
+  # Store processed articles
+  store_processed: true
+
+  # Deduplicate articles by URL
+  deduplicate: true
+
+  # Maximum article age to store (days)
+  max_article_age_days: 365
+
+  # Fields to extract and store
+  extract_fields:
+    - "source"
+    - "author"
+    - "title"
+    - "description"
+    - "url"
+    - "urlToImage"
+    - "publishedAt"
+    - "content"
+
+# Caching
+# -------
+cache:
+  # Enable response caching
+  enabled: true
+
+  # Cache TTL in seconds
+  ttl: 3600
+
+  # Cache backend (redis, memory)
+  backend: "redis"
+
+# Monitoring
+# ----------
+monitoring:
+  # Track API usage
+  track_usage: true
+
+  # Log failed requests
+  log_failures: true
+
+  # Alert on rate limit approaching
+  rate_limit_alert_threshold: 0.9
+
+  # Metrics to track
+  metrics:
+    - "total_requests"
+    - "failed_requests"
+    - "articles_fetched"
+    - "sentiment_scores"
+    - "processing_time"
+
+# Data Quality
+# ------------
+quality:
+  # Minimum article length (characters)
+  min_article_length: 100
+
+  # Validate URLs
+  validate_urls: true
+
+  # Required fields (article rejected if missing)
+  required_fields:
+    - "title"
+    - "url"
+    - "publishedAt"
+
+  # Filter spam/low-quality sources
+  spam_filtering: true
+
+# Scheduling
+# ----------
+schedule:
+  # Enable scheduled ingestion
+  enabled: true
+
+  # Cron expression for updates
+  # Default: Every 6 hours
+  cron: "0 */6 * * *"
+
+  # Fetch news for these companies on schedule
+  default_companies:
+    - "CHGG"
+    - "COUR"
+    - "DUOL"
+    - "TWOU"
+    - "ARCE"
+    - "LAUR"
+
+  # News categories to monitor
+  categories:
+    - "business"
+    - "technology"
+
+# Error Handling
+# --------------
+error_handling:
+  # Continue on individual article errors
+  continue_on_error: true
+
+  # Maximum consecutive errors before stopping
+  max_consecutive_errors: 10
+
+  # Retry failed articles
+  retry_failed: true
+
+  # Maximum retries per article
+  max_retries_per_article: 3
+
+# Notifications
+# -------------
+notifications:
+  # Enable notifications for important events
+  enabled: true
+
+  # Notification channels
+  channels:
+    - "email"
+    - "slack"
+
+  # Events to notify on
+  events:
+    - "rate_limit_exceeded"
+    - "api_error"
+    - "high_impact_news"
+    - "negative_sentiment_spike"

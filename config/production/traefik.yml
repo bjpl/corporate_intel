@@ -1,0 +1,98 @@
+# Corporate Intel Production Traefik Configuration
+# Modern reverse proxy with automatic SSL
+# Updated: 2025-10-17
+
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+# Entry Points
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: "corporate-intel.com"
+            sans:
+              - "*.corporate-intel.com"
+      middlewares:
+        - security-headers@file
+        - rate-limit@file
+
+# Certificate Resolvers
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: admin@corporate-intel.com
+      storage: /etc/traefik/acme.json
+      httpChallenge:
+        entryPoint: web
+      # Alternative: DNS Challenge for wildcard certs
+      # dnsChallenge:
+      #   provider: cloudflare
+      #   delayBeforeCheck: 10s
+
+# API and Dashboard
+api:
+  dashboard: true
+  insecure: false
+
+# Logging
+log:
+  level: INFO
+  format: json
+  filePath: /var/log/traefik/traefik.log
+
+accessLog:
+  format: json
+  filePath: /var/log/traefik/access.log
+  filters:
+    statusCodes:
+      - "400-599"
+  fields:
+    headers:
+      defaultMode: keep
+      names:
+        User-Agent: keep
+        Authorization: drop
+        Cookie: drop
+
+# Metrics
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addServicesLabels: true
+    buckets:
+      - 0.1
+      - 0.3
+      - 1.0
+      - 3.0
+      - 5.0
+
+# Providers
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: corporate-intel-network
+    watch: true
+
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+# Pilot (Optional - Traefik Cloud)
+# pilot:
+#   token: "your-pilot-token"

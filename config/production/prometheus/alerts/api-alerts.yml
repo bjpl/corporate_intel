@@ -1,0 +1,152 @@
+# API Alert Rules
+# Corporate Intel Production Monitoring
+
+groups:
+  - name: api_alerts
+    interval: 30s
+    rules:
+      # High Error Rate
+      - alert: HighAPIErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{status=~"5.."}[5m])) by (instance, job)
+            /
+            sum(rate(http_requests_total[5m])) by (instance, job)
+          ) * 100 > 1
+        for: 5m
+        labels:
+          severity: critical
+          component: api
+          team: backend
+        annotations:
+          summary: "High API error rate on {{ $labels.instance }}"
+          description: "API error rate is {{ $value | humanizePercentage }} (threshold: 1%)\nInstance: {{ $labels.instance }}\nJob: {{ $labels.job }}"
+          runbook_url: "https://docs.corporate-intel.com/runbooks/high-error-rate"
+
+      # High Client Error Rate (4xx)
+      - alert: HighAPIClientErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{status=~"4.."}[5m])) by (instance, job)
+            /
+            sum(rate(http_requests_total[5m])) by (instance, job)
+          ) * 100 > 5
+        for: 10m
+        labels:
+          severity: warning
+          component: api
+          team: backend
+        annotations:
+          summary: "High API client error rate on {{ $labels.instance }}"
+          description: "API 4xx error rate is {{ $value | humanizePercentage }} (threshold: 5%)\nInstance: {{ $labels.instance }}"
+
+      # High API Latency (P99)
+      - alert: HighAPILatencyP99
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (le, instance, job, method, endpoint)
+          ) > 0.100
+        for: 5m
+        labels:
+          severity: critical
+          component: api
+          team: backend
+        annotations:
+          summary: "High API P99 latency on {{ $labels.instance }}"
+          description: "API P99 latency is {{ $value | humanizeDuration }} (threshold: 100ms)\nEndpoint: {{ $labels.method }} {{ $labels.endpoint }}\nInstance: {{ $labels.instance }}"
+          runbook_url: "https://docs.corporate-intel.com/runbooks/high-latency"
+
+      # High API Latency (P95)
+      - alert: HighAPILatencyP95
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (le, instance, job, method, endpoint)
+          ) > 0.075
+        for: 10m
+        labels:
+          severity: warning
+          component: api
+          team: backend
+        annotations:
+          summary: "High API P95 latency on {{ $labels.instance }}"
+          description: "API P95 latency is {{ $value | humanizeDuration }} (threshold: 75ms)\nEndpoint: {{ $labels.method }} {{ $labels.endpoint }}"
+
+      # API Service Down
+      - alert: APIServiceDown
+        expr: up{job="corporate-intel-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+          team: backend
+          page: "true"
+        annotations:
+          summary: "API service is down on {{ $labels.instance }}"
+          description: "API instance {{ $labels.instance }} has been down for more than 2 minutes."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/service-down"
+
+      # High Request Rate (potential DDoS)
+      - alert: HighAPIRequestRate
+        expr: |
+          sum(rate(http_requests_total[5m])) by (instance, job) > 1000
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+          team: backend
+        annotations:
+          summary: "Unusually high request rate on {{ $labels.instance }}"
+          description: "Request rate is {{ $value | humanize }} req/s (threshold: 1000 req/s)\nPossible DDoS attack or traffic spike."
+
+      # Low Request Rate (potential issue)
+      - alert: LowAPIRequestRate
+        expr: |
+          sum(rate(http_requests_total[10m])) by (job) < 1
+        for: 15m
+        labels:
+          severity: warning
+          component: api
+          team: backend
+        annotations:
+          summary: "Unusually low request rate for {{ $labels.job }}"
+          description: "Request rate is {{ $value | humanize }} req/s (threshold: <1 req/s)\nService might be unreachable or traffic routing issue."
+
+      # Slow Endpoint
+      - alert: SlowAPIEndpoint
+        expr: |
+          histogram_quantile(0.50,
+            sum(rate(http_request_duration_seconds_bucket[10m])) by (le, endpoint, method)
+          ) > 0.050
+        for: 15m
+        labels:
+          severity: warning
+          component: api
+          team: backend
+        annotations:
+          summary: "Slow endpoint detected: {{ $labels.method }} {{ $labels.endpoint }}"
+          description: "Median latency is {{ $value | humanizeDuration }} (threshold: 50ms)\nConsider optimization."
+
+      # High Memory Usage
+      - alert: HighAPIMemoryUsage
+        expr: |
+          (process_resident_memory_bytes{job="corporate-intel-api"} / 1024 / 1024 / 1024) > 2
+        for: 10m
+        labels:
+          severity: warning
+          component: api
+          team: backend
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanize }}GB (threshold: 2GB)\nPossible memory leak."
+
+      # API Restart Detected
+      - alert: APIRestarted
+        expr: |
+          changes(process_start_time_seconds{job="corporate-intel-api"}[15m]) > 0
+        labels:
+          severity: warning
+          component: api
+          team: backend
+        annotations:
+          summary: "API service restarted on {{ $labels.instance }}"
+          description: "API instance has restarted. Check logs for crash or OOM events."

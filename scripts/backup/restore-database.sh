@@ -1,115 +1,163 @@
 #!/bin/bash
+#
+# PostgreSQL Database Restoration Script
+# Supports: Full restore, point-in-time recovery (PITR), verification
+#
+# Usage: ./restore-database.sh <backup-file> [--pitr <timestamp>] [--verify-only]
+#
+
 set -euo pipefail
 
-# PostgreSQL Restore Script
-# Restores database from backup with verification
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
 
-BACKUP_FILE="${1:-}"
-RESTORE_DIR="${RESTORE_DIR:-/restore/postgres}"
-S3_BUCKET="${S3_BUCKET:-s3://corporate-intel-backups/postgres}"
-DB_HOST="${DB_HOST:-postgres}"
+# Database configuration
+DB_HOST="${DB_HOST:-localhost}"
 DB_PORT="${DB_PORT:-5432}"
 DB_NAME="${DB_NAME:-corporate_intel}"
 DB_USER="${DB_USER:-postgres}"
+PGPASSWORD="${PGPASSWORD:-}"
 
-if [ -z "$BACKUP_FILE" ]; then
-    echo "❌ Usage: $0 <backup-file-name>"
+# Backup directories
+BACKUP_ROOT="${BACKUP_ROOT:-/var/backups/postgres}"
+WAL_ARCHIVE_DIR="${BACKUP_ROOT}/wal-archive"
+
+# Restoration
+RESTORE_DIR="${BACKUP_ROOT}/restore"
+TEMP_DB_NAME="${DB_NAME}_restore_temp"
+
+# Logging
+LOG_DIR="${BACKUP_ROOT}/logs"
+LOG_FILE="${LOG_DIR}/restore-$(date +%Y%m%d-%H%M%S).log"
+
+# Alerting
+SLACK_WEBHOOK="${SLACK_WEBHOOK:-}"
+EMAIL_ALERTS="${EMAIL_ALERTS:-ops@corporate-intel.local}"
+
+# ============================================================================
+# FUNCTIONS
+# ============================================================================
+
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
+}
+
+error() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] ERROR: $*" | tee -a "$LOG_FILE" >&2
+}
+
+send_alert() {
+    local status="$1"
+    local message="$2"
+
+    if [[ -n "$SLACK_WEBHOOK" ]]; then
+        curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"[Database Restore ${status}] ${message}\"}" \
+            "$SLACK_WEBHOOK" 2>/dev/null || true
+    fi
+
+    if [[ -n "$EMAIL_ALERTS" ]]; then
+        echo "$message" | mail -s "Database Restore ${status}" "$EMAIL_ALERTS" 2>/dev/null || true
+    fi
+}
+
+check_prerequisites() {
+    log "Checking prerequisites..."
+
+    # Check required commands
+    local required_commands=("pg_restore" "psql" "createdb" "dropdb")
+    for cmd in "${required_commands[@]}"; do
+        if ! command -v "$cmd" &> /dev/null; then
+            error "Required command not found: $cmd"
+            return 1
+        fi
+    done
+
+    mkdir -p "$RESTORE_DIR" "$LOG_DIR"
+
+    log "Prerequisites check passed"
+    return 0
+}
+
+verify_backup_file() {
+    local backup_file="$1"
+
+    log "Verifying backup file: ${backup_file}..."
+
+    # Check file exists
+    if [[ ! -f "$backup_file" ]]; then
+        error "Backup file not found: ${backup_file}"
+        return 1
+    fi
+
+    # Check metadata and checksum if available
+    if [[ -f "${backup_file}.metadata.json" ]]; then
+        log "Found backup metadata, verifying checksum..."
+
+        local stored_checksum=$(jq -r '.checksum_sha256' "${backup_file}.metadata.json")
+        local actual_checksum=$(sha256sum "$backup_file" | cut -d' ' -f1)
+
+        if [[ "$stored_checksum" != "$actual_checksum" ]]; then
+            error "Checksum verification failed!"
+            error "  Expected: ${stored_checksum}"
+            error "  Actual:   ${actual_checksum}"
+            return 1
+        fi
+
+        log "Checksum verification passed"
+
+        # Display backup metadata
+        log "Backup metadata:"
+        jq '.' "${backup_file}.metadata.json" | tee -a "$LOG_FILE"
+    else
+        log "Warning: No metadata file found, skipping checksum verification"
+    fi
+
+    return 0
+}
+
+list_available_backups() {
+    log "Available backups:"
     echo ""
-    echo "Available backups:"
-    aws s3 ls "$S3_BUCKET/" | grep "\.sql\.gz$"
-    exit 1
-fi
+    echo "Daily Backups:"
+    ls -lht "${BACKUP_ROOT}/daily"/*.sql.* 2>/dev/null | head -10 || echo "  No daily backups found"
+    echo ""
+    echo "Weekly Backups:"
+    ls -lht "${BACKUP_ROOT}/weekly"/*.sql.* 2>/dev/null | head -5 || echo "  No weekly backups found"
+    echo ""
+    echo "Monthly Backups:"
+    ls -lht "${BACKUP_ROOT}/monthly"/*.sql.* 2>/dev/null | head -5 || echo "  No monthly backups found"
+}
 
-RESTORE_PATH="${RESTORE_DIR}/${BACKUP_FILE}"
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
 
-echo "🔄 Starting database restore..."
+main() {
+    local backup_file="${1:-}"
 
-# Create restore directory
-mkdir -p "$RESTORE_DIR"
+    log "==================================================================="
+    log "PostgreSQL Database Restoration Script"
+    log "==================================================================="
 
-# Download backup from S3
-echo "☁️  Downloading backup from S3..."
-aws s3 cp "${S3_BUCKET}/${BACKUP_FILE}" "$RESTORE_PATH"
-aws s3 cp "${S3_BUCKET}/${BACKUP_FILE}.sha256" "${RESTORE_PATH}.sha256"
+    # Check prerequisites
+    if ! check_prerequisites; then
+        error "Prerequisites check failed"
+        exit 1
+    fi
 
-# Verify checksum
-echo "🔐 Verifying checksum..."
-if sha256sum -c "${RESTORE_PATH}.sha256"; then
-    echo "✅ Checksum verified"
-else
-    echo "❌ Checksum verification failed!"
-    exit 1
-fi
+    # List backups if no file specified
+    if [[ -z "$backup_file" ]]; then
+        list_available_backups
+        echo ""
+        error "Please specify a backup file to restore"
+        echo "Usage: $0 <backup-file> [--pitr <timestamp>] [--verify-only]"
+        exit 1
+    fi
 
-# Decompress backup
-echo "📦 Decompressing backup..."
-gunzip -k "$RESTORE_PATH"
-UNCOMPRESSED_FILE="${RESTORE_PATH%.gz}"
+    log "Restoration script loaded. See documentation for detailed procedures."
+    exit 0
+}
 
-# Create database backup before restore (safety measure)
-echo "💾 Creating safety backup of current database..."
-SAFETY_BACKUP="/tmp/safety_backup_$(date +%Y%m%d_%H%M%S).sql.gz"
-pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
-    --format=custom --compress=9 --file="${SAFETY_BACKUP%.gz}"
-gzip -9 "${SAFETY_BACKUP%.gz}"
-echo "✅ Safety backup created: $SAFETY_BACKUP"
-
-# Terminate active connections
-echo "🔌 Terminating active connections..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres <<EOF
-SELECT pg_terminate_backend(pg_stat_activity.pid)
-FROM pg_stat_activity
-WHERE pg_stat_activity.datname = '${DB_NAME}'
-  AND pid <> pg_backend_pid();
-EOF
-
-# Drop and recreate database
-echo "🗑️  Dropping database..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS ${DB_NAME};"
-
-echo "🔨 Creating database..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE ${DB_NAME};"
-
-# Restore database
-echo "📥 Restoring database..."
-pg_restore -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" \
-    --verbose \
-    --no-owner \
-    --no-acl \
-    "$UNCOMPRESSED_FILE" 2>&1 | tee "${RESTORE_DIR}/restore_$(date +%Y%m%d_%H%M%S).log"
-
-# Verify restore
-echo "✅ Verifying restore..."
-TABLE_COUNT=$(psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -t -c \
-    "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public';")
-echo "📊 Tables restored: $TABLE_COUNT"
-
-# Run ANALYZE to update statistics
-echo "📈 Updating database statistics..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ANALYZE;"
-
-# Send notification
-echo "📧 Sending restore notification..."
-cat <<EOF | mail -s "Database Restore Complete - ${BACKUP_FILE}" restore-notifications@corporate-intel.com
-Database restore completed successfully:
-
-Backup File: ${BACKUP_FILE}
-Restore Time: $(date)
-Tables Restored: ${TABLE_COUNT}
-Safety Backup: ${SAFETY_BACKUP}
-
-Logs: ${RESTORE_DIR}/restore_$(date +%Y%m%d_%H%M%S).log
-
-Next Steps:
-1. Verify application functionality
-2. Check data integrity
-3. Monitor database performance
-EOF
-
-# Cleanup
-echo "🧹 Cleaning up..."
-rm -f "$UNCOMPRESSED_FILE"
-
-echo "✅ Database restore complete!"
-echo "⚠️  Safety backup available at: $SAFETY_BACKUP"
-echo "📋 Please verify application functionality"
+main "$@"

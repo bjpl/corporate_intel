@@ -1,0 +1,393 @@
+# Yahoo Finance Configuration for Corporate Intelligence Platform
+# =================================================================
+# Production configuration for Yahoo Finance data ingestion via yfinance library
+
+# API Configuration
+# -----------------
+# Note: yfinance is an unofficial API with no official rate limits
+# Best practices apply to avoid being rate-limited or blocked
+api:
+  # Request timeout in seconds
+  timeout: 30
+
+  # Maximum retries for failed requests
+  max_retries: 5
+
+  # Delay between retries (seconds)
+  retry_delay: 10
+
+  # Delay between individual ticker requests (seconds)
+  request_delay: 1
+
+  # User agent for requests
+  user_agent: "Corporate Intel Platform/1.0"
+
+  # Enable proxy support
+  use_proxy: false
+  proxy_url: ""
+
+# Rate Limiting
+# -------------
+# Conservative rate limits to avoid blocking
+# Yahoo Finance has no official limits but aggressive scraping can be blocked
+rate_limits:
+  # Maximum requests per minute
+  requests_per_minute: 30
+
+  # Maximum requests per hour
+  requests_per_hour: 1000
+
+  # Maximum requests per day
+  requests_per_day: 10000
+
+  # Backoff strategy when rate limited
+  backoff_strategy: "exponential"
+
+  # Maximum backoff time (seconds)
+  max_backoff_seconds: 300
+
+  # Enable adaptive rate limiting
+  adaptive: true
+
+# Data Types
+# ----------
+data_types:
+  # Real-time quote data
+  quotes:
+    enabled: true
+    fields:
+      - "symbol"
+      - "shortName"
+      - "longName"
+      - "regularMarketPrice"
+      - "regularMarketChange"
+      - "regularMarketChangePercent"
+      - "regularMarketVolume"
+      - "marketCap"
+      - "fiftyTwoWeekLow"
+      - "fiftyTwoWeekHigh"
+      - "fiftyDayAverage"
+      - "twoHundredDayAverage"
+      - "trailingPE"
+      - "forwardPE"
+      - "dividendYield"
+      - "beta"
+
+  # Historical price data
+  historical:
+    enabled: true
+    # Valid periods: 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max
+    default_period: "1y"
+    # Valid intervals: 1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo
+    default_interval: "1d"
+    # Automatically adjust for dividends and splits
+    auto_adjust: true
+    # Include pre/post market data
+    prepost: false
+    # Include dividends and stock splits
+    actions: true
+
+  # Company information
+  info:
+    enabled: true
+    fields:
+      - "sector"
+      - "industry"
+      - "fullTimeEmployees"
+      - "city"
+      - "state"
+      - "country"
+      - "website"
+      - "longBusinessSummary"
+      - "previousClose"
+      - "open"
+      - "dayLow"
+      - "dayHigh"
+      - "volume"
+      - "averageVolume"
+      - "marketCap"
+      - "beta"
+      - "trailingPE"
+      - "forwardPE"
+      - "dividendRate"
+      - "dividendYield"
+      - "exDividendDate"
+      - "targetMeanPrice"
+      - "recommendationKey"
+
+  # Financial statements
+  financials:
+    enabled: true
+    # Types: income_stmt, balance_sheet, cashflow
+    statements:
+      - "income_stmt"
+      - "balance_sheet"
+      - "cashflow"
+    # Get quarterly and annual data
+    quarterly: true
+    annual: true
+
+  # Analyst recommendations
+  recommendations:
+    enabled: true
+    # Maximum number of recommendations to fetch
+    max_records: 100
+
+  # Institutional holders
+  institutional_holders:
+    enabled: true
+
+  # Major holders breakdown
+  major_holders:
+    enabled: true
+
+  # Options data
+  options:
+    enabled: false
+    # Fetch options chain
+    fetch_chain: false
+
+  # Earnings calendar
+  earnings:
+    enabled: true
+    # Include earnings history
+    history: true
+    # Include earnings estimates
+    estimates: true
+
+# Watchlist Configuration
+# -----------------------
+watchlist:
+  # Default tickers to monitor
+  default_tickers:
+    - "CHGG"      # Chegg
+    - "COUR"      # Coursera
+    - "DUOL"      # Duolingo
+    - "TWOU"      # 2U Inc
+    - "ARCE"      # Arco Platform
+    - "LAUR"      # Laureate Education
+    - "INST"      # Instructure
+    - "POWL"      # Powell Industries
+    - "^GSPC"     # S&P 500 (market benchmark)
+    - "^IXIC"     # NASDAQ Composite
+
+  # Market indices to track
+  indices:
+    - "^GSPC"     # S&P 500
+    - "^DJI"      # Dow Jones
+    - "^IXIC"     # NASDAQ
+    - "^VIX"      # Volatility Index
+
+  # Sector ETFs for context
+  sector_etfs:
+    - "XLK"       # Technology Select Sector
+    - "XLY"       # Consumer Discretionary
+
+# Data Storage
+# ------------
+storage:
+  # Store raw API responses
+  store_raw: true
+
+  # Store processed/normalized data
+  store_processed: true
+
+  # Deduplicate data by timestamp
+  deduplicate: true
+
+  # Maximum data age to retain (days)
+  max_data_age_days: 730  # 2 years
+
+  # Compression for historical data
+  compress_historical: true
+
+  # Database table naming
+  table_prefix: "yfinance_"
+
+# Caching
+# -------
+cache:
+  # Enable response caching
+  enabled: true
+
+  # Cache TTL by data type (seconds)
+  ttl:
+    quotes: 300          # 5 minutes
+    historical: 3600     # 1 hour
+    info: 86400          # 24 hours
+    financials: 86400    # 24 hours
+    recommendations: 3600 # 1 hour
+
+  # Cache backend
+  backend: "redis"
+
+  # Cache key prefix
+  key_prefix: "yahoo_finance:"
+
+# Data Quality
+# ------------
+quality:
+  # Validate data completeness
+  validate_completeness: true
+
+  # Required fields for quotes
+  required_quote_fields:
+    - "regularMarketPrice"
+    - "regularMarketVolume"
+
+  # Detect and handle stale data
+  stale_data_threshold_minutes: 30
+
+  # Validate price ranges (% change threshold)
+  price_change_alert_threshold: 0.20  # 20% change
+
+  # Handle missing data
+  fill_missing: true
+  fill_method: "forward"  # forward, backward, interpolate
+
+# Monitoring
+# ----------
+monitoring:
+  # Track API performance
+  track_performance: true
+
+  # Log all requests
+  log_requests: true
+
+  # Alert on failures
+  alert_on_failure: true
+
+  # Metrics to collect
+  metrics:
+    - "request_count"
+    - "failure_count"
+    - "response_time"
+    - "data_completeness"
+    - "cache_hit_rate"
+
+  # Performance thresholds
+  thresholds:
+    max_response_time_seconds: 10
+    min_success_rate: 0.95
+    min_data_completeness: 0.90
+
+# Scheduling
+# ----------
+schedule:
+  # Enable scheduled data fetches
+  enabled: true
+
+  # Intraday updates (market hours)
+  intraday:
+    enabled: true
+    # Update frequency during market hours
+    cron: "*/15 9-16 * * 1-5"  # Every 15 min, 9 AM - 4 PM, weekdays
+
+  # End-of-day updates
+  end_of_day:
+    enabled: true
+    # Daily update after market close (5 PM EST)
+    cron: "0 17 * * 1-5"
+
+  # Weekly full refresh
+  weekly_refresh:
+    enabled: true
+    # Full data refresh on weekends
+    cron: "0 2 * * 0"  # Sunday 2 AM
+
+  # Monthly financials update
+  monthly_financials:
+    enabled: true
+    cron: "0 3 1 * *"  # First day of month, 3 AM
+
+# Error Handling
+# --------------
+error_handling:
+  # Continue on individual ticker errors
+  continue_on_error: true
+
+  # Maximum consecutive errors before stopping
+  max_consecutive_errors: 5
+
+  # Retry failed tickers
+  retry_failed: true
+
+  # Maximum retries per ticker
+  max_retries_per_ticker: 3
+
+  # Skip invalid tickers
+  skip_invalid_tickers: true
+
+  # Log failed tickers for manual review
+  log_failed_tickers: true
+
+# Backup Data Sources
+# -------------------
+# Yahoo Finance is unofficial and can change/break
+backup:
+  # Enable backup data sources
+  enabled: true
+
+  # Fallback sources in priority order
+  fallback_sources:
+    - "alpha_vantage"
+    - "sec_edgar"
+
+  # Switch to backup if Yahoo fails N times
+  failure_threshold: 3
+
+# Data Validation
+# ---------------
+validation:
+  # Cross-validate with other sources
+  cross_validate: true
+
+  # Maximum allowed deviation between sources (%)
+  max_deviation_percent: 5.0
+
+  # Validate against known constraints
+  constraints:
+    # Price must be positive
+    price_positive: true
+    # Volume must be non-negative
+    volume_non_negative: true
+    # Market cap must be positive
+    market_cap_positive: true
+
+# Notifications
+# -------------
+notifications:
+  # Enable notifications
+  enabled: true
+
+  # Notification channels
+  channels:
+    - "email"
+    - "slack"
+
+  # Events to notify on
+  events:
+    - "api_failure"
+    - "rate_limit_warning"
+    - "data_quality_issue"
+    - "significant_price_movement"
+    - "missing_data"
+
+# Advanced Features
+# -----------------
+advanced:
+  # Enable async requests for better performance
+  async_requests: true
+
+  # Maximum concurrent requests
+  max_concurrent: 10
+
+  # Enable session reuse
+  session_reuse: true
+
+  # Enable automatic ticker symbol validation
+  validate_tickers: true
+
+  # Enable currency conversion
+  currency_conversion: false
+  default_currency: "USD"

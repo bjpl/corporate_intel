@@ -1,0 +1,119 @@
+# Corporate Intel - Production Backup Schedule
+# Install with: crontab -u postgres crontab
+#
+# Format: minute hour day month weekday command
+# ============================================================================
+
+# Set environment variables
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=ops@corporate-intel.local
+
+# Backup root directory
+BACKUP_ROOT=/var/backups/postgres
+MINIO_BACKUP_ROOT=/var/backups/minio
+SCRIPT_DIR=/opt/corporate-intel/scripts/backup
+
+# ============================================================================
+# POSTGRESQL DATABASE BACKUPS
+# ============================================================================
+
+# Daily full backup at 2:00 AM
+0 2 * * * ${SCRIPT_DIR}/postgres-backup.sh daily >> ${BACKUP_ROOT}/logs/cron-backup.log 2>&1
+
+# Weekly backup on Sundays at 3:00 AM (automatically detected by script)
+0 3 * * 0 ${SCRIPT_DIR}/postgres-backup.sh weekly >> ${BACKUP_ROOT}/logs/cron-backup.log 2>&1
+
+# Monthly backup on 1st of month at 4:00 AM (automatically detected by script)
+0 4 1 * * ${SCRIPT_DIR}/postgres-backup.sh monthly >> ${BACKUP_ROOT}/logs/cron-backup.log 2>&1
+
+# ============================================================================
+# MINIO OBJECT STORAGE BACKUPS
+# ============================================================================
+
+# MinIO snapshot backup at 1:00 AM daily
+0 1 * * * ${SCRIPT_DIR}/minio-backup.sh backup >> ${MINIO_BACKUP_ROOT}/logs/cron-backup.log 2>&1
+
+# MinIO replication check at 6:00 AM daily
+0 6 * * * ${SCRIPT_DIR}/minio-backup.sh verify >> ${MINIO_BACKUP_ROOT}/logs/cron-verify.log 2>&1
+
+# ============================================================================
+# BACKUP VERIFICATION
+# ============================================================================
+
+# Verify latest backup every 6 hours
+0 */6 * * * ${SCRIPT_DIR}/verify-backups.sh --latest >> ${BACKUP_ROOT}/logs/cron-verify.log 2>&1
+
+# Full backup verification on Wednesdays at 5:00 AM
+0 5 * * 3 ${SCRIPT_DIR}/verify-backups.sh --all >> ${BACKUP_ROOT}/logs/cron-verify.log 2>&1
+
+# ============================================================================
+# BACKUP MONITORING
+# ============================================================================
+
+# Monitor backup health every hour
+0 * * * * ${SCRIPT_DIR}/monitor-backups.sh >> ${BACKUP_ROOT}/logs/cron-monitor.log 2>&1
+
+# Send daily backup report at 9:00 AM
+0 9 * * * cat ${BACKUP_ROOT}/backup-report-$(date +\%Y\%m\%d).txt | mail -s "Daily Backup Report" ops@corporate-intel.local
+
+# ============================================================================
+# CLEANUP AND MAINTENANCE
+# ============================================================================
+
+# Cleanup old logs at midnight
+0 0 * * * find ${BACKUP_ROOT}/logs -name "*.log" -type f -mtime +30 -delete
+0 0 * * * find ${MINIO_BACKUP_ROOT}/logs -name "*.log" -type f -mtime +30 -delete
+
+# Cleanup old metrics at midnight
+0 0 * * * find ${BACKUP_ROOT}/metrics -name "*.json" -type f -mtime +30 -delete
+
+# ============================================================================
+# SPECIAL SCHEDULES
+# ============================================================================
+
+# Test restoration on last Sunday of each month at 6:00 AM
+# This runs a test restore to verify backup integrity
+0 6 22-28 * 0 ${SCRIPT_DIR}/verify-backups.sh --latest >> ${BACKUP_ROOT}/logs/cron-test-restore.log 2>&1
+
+# Quarterly full system verification (1st of Jan, Apr, Jul, Oct) at 3:00 AM
+0 3 1 1,4,7,10 * ${SCRIPT_DIR}/verify-backups.sh --all >> ${BACKUP_ROOT}/logs/cron-quarterly-verify.log 2>&1
+
+# ============================================================================
+# NOTES
+# ============================================================================
+#
+# Backup Schedule Summary:
+# ------------------------
+# Daily:    2:00 AM - PostgreSQL full backup
+#           1:00 AM - MinIO snapshot backup
+#           Every 6 hours - Backup verification
+#           Every hour - Health monitoring
+#
+# Weekly:   Sunday 3:00 AM - PostgreSQL weekly backup
+#           Wednesday 5:00 AM - Full verification
+#           Last Sunday 6:00 AM - Test restoration
+#
+# Monthly:  1st at 4:00 AM - PostgreSQL monthly backup
+#
+# Quarterly: 1st at 3:00 AM - Full system verification (Jan, Apr, Jul, Oct)
+#
+# Recovery Objectives:
+# -------------------
+# RTO (Recovery Time Objective): < 1 hour
+# RPO (Recovery Point Objective): < 24 hours
+#
+# Retention Policy:
+# ----------------
+# Daily backups:   7 days
+# Weekly backups:  28 days (4 weeks)
+# Monthly backups: 365 days (12 months)
+#
+# Installation:
+# ------------
+# 1. Copy scripts to /opt/corporate-intel/scripts/backup/
+# 2. Make scripts executable: chmod +x /opt/corporate-intel/scripts/backup/*.sh
+# 3. Install crontab: crontab -u postgres /opt/corporate-intel/config/production/backups/crontab
+# 4. Verify installation: crontab -u postgres -l
+# 5. Check logs: tail -f /var/backups/postgres/logs/cron-*.log
+#

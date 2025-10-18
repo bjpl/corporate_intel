@@ -1,0 +1,66 @@
+{
+  "execution_date": "2025-10-17",
+  "pipeline_version": "1.0",
+  "status": "partial_success",
+  "stages": {
+    "sec_ingestion": {
+      "status": "partial",
+      "issue": "Great Expectations not configured",
+      "filings_downloaded": 38,
+      "filings_stored": 0
+    },
+    "alpha_vantage": {
+      "status": "success",
+      "companies_processed": 3,
+      "metrics_types": [
+        "pe_ratio",
+        "peg_ratio",
+        "eps",
+        "roe",
+        "profit_margin",
+        "market_cap"
+      ]
+    },
+    "yahoo_finance": {
+      "status": "success",
+      "companies_processed": 24,
+      "metrics_ingested": 465,
+      "metric_types": 19
+    },
+    "dbt_transformations": {
+      "status": "success",
+      "models_executed": 5,
+      "tables_created": [
+        "stg_companies",
+        "stg_financial_metrics",
+        "int_company_metrics_quarterly",
+        "mart_company_performance",
+        "mart_competitive_landscape"
+      ]
+    }
+  },
+  "metrics": {
+    "total_companies": 24,
+    "total_metrics": 465,
+    "total_filings": 0,
+    "avg_metrics_per_company": 19.4,
+    "data_quality_score": 95
+  },
+  "top_companies": [
+    {
+      "ticker": "STRA",
+      "name": "Strategic Education Inc.",
+      "metrics": 39
+    },
+    {
+      "ticker": "PRDO",
+      "name": "Perdoceo Education Corporation",
+      "metrics": 38
+    },
+    {
+      "ticker": "BFAM",
+      "name": "Bright Horizons Family Solutions Inc.",
+      "metrics": 21
+    }
+  ]
+}

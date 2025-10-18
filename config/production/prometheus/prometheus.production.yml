@@ -1,0 +1,178 @@
+# Prometheus Production Configuration
+# Corporate Intel API Monitoring
+
+global:
+  scrape_interval: 30s
+  scrape_timeout: 10s
+  evaluation_interval: 30s
+  external_labels:
+    environment: 'production'
+    cluster: 'corporate-intel-prod'
+    region: 'us-east-1'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - 'alertmanager:9093'
+      timeout: 10s
+      api_version: v2
+
+# Load alerting rules
+rule_files:
+  - '/etc/prometheus/alerts/*.yml'
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'go_.*'
+        action: drop
+
+  # Corporate Intel API
+  - job_name: 'corporate-intel-api'
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+          - 'api-1:8000'
+          - 'api-2:8000'
+          - 'api-3:8000'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+      - source_labels: [__address__]
+        regex: '([^:]+):.*'
+        target_label: host
+        replacement: '$1'
+    metrics_path: '/metrics'
+    scheme: http
+    metric_relabel_configs:
+      # Keep only relevant metrics
+      - source_labels: [__name__]
+        regex: 'http_request_duration_seconds.*|http_requests_total|http_request_size_bytes.*|http_response_size_bytes.*|api_.*|db_.*|cache_.*|business_metrics_.*'
+        action: keep
+
+  # PostgreSQL Database
+  - job_name: 'postgresql'
+    scrape_interval: 30s
+    static_configs:
+      - targets:
+          - 'postgres-exporter-primary:9187'
+          - 'postgres-exporter-replica:9187'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+      - source_labels: [__address__]
+        regex: '.*-primary.*'
+        target_label: role
+        replacement: 'primary'
+      - source_labels: [__address__]
+        regex: '.*-replica.*'
+        target_label: role
+        replacement: 'replica'
+
+  # Redis Cache
+  - job_name: 'redis'
+    scrape_interval: 20s
+    static_configs:
+      - targets:
+          - 'redis-exporter-master:9121'
+          - 'redis-exporter-replica-1:9121'
+          - 'redis-exporter-replica-2:9121'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+      - source_labels: [__address__]
+        regex: '.*-master.*'
+        target_label: role
+        replacement: 'master'
+      - source_labels: [__address__]
+        regex: '.*-replica.*'
+        target_label: role
+        replacement: 'replica'
+
+  # Node Exporter (System Metrics)
+  - job_name: 'node-exporter'
+    scrape_interval: 30s
+    static_configs:
+      - targets:
+          - 'api-node-1:9100'
+          - 'api-node-2:9100'
+          - 'api-node-3:9100'
+          - 'db-node-primary:9100'
+          - 'db-node-replica:9100'
+          - 'redis-node-1:9100'
+          - 'redis-node-2:9100'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+      - source_labels: [__address__]
+        regex: 'api-.*'
+        target_label: service
+        replacement: 'api'
+      - source_labels: [__address__]
+        regex: 'db-.*'
+        target_label: service
+        replacement: 'database'
+      - source_labels: [__address__]
+        regex: 'redis-.*'
+        target_label: service
+        replacement: 'cache'
+
+  # Cadvisor (Container Metrics)
+  - job_name: 'cadvisor'
+    scrape_interval: 30s
+    static_configs:
+      - targets:
+          - 'cadvisor-1:8080'
+          - 'cadvisor-2:8080'
+          - 'cadvisor-3:8080'
+    metric_relabel_configs:
+      # Drop verbose container metrics
+      - source_labels: [__name__]
+        regex: 'container_(network_tcp_usage_total|network_udp_usage_total|tasks_state|cpu_load_average_10s)'
+        action: drop
+
+  # Nginx/Load Balancer
+  - job_name: 'nginx'
+    scrape_interval: 20s
+    static_configs:
+      - targets:
+          - 'nginx-exporter-1:9113'
+          - 'nginx-exporter-2:9113'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+# Storage configuration
+storage:
+  tsdb:
+    path: /prometheus/data
+    retention.time: 60d
+    retention.size: 100GB
+
+# Remote write for long-term storage (optional - uncomment if using)
+# remote_write:
+#   - url: 'https://prometheus-remote-storage.example.com/api/v1/write'
+#     queue_config:
+#       capacity: 10000
+#       max_shards: 10
+#       min_shards: 1
+#       max_samples_per_send: 5000
+#       batch_send_deadline: 5s
+#       min_backoff: 30ms
+#       max_backoff: 100ms
+#     write_relabel_configs:
+#       - source_labels: [__name__]
+#         regex: 'up|job'
+#         action: keep
+
+# Optional: Remote read for historical queries
+# remote_read:
+#   - url: 'https://prometheus-remote-storage.example.com/api/v1/read'
+#     read_recent: true

@@ -1,0 +1,191 @@
+# Alertmanager Configuration
+# Corporate Intel Production Monitoring
+
+global:
+  resolve_timeout: 5m
+  smtp_from: 'alerts@corporate-intel.com'
+  smtp_smarthost: 'smtp.example.com:587'
+  smtp_auth_username: 'alerts@corporate-intel.com'
+  smtp_auth_password: '${SMTP_PASSWORD}'
+  smtp_require_tls: true
+
+# Templates for alert notifications
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# Routing rules
+route:
+  receiver: 'default'
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+
+  routes:
+    # Critical alerts - page immediately
+    - match:
+        severity: critical
+      receiver: 'pagerduty'
+      group_wait: 0s
+      group_interval: 5m
+      repeat_interval: 4h
+      continue: true
+
+    # Critical alerts also go to Slack
+    - match:
+        severity: critical
+      receiver: 'slack-critical'
+      group_wait: 0s
+      continue: true
+
+    # Warning alerts go to Slack only
+    - match:
+        severity: warning
+      receiver: 'slack-warnings'
+      group_interval: 15m
+      repeat_interval: 24h
+
+    # API-specific alerts
+    - match:
+        component: api
+      receiver: 'slack-api-team'
+      group_interval: 10m
+
+    # Database alerts
+    - match:
+        component: database
+      receiver: 'slack-database-team'
+      group_interval: 10m
+
+    # System alerts
+    - match:
+        component: system
+      receiver: 'slack-devops-team'
+      group_interval: 15m
+
+# Inhibition rules (suppress certain alerts)
+inhibit_rules:
+  # Don't alert on service-specific issues if the whole service is down
+  - source_match:
+      alertname: 'APIServiceDown'
+    target_match:
+      component: 'api'
+    equal: ['instance']
+
+  - source_match:
+      alertname: 'DatabaseDown'
+    target_match:
+      component: 'database'
+    equal: ['instance']
+
+  - source_match:
+      alertname: 'RedisDown'
+    target_match:
+      component: 'cache'
+    equal: ['instance']
+
+  # Don't alert on high memory if node is down
+  - source_match:
+      alertname: 'NodeExporterDown'
+    target_match:
+      job: 'node-exporter'
+    equal: ['instance']
+
+# Receivers configuration
+receivers:
+  # Default receiver (catch-all)
+  - name: 'default'
+    email_configs:
+      - to: 'devops@corporate-intel.com'
+        headers:
+          Subject: '[Prometheus Alert] {{ .GroupLabels.alertname }}'
+
+  # PagerDuty for critical alerts
+  - name: 'pagerduty'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_SERVICE_KEY}'
+        description: '{{ .GroupLabels.alertname }} - {{ .CommonAnnotations.summary }}'
+        details:
+          firing: '{{ template "pagerduty.default.instances" .Alerts.Firing }}'
+        client: 'Prometheus'
+        client_url: '{{ template "pagerduty.default.clientURL" . }}'
+
+  # Slack - Critical Channel
+  - name: 'slack-critical'
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_CRITICAL}'
+        channel: '#alerts-critical'
+        username: 'Prometheus Alert'
+        icon_emoji: ':rotating_light:'
+        title: ':fire: CRITICAL: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+        color: '{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'
+        fields:
+          - title: 'Environment'
+            value: 'Production'
+            short: true
+          - title: 'Severity'
+            value: '{{ .CommonLabels.severity }}'
+            short: true
+          - title: 'Component'
+            value: '{{ .CommonLabels.component }}'
+            short: true
+          - title: 'Instance'
+            value: '{{ .CommonLabels.instance }}'
+            short: true
+
+  # Slack - Warnings Channel
+  - name: 'slack-warnings'
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_WARNINGS}'
+        channel: '#alerts-warnings'
+        username: 'Prometheus Alert'
+        icon_emoji: ':warning:'
+        title: 'WARNING: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+        color: 'warning'
+
+  # Slack - API Team
+  - name: 'slack-api-team'
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_API}'
+        channel: '#team-api'
+        username: 'Prometheus Alert'
+        icon_emoji: ':computer:'
+        title: 'API Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  # Slack - Database Team
+  - name: 'slack-database-team'
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_DATABASE}'
+        channel: '#team-database'
+        username: 'Prometheus Alert'
+        icon_emoji: ':floppy_disk:'
+        title: 'Database Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  # Slack - DevOps Team
+  - name: 'slack-devops-team'
+    slack_configs:
+      - api_url: '${SLACK_WEBHOOK_DEVOPS}'
+        channel: '#team-devops'
+        username: 'Prometheus Alert'
+        icon_emoji: ':gear:'
+        title: 'System Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+# Time intervals for muting alerts (optional)
+time_intervals:
+  - name: 'business_hours'
+    time_intervals:
+      - weekdays: ['monday:friday']
+        times:
+          - start_time: '09:00'
+            end_time: '17:00'
+        location: 'America/New_York'
