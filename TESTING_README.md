@@ -202,31 +202,36 @@ Access the different UIs:
 
 ---
 
-## 📊 Test Data
+## 📊 Test Data - ALL REAL!
 
-### Default Test Users
+### Real EdTech Companies
 
-After running setup, these test accounts are available:
+The bootstrap script pulls **REAL LIVE DATA** from public APIs for:
 
-```
-Email: test@example.com
-Password: TestPassword123!
-Role: User
+- **Coursera (COUR)** - Higher education platform
+- **Duolingo (DUOL)** - Language learning app
+- **Chegg (CHGG)** - Student learning platform
+- **2U Inc (TWOU)** - Online degree programs
+- **Strategic Education (STRA)** - Education services
 
-Email: admin@example.com
-Password: AdminPassword123!
-Role: Admin
-```
+### What Data You Get
 
-### Sample Companies
+**Real Financial Metrics:**
+- Current stock prices (Yahoo Finance)
+- Market capitalization
+- Revenue and growth rates
+- Profit margins
+- Cash flow
+- P/E ratios
+- And 40+ more real metrics!
 
-Seed data includes EdTech companies like:
-- Coursera (COUR)
-- Duolingo (DUOL)
-- Chegg (CHGG)
-- 2U Inc (TWOU)
+**Real Company Data:**
+- SEC CIK numbers
+- Employee counts
+- Websites
+- Industry classifications
 
-**See `TEST_DATA.md` for complete data documentation**
+**See `TEST_DATA.md` for complete documentation**
 
 ---
 

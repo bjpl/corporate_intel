@@ -1,79 +1,86 @@
 # Test Data Documentation
 
-This document describes the test data available for user testing the Corporate Intelligence Platform.
+This document describes how to load **REAL** test data for user testing the Corporate Intelligence Platform.
 
 ---
 
 ## Overview
 
-The platform comes with seed data and sample data loaders to help you test all features with realistic EdTech company information.
+Instead of fake CSV seed files, the platform uses your actual data connectors to pull **REAL, LIVE DATA** from:
+- **SEC EDGAR API** - Real company filings and information
+- **Yahoo Finance** - Real stock prices and financial metrics
+- **Alpha Vantage** - Real fundamental data (if API key configured)
+
+This gives you authentic data for testing with actual EdTech companies like Coursera, Duolingo, and Chegg!
 
 ---
 
-## 🌱 Seed Data (dbt Seeds)
+## 🚀 Bootstrap Real Data
 
-### Loading Seed Data
+### Quick Start: Load Real EdTech Company Data
 
 ```bash
-cd dbt
-dbt seed
-cd ..
+# Run the bootstrap script to pull REAL data from APIs
+python scripts/bootstrap_test_data.py
 ```
 
-### Available Seed Files
+This will:
+1. Fetch real data for 5 public EdTech companies
+2. Pull current stock prices and financials from Yahoo Finance
+3. Get company information from SEC EDGAR
+4. Optionally enrich with Alpha Vantage data (if API key configured)
+5. Store everything in your database
 
-#### 1. Companies (`dbt/seeds/companies.csv`)
+### Real Companies Loaded
 
-Sample EdTech companies for testing:
+The bootstrap script fetches live data for these **REAL** companies:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| id | Company ID | 1, 2, 3 |
-| name | Company name | "Coursera", "Duolingo" |
-| ticker | Stock ticker | "COUR", "DUOL" |
-| sector | Industry sector | "EdTech", "Online Learning" |
-| description | Company description | "Leading online learning platform" |
-| founded_year | Year founded | 2012 |
-| headquarters | Location | "Mountain View, CA" |
-| website | Company website | "https://coursera.com" |
+| Ticker | Company Name | Category | CIK |
+|--------|--------------|----------|-----|
+| **COUR** | Coursera, Inc. | Higher Education | 0001651562 |
+| **DUOL** | Duolingo, Inc. | Direct to Consumer | 0001788882 |
+| **CHGG** | Chegg, Inc. | Higher Education | 0001364954 |
+| **TWOU** | 2U, Inc. | Higher Education | 0001459417 |
+| **STRA** | Strategic Education, Inc. | Higher Education | 0001013934 |
 
-**Sample Companies:**
-- Coursera (COUR)
-- Duolingo (DUOL)
-- Chegg (CHGG)
-- 2U Inc (TWOU)
-- Udemy (Private)
-- Khan Academy (Non-profit)
+### Real Data Fetched
 
-#### 2. Financial Metrics (`dbt/seeds/metrics.csv`)
+For each company, the bootstrap pulls:
 
-Historical financial data for companies:
+**From Yahoo Finance:**
+- Current stock price
+- Market capitalization
+- Revenue (TTM)
+- Profit margins (gross, operating, net)
+- Revenue growth rate
+- Free cash flow
+- P/E ratio
+- 52-week high/low
+- Employee count
+- Website
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| company_id | Foreign key to companies | 1 |
-| metric_date | Date of metric | 2024-12-31 |
-| revenue | Quarterly revenue | 150000000 |
-| profit | Net profit | 25000000 |
-| growth_rate | YoY growth % | 15.5 |
-| market_cap | Market capitalization | 5000000000 |
+**From SEC EDGAR:**
+- Company name
+- CIK number
+- SIC code and industry
+- Sector classification
 
-**Time Periods Covered:**
-- Q1 2023 - Q4 2024
-- Quarterly intervals
-- Multiple years for trend analysis
+**From Alpha Vantage (if configured):**
+- Quarterly earnings growth
+- Quarterly revenue growth
+- Return on equity
+- EV/EBITDA
+- Beta
+- Analyst target price
 
-#### 3. User Accounts (`dbt/seeds/users.csv`)
+### What You Get
 
-Test user accounts:
-
-| Username | Email | Role | Password (hashed) |
-|----------|-------|------|-------------------|
-| test_user | test@example.com | user | [hashed] |
-| test_admin | admin@example.com | admin | [hashed] |
-| test_analyst | analyst@example.com | analyst | [hashed] |
-
-**Default Test Password**: `TestPassword123!`
+After bootstrap completes, you'll have:
+- ✅ **5 real EdTech companies** in your database
+- ✅ **40+ financial metrics** with current real values
+- ✅ **Real market data** updated from Yahoo Finance
+- ✅ **SEC filing information** ready for ingestion
+- ✅ **Production-quality data** for realistic testing
 
 ---
 
