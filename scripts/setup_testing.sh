@@ -126,56 +126,19 @@ echo "Running database migrations..."
 alembic upgrade head
 print_success "Migrations completed"
 
-# dbt setup
-print_step "Step 6: Data Transformation Setup (dbt)"
+# Bootstrap real data
+print_step "Step 6: Bootstrap Real Test Data"
 
-cd dbt
+echo "Bootstrapping REAL EdTech company data from APIs..."
+echo "(This will fetch live data from Yahoo Finance, SEC EDGAR, etc.)"
+echo ""
 
-echo "Installing dbt dependencies..."
-dbt deps --quiet
-print_success "dbt dependencies installed"
-
-echo "Loading seed data..."
-dbt seed --quiet
-print_success "Seed data loaded"
-
-echo "Running dbt transformations..."
-dbt run --quiet
-print_success "dbt transformations completed"
-
-cd ..
-
-# Verify data
-print_step "Step 7: Verifying Test Data"
-
-echo "Checking database contents..."
-
-# Create a temporary Python script to check data
-cat > /tmp/check_data.py << 'EOF'
-from src.db.session import SessionLocal
-from src.db.models import Company, Metric
-
-db = SessionLocal()
-company_count = db.query(Company).count()
-metric_count = db.query(Metric).count()
-db.close()
-
-print(f"Companies: {company_count}")
-print(f"Metrics: {metric_count}")
-
-if company_count > 0 and metric_count > 0:
-    exit(0)
-else:
-    exit(1)
-EOF
-
-if python /tmp/check_data.py; then
-    print_success "Test data loaded successfully"
+if python scripts/bootstrap_test_data.py; then
+    print_success "Real data bootstrapped successfully!"
 else
-    print_warning "Test data may not have loaded correctly"
+    print_warning "Bootstrap had issues, but you can run it manually later:"
+    echo "  python scripts/bootstrap_test_data.py"
 fi
-
-rm /tmp/check_data.py
 
 # Summary
 print_step "Setup Complete!"
