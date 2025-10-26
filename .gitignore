@@ -28,6 +28,7 @@ env/
 ENV/
 env.bak/
 venv.bak/
+.test_venv/
 
 # IDE
 .vscode/
@@ -126,3 +127,8 @@ coordination/orchestration/*
 claude-flow
 # Removed Windows wrapper files per user request
 hive-mind-prompt-*.txt
+
+# DBT
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
