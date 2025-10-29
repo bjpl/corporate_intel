@@ -37,14 +37,20 @@ async def lifespan(app: FastAPI):
     setup_observability()
 
     # Initialize database connection pool
-    await init_database()
+    try:
+        await init_database()
+    except Exception as e:
+        logger.warning(f"Database initialization failed: {e}. Continuing without full database setup.")
 
     # Verify migrations
-    migration_status = await verify_migrations()
-    if not migration_status.get("migrations_applied"):
-        logger.warning(
-            f"Database migrations not applied: {migration_status.get('error', 'Unknown error')}"
-        )
+    try:
+        migration_status = await verify_migrations()
+        if not migration_status.get("migrations_applied"):
+            logger.warning(
+                f"Database migrations not applied: {migration_status.get('error', 'Unknown error')}"
+            )
+    except Exception as e:
+        logger.warning(f"Migration verification failed: {e}. Continuing anyway.")
 
     # Initialize Redis cache
     try:
