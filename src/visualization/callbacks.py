@@ -131,8 +131,9 @@ def register_callbacks(app, engine: Optional[Engine]):
 
             # Build freshness alert
             if freshness.get("last_updated"):
+                from datetime import timezone
                 last_updated = datetime.fromisoformat(freshness["last_updated"])
-                time_ago = datetime.utcnow() - last_updated
+                time_ago = datetime.now(timezone.utc) - last_updated
                 if time_ago.total_seconds() < 3600:
                     minutes = int(time_ago.total_seconds() / 60)
                     freshness_text = f"Data updated {minutes} minutes ago"

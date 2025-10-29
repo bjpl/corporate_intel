@@ -4,9 +4,9 @@ corporate_intel:
     dev:
       type: postgres
       host: localhost
-      port: 5434
-      user: intel_user
-      password: lsZXGgU92KhK5VqR
+      port: 5436
+      user: postgres
+      password: postgres
       dbname: corporate_intel
       schema: public
       threads: 4
