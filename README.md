@@ -5,10 +5,13 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue.svg)](https://www.postgresql.org/)
 [![Ray](https://img.shields.io/badge/Ray-2.8+-red.svg)](https://www.ray.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/bjpl/corporate_intel)
 
 ## 🎯 Overview
 
 Production-hardened business intelligence platform that aggregates and analyzes corporate financial data through automated API integrations, specifically targeting the EdTech ecosystem. Built with enterprise-grade architecture supporting real-time data ingestion, distributed processing, and advanced analytics.
+
+**Status**: Active Development | **Version**: 0.1.0 | **Python**: 3.11+ | **Database**: PostgreSQL 15+ with TimescaleDB
 
 ## 🏗️ Architecture
 
