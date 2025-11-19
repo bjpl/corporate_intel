@@ -10,6 +10,7 @@ from uuid import UUID
 from loguru import logger
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from src.db.models import Company
 from src.repositories.base_repository import (
@@ -385,7 +386,11 @@ class CompanyRepository(BaseRepository[Company]):
             companies = await repo.get_companies_with_metrics()
             ```
         """
-        stmt = select(Company).where(
+        # Eager load relationships to prevent N+1 queries
+        stmt = select(Company).options(
+            selectinload(Company.metrics),
+            selectinload(Company.filings)
+        ).where(
             Company.metrics.any()
         ).order_by(Company.name)
 

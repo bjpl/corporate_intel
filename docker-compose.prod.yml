@@ -47,6 +47,23 @@ services:
       POSTGRES_DEFAULT_STATISTICS_TARGET: 100
       POSTGRES_RANDOM_PAGE_COST: 1.1
       POSTGRES_EFFECTIVE_IO_CONCURRENCY: 200
+    command: >
+      postgres
+      -c shared_preload_libraries='pg_stat_statements'
+      -c pg_stat_statements.track=all
+      -c pg_stat_statements.max=10000
+      -c log_min_duration_statement=1000
+      -c log_statement=none
+      -c log_line_prefix='%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '
+      -c max_connections=200
+      -c shared_buffers=2GB
+      -c effective_cache_size=6GB
+      -c maintenance_work_mem=512MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
     ports:
       - "127.0.0.1:5432:5432"  # Only expose on localhost
     volumes:

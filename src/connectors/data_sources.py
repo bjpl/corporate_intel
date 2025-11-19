@@ -37,6 +37,10 @@ from sec_edgar_api import EdgarClient
 
 from src.core.cache import cache_key_wrapper, get_cache
 from src.core.config import get_settings
+from src.core.circuit_breaker import (
+    alpha_vantage_breaker,
+    alpha_vantage_fallback,
+)
 
 
 def safe_float(value: Any, default: float = 0.0) -> float:
@@ -232,14 +236,20 @@ class AlphaVantageConnector:
     
     @cache_key_wrapper(prefix="alpha_vantage", expire=3600)  # 1 hour cache
     async def get_company_overview(self, ticker: str) -> Dict[str, Any]:
-        """Get company overview with fundamental data."""
+        """Get company overview with fundamental data.
+
+        Protected by circuit breaker to prevent cascading failures when
+        Alpha Vantage API is unavailable or rate-limited.
+        """
         if not self.fd:
             return {}
 
         await self.rate_limiter.acquire()
 
         try:
-            data, _ = self.fd.get_company_overview(ticker)
+            # Wrap API call with circuit breaker
+            # Circuit opens after 5 consecutive failures
+            data, _ = alpha_vantage_breaker.call(self.fd.get_company_overview, ticker)
 
             # Extract EdTech-relevant metrics
             return {
@@ -271,7 +281,8 @@ class AlphaVantageConnector:
 
         except Exception as e:
             logger.error(f"Error fetching Alpha Vantage data for {ticker}: {e}")
-            return {}
+            # Fallback to empty data - caller handles gracefully
+            return await alpha_vantage_fallback(ticker)
 
 
 class NewsAPIConnector:

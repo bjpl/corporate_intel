@@ -11,6 +11,14 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-intel_password}
       POSTGRES_DB: ${POSTGRES_DB:-corporate_intel}
       POSTGRES_INITDB_ARGS: "-A md5"
+    command: >
+      postgres
+      -c shared_preload_libraries='pg_stat_statements'
+      -c pg_stat_statements.track=all
+      -c pg_stat_statements.max=10000
+      -c log_min_duration_statement=1000
+      -c log_statement=none
+      -c log_line_prefix='%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
