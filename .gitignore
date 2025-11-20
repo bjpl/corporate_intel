@@ -97,6 +97,14 @@ credentials.json
 *_ed25519
 .ssh/
 
+# Working documents / session logs (not committed)
+daily_reports/
+daily_dev_startup_reports/
+docs/plans/
+
+# Claude Flow metrics (auto-generated)
+.claude-flow/metrics/
+
 # Docker
 .dockerignore
 
