@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from loguru import logger
 from pydantic import BaseModel, Field, ConfigDict
 from sqlalchemy import text
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from src.core.cache import cache_key_wrapper, get_cache
 from src.core.dependencies import get_current_user
@@ -81,14 +81,17 @@ async def list_companies(
     """List all companies with optional filtering."""
     logger.info(f"Listing companies: category={category}, sector={sector}, limit={limit}, offset={offset}")
     
-    # Build query
-    query = db.query(Company)
-    
+    # Build query with eager loading to prevent N+1 queries
+    query = db.query(Company).options(
+        selectinload(Company.filings),
+        selectinload(Company.metrics)
+    )
+
     if category:
         query = query.filter(Company.category == category)
     if sector:
         query = query.filter(Company.sector == sector)
-    
+
     # Execute with pagination
     companies = query.offset(offset).limit(limit).all()
     
@@ -106,8 +109,12 @@ async def get_watchlist(
     
     settings = get_settings()
     tickers = settings.EDTECH_COMPANIES_WATCHLIST
-    
-    companies = db.query(Company).filter(Company.ticker.in_(tickers)).all()
+
+    # Eager load relationships to prevent N+1 queries
+    companies = db.query(Company).options(
+        selectinload(Company.filings),
+        selectinload(Company.metrics)
+    ).filter(Company.ticker.in_(tickers)).all()
     
     return companies
 
@@ -119,7 +126,11 @@ async def get_company(
     db: Session = Depends(get_db),
 ) -> CompanyResponse:
     """Get a specific company by ID."""
-    company = db.query(Company).filter(Company.id == company_id).first()
+    # Eager load relationships to prevent N+1 queries
+    company = db.query(Company).options(
+        selectinload(Company.filings),
+        selectinload(Company.metrics)
+    ).filter(Company.id == company_id).first()
     
     if not company:
         raise HTTPException(

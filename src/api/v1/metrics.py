@@ -7,7 +7,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from loguru import logger
 from pydantic import BaseModel, Field, ConfigDict
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from src.core.cache import cache_key_wrapper
 from src.core.dependencies import get_current_user
@@ -44,7 +44,10 @@ async def list_metrics(
     db: Session = Depends(get_db),
 ) -> List[MetricResponse]:
     """List financial metrics with optional filtering."""
-    query = db.query(FinancialMetric)
+    # Eager load company relationship to prevent N+1 queries
+    query = db.query(FinancialMetric).options(
+        selectinload(FinancialMetric.company)
+    )
 
     if company_id:
         query = query.filter(FinancialMetric.company_id == company_id)

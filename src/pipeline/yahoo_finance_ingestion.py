@@ -36,6 +36,10 @@ from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.config import get_settings
+from src.core.circuit_breaker import (
+    yahoo_finance_breaker,
+    yahoo_finance_fallback,
+)
 from src.db.models import Company, FinancialMetric
 from src.db.session import get_session_factory
 from src.pipeline.common import (
@@ -329,6 +333,9 @@ class YahooFinanceIngestionPipeline:
     async def _fetch_yahoo_finance_data(self, ticker: str, max_retries: int = 3) -> Optional[Dict[str, Any]]:
         """Fetch comprehensive data from Yahoo Finance with retry logic.
 
+        Protected by circuit breaker to prevent cascading failures when
+        Yahoo Finance API is unavailable.
+
         Args:
             ticker: Stock ticker symbol
             max_retries: Maximum number of retry attempts
@@ -340,24 +347,30 @@ class YahooFinanceIngestionPipeline:
             try:
                 # Run synchronous yfinance call in executor to avoid blocking
                 loop = asyncio.get_event_loop()
-                stock = await loop.run_in_executor(None, yf.Ticker, ticker)
-                info = await loop.run_in_executor(None, lambda: stock.info)
 
-                if not info or "regularMarketPrice" not in info:
+                # Wrap API call with circuit breaker
+                stock = yahoo_finance_breaker.call(yf.Ticker, ticker)
+                stock_obj = await loop.run_in_executor(None, lambda: stock) if asyncio.iscoroutine(stock) else stock
+
+                info = yahoo_finance_breaker.call(lambda: stock_obj.info)
+                info_data = await loop.run_in_executor(None, lambda: info) if asyncio.iscoroutine(info) else info
+
+                if not info_data or "regularMarketPrice" not in info_data:
                     logger.warning(f"Incomplete data for {ticker}, attempt {attempt + 1}/{max_retries}")
                     if attempt < max_retries - 1:
                         await asyncio.sleep(2 ** attempt)  # Exponential backoff
                         continue
                     return None
 
-                return info
+                return info_data
 
             except Exception as e:
                 logger.error(f"Error fetching data for {ticker} (attempt {attempt + 1}/{max_retries}): {e}")
                 if attempt < max_retries - 1:
                     await asyncio.sleep(2 ** attempt)
                 else:
-                    return None
+                    # Use fallback strategy
+                    return await yahoo_finance_fallback(ticker)
 
         return None
 
@@ -413,6 +426,8 @@ class YahooFinanceIngestionPipeline:
     async def _ingest_quarterly_financials(self, company: Company, ticker: str) -> None:
         """Fetch and ingest quarterly financial data.
 
+        Protected by circuit breaker to prevent cascading failures.
+
         Args:
             company: Company model instance
             ticker: Stock ticker symbol
@@ -420,33 +435,39 @@ class YahooFinanceIngestionPipeline:
         try:
             # Fetch quarterly financials from Yahoo Finance
             loop = asyncio.get_event_loop()
-            stock = await loop.run_in_executor(None, yf.Ticker, ticker)
+
+            # Wrap API calls with circuit breaker
+            stock = yahoo_finance_breaker.call(yf.Ticker, ticker)
+            stock_obj = await loop.run_in_executor(None, lambda: stock) if asyncio.iscoroutine(stock) else stock
 
             # Get quarterly income statement
-            quarterly_income = await loop.run_in_executor(None, lambda: stock.quarterly_income_stmt)
+            quarterly_income = yahoo_finance_breaker.call(lambda: stock_obj.quarterly_income_stmt)
+            quarterly_income_data = await loop.run_in_executor(None, lambda: quarterly_income) if asyncio.iscoroutine(quarterly_income) else quarterly_income
 
             # Get quarterly balance sheet
-            quarterly_balance = await loop.run_in_executor(None, lambda: stock.quarterly_balance_sheet)
+            quarterly_balance = yahoo_finance_breaker.call(lambda: stock_obj.quarterly_balance_sheet)
+            quarterly_balance_data = await loop.run_in_executor(None, lambda: quarterly_balance) if asyncio.iscoroutine(quarterly_balance) else quarterly_balance
 
             # Get additional info
-            info = await loop.run_in_executor(None, lambda: stock.info)
+            info = yahoo_finance_breaker.call(lambda: stock_obj.info)
+            info_data = await loop.run_in_executor(None, lambda: info) if asyncio.iscoroutine(info) else info
 
-            if quarterly_income is None or quarterly_income.empty:
+            if quarterly_income_data is None or quarterly_income_data.empty:
                 logger.warning(f"No quarterly financials available for {ticker}")
                 return
 
             # Process each quarter (up to 20 quarters = 5 years)
-            quarters_to_process = min(20, len(quarterly_income.columns))
+            quarters_to_process = min(20, len(quarterly_income_data.columns))
 
             for i in range(quarters_to_process):
-                quarter_date = quarterly_income.columns[i]
+                quarter_date = quarterly_income_data.columns[i]
 
                 # Extract metrics for this quarter
                 metrics_to_insert = []
 
                 # Revenue (Total Revenue)
-                if "Total Revenue" in quarterly_income.index:
-                    revenue = quarterly_income.loc["Total Revenue", quarter_date]
+                if "Total Revenue" in quarterly_income_data.index:
+                    revenue = quarterly_income_data.loc["Total Revenue", quarter_date]
                     if revenue and not pd.isna(revenue):
                         metrics_to_insert.append({
                             "metric_type": "revenue",
@@ -456,9 +477,9 @@ class YahooFinanceIngestionPipeline:
                         })
 
                 # Gross Profit for margin calculation
-                if "Gross Profit" in quarterly_income.index and "Total Revenue" in quarterly_income.index:
-                    gross_profit = quarterly_income.loc["Gross Profit", quarter_date]
-                    total_revenue = quarterly_income.loc["Total Revenue", quarter_date]
+                if "Gross Profit" in quarterly_income_data.index and "Total Revenue" in quarterly_income_data.index:
+                    gross_profit = quarterly_income_data.loc["Gross Profit", quarter_date]
+                    total_revenue = quarterly_income_data.loc["Total Revenue", quarter_date]
                     if gross_profit and total_revenue and not pd.isna(gross_profit) and not pd.isna(total_revenue):
                         gross_margin = (float(gross_profit) / float(total_revenue)) * 100
                         metrics_to_insert.append({
@@ -469,9 +490,9 @@ class YahooFinanceIngestionPipeline:
                         })
 
                 # Operating Income for operating margin
-                if "Operating Income" in quarterly_income.index and "Total Revenue" in quarterly_income.index:
-                    operating_income = quarterly_income.loc["Operating Income", quarter_date]
-                    total_revenue = quarterly_income.loc["Total Revenue", quarter_date]
+                if "Operating Income" in quarterly_income_data.index and "Total Revenue" in quarterly_income_data.index:
+                    operating_income = quarterly_income_data.loc["Operating Income", quarter_date]
+                    total_revenue = quarterly_income_data.loc["Total Revenue", quarter_date]
                     if operating_income and total_revenue and not pd.isna(operating_income) and not pd.isna(total_revenue):
                         operating_margin = (float(operating_income) / float(total_revenue)) * 100
                         metrics_to_insert.append({
@@ -482,8 +503,8 @@ class YahooFinanceIngestionPipeline:
                         })
 
                 # Earnings growth (from info if available)
-                if "earningsGrowth" in info and info["earningsGrowth"]:
-                    earnings_growth = info["earningsGrowth"] * 100  # Convert to percentage
+                if "earningsGrowth" in info_data and info_data["earningsGrowth"]:
+                    earnings_growth = info_data["earningsGrowth"] * 100  # Convert to percentage
                     metrics_to_insert.append({
                         "metric_type": "earnings_growth",
                         "value": float(earnings_growth),
