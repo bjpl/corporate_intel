@@ -23,6 +23,11 @@ from src.auth.routes import router as auth_router
 from src.core.cache_manager import check_cache_health, close_cache, init_cache
 from src.core.config import get_settings
 from src.core.exceptions import CorporateIntelException
+from src.core.security_middleware import (
+    RateLimitMiddleware,
+    RequestLoggingMiddleware,
+    SecurityHeadersMiddleware,
+)
 from src.db.init import check_database_health, init_database, verify_migrations
 from src.db.session import close_db_connections
 
@@ -121,7 +126,21 @@ def create_application() -> FastAPI:
         lifespan=lifespan,
     )
     
-    # CORS middleware
+    # Security middleware (order matters - these run in reverse order)
+    # 1. Security headers (outermost - applied last)
+    app.add_middleware(SecurityHeadersMiddleware)
+
+    # 2. Rate limiting (if enabled)
+    if getattr(settings, "RATE_LIMIT_ENABLED", True):
+        rate_limit = getattr(settings, "RATE_LIMIT_PER_MINUTE", 60)
+        app.add_middleware(RateLimitMiddleware, requests_per_minute=rate_limit)
+        logger.info(f"Rate limiting enabled: {rate_limit} requests/minute")
+
+    # 3. Request logging (for security monitoring)
+    if settings.ENVIRONMENT != "production" or settings.DEBUG:
+        app.add_middleware(RequestLoggingMiddleware)
+
+    # 4. CORS middleware (innermost - checked first)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.CORS_ORIGINS,

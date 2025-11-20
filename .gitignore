@@ -80,6 +80,22 @@ logs/
 .env.staging
 .env.production
 .env.development
+.env.test
+secrets.json
+credentials.json
+**/config/secrets/
+**/.secrets/
+
+# SSH Keys and Certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*_rsa
+*_dsa
+*_ecdsa
+*_ed25519
+.ssh/
 
 # Docker
 .dockerignore

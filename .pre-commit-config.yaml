@@ -93,6 +93,35 @@ repos:
       - id: pyupgrade
         args: ['--py311-plus']
 
+  # SECRET DETECTION - Prevent credential commits
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: 'package-lock.json|\.env\.example'
+
+  # CUSTOM HOOKS - Additional security checks
+  - repo: local
+    hooks:
+      - id: check-env-files
+        name: Block .env file commits
+        entry: bash -c 'if git diff --cached --name-only | grep -E "^\.env$|^\.env\..*$" | grep -v "\.env\.example"; then echo "ERROR: Attempting to commit .env files! Use .env.example for templates."; exit 1; fi'
+        language: system
+        pass_filenames: false
+
+      - id: check-hardcoded-secrets
+        name: Check for hardcoded secrets
+        entry: bash -c 'git diff --cached -U0 | grep -iE "^[+].*(password|secret|api_key|token)\s*=\s*['\''\"]\w{8,}" | grep -v "REPLACE_WITH\|your-\|example\|placeholder" && echo "ERROR: Potential hardcoded secret detected!" && exit 1 || exit 0'
+        language: system
+        pass_filenames: false
+
+      - id: check-private-keys
+        name: Block private key commits
+        entry: bash -c 'if git diff --cached --name-only | grep -E "\.(pem|key)$|_rsa$"; then echo "ERROR: Attempting to commit private keys!"; exit 1; fi'
+        language: system
+        pass_filenames: false
+
 default_language_version:
   python: python3.11
 

@@ -330,10 +330,21 @@ async def get_top_performers(
         "score": "overall_score",
     }
 
+    # SECURITY: Whitelist validation to prevent SQL injection
+    ALLOWED_ORDER_COLUMNS = {"revenue_yoy_growth", "latest_revenue", "overall_score"}
+
     order_column = metric_mapping.get(metric, "overall_score")
 
+    # Validate that the order column is in the allowed whitelist
+    if order_column not in ALLOWED_ORDER_COLUMNS:
+        logger.error(f"Invalid order column attempted: {order_column}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid metric parameter. Allowed values: {', '.join(metric_mapping.keys())}",
+        )
+
     try:
-        # Query from data warehouse mart
+        # Query from data warehouse mart - order_column is now validated against whitelist
         query = text(f"""
             SELECT
                 ticker,
