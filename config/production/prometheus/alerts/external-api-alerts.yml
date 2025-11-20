@@ -1,0 +1,182 @@
+# External API Alert Rules
+# Corporate Intel Production Monitoring
+# Monitors SEC API, Yahoo Finance, and Alpha Vantage
+
+groups:
+  - name: external_api_alerts
+    interval: 60s
+    rules:
+      # SEC API - High Error Rate
+      - alert: SECAPIHighErrorRate
+        expr: |
+          (
+            sum(rate(external_api_requests_total{provider="sec",status=~"5.."}[10m]))
+            /
+            sum(rate(external_api_requests_total{provider="sec"}[10m]))
+          ) * 100 > 5
+        for: 15m
+        labels:
+          severity: critical
+          component: external-api
+          provider: sec
+          team: backend
+        annotations:
+          summary: "High SEC API error rate"
+          description: "SEC API error rate is {{ $value | humanizePercentage }} (threshold: 5%)\nMay impact data pipeline reliability."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/sec-api-errors"
+
+      # SEC API - Rate Limiting
+      - alert: SECAPIRateLimited
+        expr: |
+          increase(external_api_requests_total{provider="sec",status="429"}[10m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+          component: external-api
+          provider: sec
+          team: backend
+        annotations:
+          summary: "SEC API rate limiting detected"
+          description: "{{ $value }} rate limit errors in last 10 minutes (threshold: 5)\nReview request throttling and User-Agent configuration."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/sec-rate-limit"
+
+      # SEC API - Slow Response Time
+      - alert: SECAPISlowResponse
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(external_api_request_duration_seconds_bucket{provider="sec"}[10m])) by (le)
+          ) > 5.0
+        for: 15m
+        labels:
+          severity: warning
+          component: external-api
+          provider: sec
+          team: backend
+        annotations:
+          summary: "SEC API slow response times"
+          description: "SEC API P95 latency is {{ $value | humanizeDuration }} (threshold: 5s)\nMay indicate SEC API degradation."
+
+      # SEC API - Connection Failures
+      - alert: SECAPIConnectionFailures
+        expr: |
+          increase(external_api_connection_errors_total{provider="sec"}[15m]) > 10
+        labels:
+          severity: critical
+          component: external-api
+          provider: sec
+          team: backend
+        annotations:
+          summary: "SEC API connection failures"
+          description: "{{ $value }} connection failures in last 15 minutes (threshold: 10)\nCheck network connectivity and SEC API status."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/sec-connection-failures"
+
+      # Yahoo Finance API - High Error Rate
+      - alert: YahooFinanceHighErrorRate
+        expr: |
+          (
+            sum(rate(external_api_requests_total{provider="yahoo_finance",status=~"5.."}[10m]))
+            /
+            sum(rate(external_api_requests_total{provider="yahoo_finance"}[10m]))
+          ) * 100 > 5
+        for: 15m
+        labels:
+          severity: warning
+          component: external-api
+          provider: yahoo_finance
+          team: backend
+        annotations:
+          summary: "High Yahoo Finance API error rate"
+          description: "Yahoo Finance error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      # Yahoo Finance API - Rate Limiting
+      - alert: YahooFinanceRateLimited
+        expr: |
+          increase(external_api_requests_total{provider="yahoo_finance",status="429"}[10m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+          component: external-api
+          provider: yahoo_finance
+          team: backend
+        annotations:
+          summary: "Yahoo Finance API rate limiting"
+          description: "{{ $value }} rate limit errors in last 10 minutes (threshold: 5)\nConsider implementing request throttling."
+
+      # Alpha Vantage API - High Error Rate
+      - alert: AlphaVantageHighErrorRate
+        expr: |
+          (
+            sum(rate(external_api_requests_total{provider="alpha_vantage",status=~"5.."}[10m]))
+            /
+            sum(rate(external_api_requests_total{provider="alpha_vantage"}[10m]))
+          ) * 100 > 5
+        for: 15m
+        labels:
+          severity: warning
+          component: external-api
+          provider: alpha_vantage
+          team: backend
+        annotations:
+          summary: "High Alpha Vantage API error rate"
+          description: "Alpha Vantage error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      # Alpha Vantage API - Rate Limiting
+      - alert: AlphaVantageRateLimited
+        expr: |
+          increase(external_api_requests_total{provider="alpha_vantage",status="429"}[10m]) > 3
+        for: 5m
+        labels:
+          severity: critical
+          component: external-api
+          provider: alpha_vantage
+          team: backend
+        annotations:
+          summary: "Alpha Vantage API rate limiting"
+          description: "{{ $value }} rate limit errors detected (threshold: 3)\nAlpha Vantage has strict rate limits. Review API key tier and usage."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/alpha-vantage-rate-limit"
+
+      # Alpha Vantage API - Quota Exhausted
+      - alert: AlphaVantageQuotaExhausted
+        expr: |
+          alpha_vantage_api_calls_remaining < 10
+        for: 5m
+        labels:
+          severity: critical
+          component: external-api
+          provider: alpha_vantage
+          team: backend
+        annotations:
+          summary: "Alpha Vantage API quota nearly exhausted"
+          description: "Only {{ $value }} API calls remaining\nConsider upgrading API tier or implementing request caching."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/alpha-vantage-quota"
+
+      # External API - Total Success Rate
+      - alert: LowExternalAPISuccessRate
+        expr: |
+          (
+            sum(rate(external_api_requests_total{status=~"2.."}[10m]))
+            /
+            sum(rate(external_api_requests_total[10m]))
+          ) * 100 < 90
+        for: 15m
+        labels:
+          severity: warning
+          component: external-api
+          team: backend
+        annotations:
+          summary: "Low overall external API success rate"
+          description: "External API success rate is {{ $value | humanizePercentage }} (threshold: 90%)\nMultiple external APIs may be degraded."
+
+      # External API - Circuit Breaker Open
+      - alert: ExternalAPICircuitBreakerOpen
+        expr: |
+          external_api_circuit_breaker_state{state="open"} == 1
+        for: 5m
+        labels:
+          severity: critical
+          component: external-api
+          team: backend
+        annotations:
+          summary: "External API circuit breaker open"
+          description: "Circuit breaker is OPEN for {{ $labels.provider }}\nExternal API calls are being blocked to prevent cascade failures."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/circuit-breaker-open"

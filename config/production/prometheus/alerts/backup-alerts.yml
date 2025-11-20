@@ -1,0 +1,177 @@
+# Backup and Disaster Recovery Alert Rules
+# Corporate Intel Production Monitoring
+
+groups:
+  - name: backup_alerts
+    interval: 300s  # Check every 5 minutes
+    rules:
+      # PostgreSQL Backup Failure
+      - alert: PostgreSQLBackupFailure
+        expr: |
+          time() - backup_last_success_timestamp_seconds{type="postgresql"} > 86400
+        for: 30m
+        labels:
+          severity: critical
+          component: backup
+          backup_type: postgresql
+          team: devops
+          page: "true"
+        annotations:
+          summary: "PostgreSQL backup failed or missing"
+          description: "Last successful PostgreSQL backup was {{ $value | humanizeDuration }} ago (threshold: 24h)\nDatabase: {{ $labels.database }}\nBackup location: {{ $labels.backup_location }}\nData loss risk!"
+          runbook_url: "https://docs.corporate-intel.com/runbooks/backup-failure"
+
+      # Redis Backup Failure
+      - alert: RedisBackupFailure
+        expr: |
+          time() - backup_last_success_timestamp_seconds{type="redis"} > 86400
+        for: 30m
+        labels:
+          severity: warning
+          component: backup
+          backup_type: redis
+          team: devops
+        annotations:
+          summary: "Redis backup failed or missing"
+          description: "Last successful Redis backup was {{ $value | humanizeDuration }} ago (threshold: 24h)\nInstance: {{ $labels.instance }}"
+
+      # MinIO Backup Failure
+      - alert: MinIOBackupFailure
+        expr: |
+          time() - backup_last_success_timestamp_seconds{type="minio"} > 86400
+        for: 30m
+        labels:
+          severity: critical
+          component: backup
+          backup_type: minio
+          team: devops
+        annotations:
+          summary: "MinIO backup failed or missing"
+          description: "Last successful MinIO backup was {{ $value | humanizeDuration }} ago (threshold: 24h)\nBucket: {{ $labels.bucket }}"
+          runbook_url: "https://docs.corporate-intel.com/runbooks/backup-failure"
+
+      # Backup Execution Error
+      - alert: BackupExecutionError
+        expr: |
+          increase(backup_execution_total{status="failed"}[6h]) > 0
+        labels:
+          severity: critical
+          component: backup
+          team: devops
+        annotations:
+          summary: "Backup execution failed"
+          description: "Backup failed for {{ $labels.type }}\nError: {{ $labels.error_type }}\nCheck backup logs and storage availability."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/backup-failure"
+
+      # Slow Backup Execution
+      - alert: SlowBackupExecution
+        expr: |
+          backup_execution_duration_seconds > 7200
+        for: 5m
+        labels:
+          severity: warning
+          component: backup
+          team: devops
+        annotations:
+          summary: "Backup taking too long"
+          description: "Backup of {{ $labels.type }} has been running for {{ $value | humanizeDuration }} (threshold: 2h)\nMay indicate large dataset or performance issues."
+
+      # Backup Storage Space Low
+      - alert: BackupStorageLow
+        expr: |
+          (
+            backup_storage_available_bytes
+            /
+            backup_storage_total_bytes
+          ) * 100 < 20
+        for: 15m
+        labels:
+          severity: critical
+          component: backup
+          team: devops
+        annotations:
+          summary: "Backup storage space running low"
+          description: "Backup storage has only {{ $value | humanizePercentage }} free space (threshold: 20%)\nLocation: {{ $labels.backup_location }}\nExpand storage or implement retention policy."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/backup-storage-low"
+
+      # Backup Storage Space Warning
+      - alert: BackupStorageWarning
+        expr: |
+          (
+            backup_storage_available_bytes
+            /
+            backup_storage_total_bytes
+          ) * 100 < 30
+        for: 30m
+        labels:
+          severity: warning
+          component: backup
+          team: devops
+        annotations:
+          summary: "Backup storage space warning"
+          description: "Backup storage has {{ $value | humanizePercentage }} free space (threshold: 30%)\nLocation: {{ $labels.backup_location }}"
+
+      # Backup Verification Failure
+      - alert: BackupVerificationFailure
+        expr: |
+          increase(backup_verification_total{status="failed"}[24h]) > 0
+        labels:
+          severity: critical
+          component: backup
+          team: devops
+        annotations:
+          summary: "Backup verification failed"
+          description: "Backup verification failed for {{ $labels.type }}\nBackup may be corrupted or incomplete.\nDo not rely on this backup for recovery!"
+          runbook_url: "https://docs.corporate-intel.com/runbooks/backup-verification-failure"
+
+      # No Backup Verification
+      - alert: BackupNotVerified
+        expr: |
+          time() - backup_last_verification_timestamp_seconds > 604800
+        for: 1h
+        labels:
+          severity: warning
+          component: backup
+          team: devops
+        annotations:
+          summary: "Backup not verified recently"
+          description: "Backup for {{ $labels.type }} was last verified {{ $value | humanizeDuration }} ago (threshold: 7d)\nSchedule backup verification test."
+
+      # Backup Retention Policy Violation
+      - alert: BackupRetentionViolation
+        expr: |
+          backup_count_by_age{age_days="30"} < 4
+        for: 1h
+        labels:
+          severity: warning
+          component: backup
+          team: devops
+        annotations:
+          summary: "Insufficient backups for retention policy"
+          description: "Only {{ $value }} monthly backups available for {{ $labels.type }} (required: 4)\nRetention policy may not be met."
+
+      # Backup Replication Lag
+      - alert: BackupReplicationLag
+        expr: |
+          time() - backup_replication_last_sync_timestamp_seconds > 7200
+        for: 15m
+        labels:
+          severity: warning
+          component: backup
+          team: devops
+        annotations:
+          summary: "Backup replication lag detected"
+          description: "Backup replication for {{ $labels.type }} is {{ $value | humanizeDuration }} behind (threshold: 2h)\nOffsite backups may not be current."
+
+      # Disaster Recovery Test Overdue
+      - alert: DRTestOverdue
+        expr: |
+          time() - dr_test_last_execution_timestamp_seconds > 7776000
+        for: 24h
+        labels:
+          severity: warning
+          component: disaster-recovery
+          team: devops
+        annotations:
+          summary: "Disaster recovery test overdue"
+          description: "Last DR test was {{ $value | humanizeDuration }} ago (threshold: 90d)\nSchedule DR test to validate recovery procedures."

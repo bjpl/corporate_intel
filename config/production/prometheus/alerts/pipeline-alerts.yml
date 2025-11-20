@@ -1,0 +1,173 @@
+# Data Pipeline Alert Rules
+# Corporate Intel Production Monitoring
+# Monitors ETL pipelines, data quality, and batch jobs
+
+groups:
+  - name: pipeline_alerts
+    interval: 60s
+    rules:
+      # Pipeline Execution Failure
+      - alert: DataPipelineExecutionFailure
+        expr: |
+          increase(pipeline_execution_total{status="failed"}[30m]) > 0
+        labels:
+          severity: critical
+          component: pipeline
+          team: data-engineering
+        annotations:
+          summary: "Data pipeline execution failed"
+          description: "Pipeline {{ $labels.pipeline_name }} failed\nJob ID: {{ $labels.job_id }}\nCheck pipeline logs for errors."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/pipeline-failure"
+
+      # Pipeline Execution Duration
+      - alert: SlowPipelineExecution
+        expr: |
+          pipeline_execution_duration_seconds > 3600
+        for: 5m
+        labels:
+          severity: warning
+          component: pipeline
+          team: data-engineering
+        annotations:
+          summary: "Data pipeline execution taking too long"
+          description: "Pipeline {{ $labels.pipeline_name }} has been running for {{ $value | humanizeDuration }} (threshold: 1h)\nPipeline: {{ $labels.pipeline_name }}\nMay indicate performance issues or data volume increase."
+
+      # Pipeline Not Running (Expected Schedule)
+      - alert: DataPipelineMissedSchedule
+        expr: |
+          time() - pipeline_last_execution_timestamp_seconds > 7200
+        for: 15m
+        labels:
+          severity: critical
+          component: pipeline
+          team: data-engineering
+        annotations:
+          summary: "Data pipeline missed scheduled execution"
+          description: "Pipeline {{ $labels.pipeline_name }} last ran {{ $value | humanizeDuration }} ago (threshold: 2h)\nCheck scheduler (Airflow/cron) and pipeline triggers."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/pipeline-missed-schedule"
+
+      # Data Quality Check Failure
+      - alert: DataQualityCheckFailed
+        expr: |
+          increase(data_quality_checks_total{status="failed"}[30m]) > 0
+        labels:
+          severity: critical
+          component: data-quality
+          team: data-engineering
+        annotations:
+          summary: "Data quality check failed"
+          description: "Data quality check failed for {{ $labels.table_name }}\nCheck: {{ $labels.check_name }}\nData may not meet quality standards."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/data-quality-failure"
+
+      # High Data Quality Failure Rate
+      - alert: HighDataQualityFailureRate
+        expr: |
+          (
+            sum(rate(data_quality_checks_total{status="failed"}[1h])) by (table_name)
+            /
+            sum(rate(data_quality_checks_total[1h])) by (table_name)
+          ) * 100 > 5
+        for: 15m
+        labels:
+          severity: warning
+          component: data-quality
+          team: data-engineering
+        annotations:
+          summary: "High data quality failure rate"
+          description: "Data quality failure rate is {{ $value | humanizePercentage }} for {{ $labels.table_name }} (threshold: 5%)\nInvestigate source data quality issues."
+
+      # Data Freshness Issue
+      - alert: StaleData
+        expr: |
+          time() - data_last_updated_timestamp_seconds > 86400
+        for: 30m
+        labels:
+          severity: warning
+          component: data-freshness
+          team: data-engineering
+        annotations:
+          summary: "Stale data detected"
+          description: "Data in {{ $labels.table_name }} is {{ $value | humanizeDuration }} old (threshold: 24h)\nData may be outdated for reporting."
+
+      # Critical Data Freshness
+      - alert: CriticalDataStaleness
+        expr: |
+          time() - data_last_updated_timestamp_seconds{critical="true"} > 14400
+        for: 15m
+        labels:
+          severity: critical
+          component: data-freshness
+          team: data-engineering
+        annotations:
+          summary: "Critical data is stale"
+          description: "Critical data in {{ $labels.table_name }} is {{ $value | humanizeDuration }} old (threshold: 4h)\nImmediate investigation required."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/critical-data-stale"
+
+      # High Row Count Anomaly
+      - alert: DataVolumeAnomaly
+        expr: |
+          abs(
+            (table_row_count - avg_over_time(table_row_count[7d]))
+            /
+            avg_over_time(table_row_count[7d])
+          ) * 100 > 50
+        for: 30m
+        labels:
+          severity: warning
+          component: data-quality
+          team: data-engineering
+        annotations:
+          summary: "Unusual data volume detected"
+          description: "Row count for {{ $labels.table_name }} differs by {{ $value | humanizePercentage }} from 7-day average\nCurrent: {{ .Value }}\nMay indicate data ingestion issues or anomalies."
+
+      # DBT Test Failures
+      - alert: DBTTestFailure
+        expr: |
+          increase(dbt_test_failures_total[30m]) > 0
+        labels:
+          severity: critical
+          component: dbt
+          team: data-engineering
+        annotations:
+          summary: "DBT test failure detected"
+          description: "DBT test failed: {{ $labels.test_name }}\nModel: {{ $labels.model_name }}\nReview test results and data quality."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/dbt-test-failure"
+
+      # DBT Model Build Failure
+      - alert: DBTModelBuildFailure
+        expr: |
+          increase(dbt_model_build_total{status="error"}[30m]) > 0
+        labels:
+          severity: critical
+          component: dbt
+          team: data-engineering
+        annotations:
+          summary: "DBT model build failed"
+          description: "DBT model {{ $labels.model_name }} failed to build\nCheck DBT logs and dependencies."
+          runbook_url: "https://docs.corporate-intel.com/runbooks/dbt-build-failure"
+
+      # Slow DBT Model Build
+      - alert: SlowDBTModelBuild
+        expr: |
+          dbt_model_build_duration_seconds > 1800
+        for: 5m
+        labels:
+          severity: warning
+          component: dbt
+          team: data-engineering
+        annotations:
+          summary: "Slow DBT model build"
+          description: "DBT model {{ $labels.model_name }} took {{ $value | humanizeDuration }} to build (threshold: 30m)\nConsider optimization or incremental builds."
+
+      # Data Pipeline Backlog
+      - alert: DataPipelineBacklog
+        expr: |
+          pipeline_queue_depth > 100
+        for: 15m
+        labels:
+          severity: warning
+          component: pipeline
+          team: data-engineering
+        annotations:
+          summary: "Data pipeline backlog detected"
+          description: "Pipeline queue depth is {{ $value }} items (threshold: 100)\nPipeline: {{ $labels.pipeline_name }}\nProcessing may be slower than ingestion."
