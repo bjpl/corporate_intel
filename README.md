@@ -7,13 +7,13 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/bjpl/corporate_intel)
 
-## 🎯 Overview
+## Overview
 
 Production-hardened business intelligence platform that aggregates and analyzes corporate financial data through automated API integrations, specifically targeting the EdTech ecosystem. Built with enterprise-grade architecture supporting real-time data ingestion, distributed processing, and advanced analytics.
 
 **Status**: Active Development | **Version**: 0.1.0 | **Python**: 3.11+ | **Database**: PostgreSQL 15+ with TimescaleDB
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 graph TB
@@ -89,7 +89,7 @@ graph TB
     PROM --> GRAF
 ```
 
-## ✨ Key Features
+## Key Features
 
 ### Data Integration
 - **SEC EDGAR**: Automated 10-K, 10-Q, 8-K filing ingestion
@@ -118,7 +118,7 @@ graph TB
 - **Pluggable Analysis Engine**: Strategy pattern for extensibility
 - **Real-time Dashboards**: Interactive Plotly Dash visualizations
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -246,7 +246,7 @@ Access the platform at:
 - Dashboard: http://localhost:8050
 - API Docs: http://localhost:8000/api/v1/docs
 
-## 📊 Data Pipeline
+## Data Pipeline
 
 ### Ingestion Flow
 
@@ -276,7 +276,7 @@ result = engine.analyze(
 )
 ```
 
-## 🎨 Visualizations
+## Visualizations
 
 The platform includes sophisticated visualizations:
 
@@ -286,7 +286,7 @@ The platform includes sophisticated visualizations:
 - **Performance Radar**: Multi-dimensional comparisons
 - **Market Share Sunburst**: Hierarchical market structure
 
-## 🔍 API Endpoints
+## API Endpoints
 
 ### Companies
 - `GET /api/v1/companies` - List all companies
@@ -302,7 +302,7 @@ The platform includes sophisticated visualizations:
 - `GET /api/v1/reports/performance` - Company performance report
 - `GET /api/v1/reports/landscape` - Competitive landscape report
 
-## 📈 Performance
+## Performance
 
 - **Data Processing**: 100+ documents/second with Ray
 - **API Response**: p99 < 100ms with Redis caching
@@ -310,7 +310,7 @@ The platform includes sophisticated visualizations:
 - **Embedding Generation**: 1000 docs/minute with sentence-transformers
 - **Dashboard Rendering**: < 100ms for 10K data points
 
-## 🔐 Security
+## Security
 
 - API key authentication for external services
 - Rate limiting on all endpoints
@@ -318,7 +318,7 @@ The platform includes sophisticated visualizations:
 - SQL injection prevention via parameterized queries
 - Input validation with Pydantic models
 
-## 🧪 Testing
+## Testing
 
 ### With Docker (Recommended)
 
@@ -354,7 +354,7 @@ great_expectations checkpoint run main
 
 **Test Results:** 391+ tests passing with 85%+ coverage
 
-## 📊 Monitoring
+## Monitoring
 
 The platform includes comprehensive observability:
 
@@ -367,7 +367,7 @@ Access monitoring:
 - Grafana: http://localhost:3000
 - Prometheus: http://localhost:9090
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 corporate_intel/
@@ -410,7 +410,7 @@ corporate_intel/
 └── pyproject.toml              # Python dependencies
 ```
 
-## 🐳 Docker & Deployment
+## Docker and Deployment
 
 ### Quick Commands
 
@@ -450,15 +450,15 @@ GitHub Actions automatically:
 - Deploys to staging/production
 - Creates versioned releases
 
-## 🤝 Contributing
+## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with:
 - [FastAPI](https://fastapi.tiangolo.com/) - Modern web framework
@@ -468,11 +468,7 @@ Built with:
 - [TimescaleDB](https://www.timescale.com/) - Time-series database
 - [pgvector](https://github.com/pgvector/pgvector) - Vector similarity search
 
-## 📞 Support
+## Support
 
 - GitHub Issues: [Report bugs](https://github.com/bjpl/corporate_intel/issues)
 - Email: brandon.lambert87@gmail.com
-
----
-
-**Built with ❤️ for the EdTech community**
